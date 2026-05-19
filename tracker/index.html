@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,415 +9,124 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-
 :root{
-  --bg:#08080e;
-  --surface:#0f0f1a;
-  --surface2:#161625;
-  --border:#1e1e35;
-  --accent:#c9a84c;
-  --accent2:#e8c97a;
-  --accent-dim:rgba(201,168,76,0.12);
-  --text:#d4cfc8;
-  --text-dim:#6b6880;
-  --text-muted:#2e2c42;
-  --visited:#c9a84c;
-  --visited-hover:#e8c97a;
-  --land:#171728;
-  --land-hover:#242445;
-  --ocean:#050510;
+  --bg:#08080e;--surface:#0f0f1a;--surface2:#161625;--border:#1e1e35;
+  --accent:#c9a84c;--accent2:#e8c97a;--accent-dim:rgba(201,168,76,0.12);
+  --text:#d4cfc8;--text-dim:#6b6880;--text-muted:#2e2c42;
+  --visited:#c9a84c;--visited-hover:#e8c97a;
+  --land:#171728;--land-hover:#242445;--ocean:#050510;
 }
-
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Outfit',sans-serif;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-}
-
-/* Noise grain overlay */
-body::before{
-  content:'';
-  position:fixed;
-  inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events:none;
-  z-index:1000;
-  opacity:0.4;
-}
-
-/* ── HEADER ── */
-#header{
-  padding:18px 36px 16px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  border-bottom:1px solid var(--border);
-  background:linear-gradient(180deg,rgba(15,15,26,0.98) 0%,rgba(8,8,14,0.95) 100%);
-  flex-shrink:0;
-  position:relative;
-  z-index:10;
-}
-
-.header-left h1{
-  font-family:'Playfair Display',serif;
-  font-size:22px;
-  font-weight:700;
-  color:var(--accent2);
-  letter-spacing:0.01em;
-}
-
-.header-left .tagline{
-  font-size:11px;
-  color:var(--text-dim);
-  letter-spacing:0.14em;
-  text-transform:uppercase;
-  margin-top:2px;
-}
-
-.header-stats{
-  display:flex;
-  gap:32px;
-  align-items:center;
-}
-
-.hstat{
-  text-align:center;
-}
-.hstat-num{
-  font-family:'Playfair Display',serif;
-  font-size:26px;
-  color:var(--accent);
-  line-height:1;
-}
-.hstat-label{
-  font-size:10px;
-  color:var(--text-dim);
-  letter-spacing:0.1em;
-  text-transform:uppercase;
-  margin-top:3px;
-}
-
-.hstat-divider{
-  width:1px;
-  height:36px;
-  background:var(--border);
-}
-
-/* Progress bar in header */
-.header-prog{
-  display:flex;
-  flex-direction:column;
-  align-items:flex-end;
-  gap:6px;
-}
-.prog-label{
-  font-size:11px;
-  color:var(--text-dim);
-  letter-spacing:0.06em;
-}
-.prog-track{
-  width:160px;
-  height:3px;
-  background:var(--border);
-  border-radius:2px;
-  overflow:hidden;
-}
-.prog-fill{
-  height:100%;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  border-radius:2px;
-  transition:width 0.6s cubic-bezier(0.4,0,0.2,1);
-  width:0%;
-}
-
-/* ── MAP WRAPPER ── */
-#map-wrap{
-  flex:1;
-  position:relative;
-  overflow:hidden;
-}
-
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:0.4}
+#header{padding:14px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(15,15,26,0.98) 0%,rgba(8,8,14,0.95) 100%);flex-shrink:0;position:relative;z-index:10}
+.header-left h1{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--accent2);letter-spacing:0.01em}
+.header-left .tagline{font-size:10px;color:var(--text-dim);letter-spacing:0.14em;text-transform:uppercase;margin-top:2px}
+.header-stats{display:flex;gap:24px;align-items:center}
+.hstat{text-align:center}
+.hstat-num{font-family:'Playfair Display',serif;font-size:24px;color:var(--accent);line-height:1}
+.hstat-label{font-size:9.5px;color:var(--text-dim);letter-spacing:0.1em;text-transform:uppercase;margin-top:3px}
+.hstat-divider{width:1px;height:32px;background:var(--border)}
+.prog-row{display:flex;flex-direction:column;gap:6px}
+.prog-item{display:flex;align-items:center;gap:8px}
+.prog-label{font-size:10px;color:var(--text-dim);white-space:nowrap;min-width:115px;text-align:right}
+.prog-track{width:110px;height:2px;background:var(--border);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;transition:width 0.6s cubic-bezier(0.4,0,0.2,1);width:0%}
+#map-wrap{flex:1;position:relative;overflow:hidden}
 #map-svg{width:100%;height:100%;display:block;cursor:grab}
 #map-svg:active{cursor:grabbing}
-
-.land{
-  fill:var(--land);
-  stroke:#0a0a18;
-  stroke-width:0.5px;
-  cursor:pointer;
-  transition:fill 0.15s ease;
-}
+.land{fill:var(--land);stroke:#0a0a18;stroke-width:0.5px;cursor:pointer;transition:fill 0.15s ease}
 .land:hover{fill:var(--land-hover)}
 .land.visited{fill:var(--visited)}
 .land.visited:hover{fill:var(--visited-hover)}
 .sphere{fill:var(--ocean)}
 .graticule{fill:none;stroke:rgba(255,255,255,0.018);stroke-width:0.6px}
-
-/* ── TOOLTIP ── */
-#tooltip{
-  position:absolute;
-  pointer-events:none;
-  z-index:200;
-  opacity:0;
-  transition:opacity 0.1s;
-}
+#tooltip{position:absolute;pointer-events:none;z-index:200;opacity:0;transition:opacity 0.1s}
 #tooltip.show{opacity:1}
-.tt-inner{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:8px;
-  padding:10px 15px;
-  min-width:140px;
-}
-.tt-name{
-  font-size:13.5px;
-  font-weight:500;
-  color:var(--text);
-}
-.tt-meta{
-  font-size:10.5px;
-  margin-top:3px;
-  color:var(--text-dim);
-}
+.tt-inner{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 15px;min-width:140px}
+.tt-name{font-size:13.5px;font-weight:500;color:var(--text)}
+.tt-meta{font-size:10.5px;margin-top:3px;color:var(--text-dim)}
 .tt-meta.visited{color:var(--accent)}
-.tt-hint{
-  font-size:10px;
-  color:var(--text-muted);
-  margin-top:5px;
-  border-top:1px solid var(--border);
-  padding-top:5px;
-}
-
-/* ── ZOOM CONTROLS ── */
-#zoom-ctrl{
-  position:absolute;
-  bottom:24px;
-  right:24px;
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-  z-index:50;
-}
-.zbtn{
-  width:32px;height:32px;
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:6px;
-  color:var(--text-dim);
-  font-size:16px;
-  cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:all 0.15s;
-  user-select:none;
-}
+.tt-hint{font-size:10px;color:var(--text-muted);margin-top:5px;border-top:1px solid var(--border);padding-top:5px}
+#zoom-ctrl{position:absolute;bottom:24px;right:24px;display:flex;flex-direction:column;gap:4px;z-index:50}
+.zbtn{width:32px;height:32px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text-dim);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;user-select:none}
 .zbtn:hover{border-color:var(--accent);color:var(--accent)}
-
-/* ── BOTTOM BAR ── */
-#bottom-bar{
-  position:absolute;
-  bottom:24px;
-  left:24px;
-  display:flex;
-  gap:16px;
-  z-index:50;
-}
-.legend-item{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  font-size:11px;
-  color:var(--text-dim);
-}
-.legend-dot{
-  width:9px;height:9px;
-  border-radius:2px;
-}
-
-/* ── LOADING ── */
-#loading{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:var(--ocean);z-index:100;gap:16px;
-}
-.l-title{
-  font-family:'Playfair Display',serif;
-  font-size:14px;
-  color:var(--text-dim);
-  letter-spacing:0.2em;
-  text-transform:uppercase;
-  animation:fpulse 1.8s ease-in-out infinite;
-}
+#bottom-bar{position:absolute;bottom:24px;left:24px;display:flex;gap:16px;z-index:50}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-dim)}
+.legend-dot{width:9px;height:9px;border-radius:2px}
+#loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--ocean);z-index:100;gap:16px}
+.l-title{font-family:'Playfair Display',serif;font-size:14px;color:var(--text-dim);letter-spacing:0.2em;text-transform:uppercase;animation:fpulse 1.8s ease-in-out infinite}
 .l-bar{width:180px;height:2px;background:var(--border);border-radius:1px;overflow:hidden}
-.l-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;animation:lbar 2s ease-in-out infinite}
+.l-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));animation:lbar 2s ease-in-out infinite}
 @keyframes fpulse{0%,100%{opacity:0.4}50%{opacity:1}}
 @keyframes lbar{0%{width:0%;margin-left:0}60%{width:80%}100%{width:0%;margin-left:100%}}
-
-/* ── OVERLAY ── */
-#overlay{
-  position:fixed;inset:0;
-  background:rgba(5,5,16,0.88);
-  z-index:500;
-  display:flex;align-items:center;justify-content:center;
-  opacity:0;pointer-events:none;
-  transition:opacity 0.25s ease;
-  backdrop-filter:blur(6px);
-}
+#overlay{position:fixed;inset:0;background:rgba(5,5,16,0.88);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s ease;backdrop-filter:blur(6px)}
 #overlay.open{opacity:1;pointer-events:all}
-
-#panel{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:16px;
-  width:min(680px,92vw);
-  max-height:88vh;
-  overflow:hidden;
-  display:flex;flex-direction:column;
-  transform:translateY(20px) scale(0.97);
-  transition:transform 0.28s cubic-bezier(0.34,1.56,0.64,1);
-  box-shadow:0 40px 80px rgba(0,0,0,0.6);
-}
+#panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;width:min(680px,92vw);max-height:88vh;overflow:hidden;display:flex;flex-direction:column;transform:translateY(20px) scale(0.97);transition:transform 0.28s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 40px 80px rgba(0,0,0,0.6)}
 #overlay.open #panel{transform:translateY(0) scale(1)}
-
-/* Panel header */
-#panel-head{
-  padding:24px 28px 20px;
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:flex-start;justify-content:space-between;
-  flex-shrink:0;
-}
-#panel-country{
-  font-family:'Playfair Display',serif;
-  font-size:26px;color:var(--accent2);
-  line-height:1.1;
-}
-#panel-meta{
-  font-size:12px;color:var(--text-dim);
-  margin-top:5px;display:flex;gap:14px;
-}
+#panel-head{padding:22px 26px 18px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0}
+#panel-country{font-family:'Playfair Display',serif;font-size:26px;color:var(--accent2);line-height:1.1}
+#panel-meta{font-size:12px;color:var(--text-dim);margin-top:6px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .pmeta-item{display:flex;align-items:center;gap:5px}
 .pmeta-dot{width:5px;height:5px;background:var(--accent);border-radius:50%;flex-shrink:0}
-
-#close-btn{
-  background:none;border:1px solid var(--border);
-  border-radius:6px;width:32px;height:32px;
-  color:var(--text-dim);font-size:18px;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  transition:all 0.15s;flex-shrink:0;margin-left:16px;
-}
+.type-badge{padding:3px 11px;border-radius:20px;font-size:10.5px;font-weight:500;letter-spacing:0.05em}
+.type-private{background:rgba(76,201,122,0.13);border:1px solid rgba(76,201,122,0.28);color:#4cc97a}
+.type-work{background:rgba(76,143,201,0.13);border:1px solid rgba(76,143,201,0.28);color:#4c8fc9}
+.type-both{background:rgba(201,168,76,0.13);border:1px solid rgba(201,168,76,0.28);color:var(--accent2)}
+#close-btn{background:none;border:1px solid var(--border);border-radius:6px;width:32px;height:32px;color:var(--text-dim);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;margin-left:16px}
 #close-btn:hover{border-color:var(--accent);color:var(--accent)}
-
-/* Panel body */
-#panel-body{overflow-y:auto;flex:1;padding:24px 28px}
+#panel-body{overflow-y:auto;flex:1;padding:22px 26px}
 #panel-body::-webkit-scrollbar{width:4px}
 #panel-body::-webkit-scrollbar-track{background:transparent}
 #panel-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-
-/* Photo gallery */
-#gallery{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-bottom:22px;
-}
-.photo-card{
-  border-radius:10px;
-  overflow:hidden;
-  aspect-ratio:4/3;
-  background:var(--surface2);
-  border:1px solid var(--border);
-  position:relative;
-  cursor:pointer;
-}
-.photo-card:first-child{
-  grid-column:1/-1;
-  aspect-ratio:16/7;
-}
-.photo-card img{
-  width:100%;height:100%;
-  object-fit:cover;
-  display:block;
-  transition:transform 0.3s ease,opacity 0.3s;
-  opacity:0.9;
-}
+#gallery{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.photo-card{border-radius:10px;overflow:hidden;aspect-ratio:4/3;background:var(--surface2);border:1px solid var(--border)}
+.photo-card:first-child{grid-column:1/-1;aspect-ratio:16/7}
+.photo-card img{width:100%;height:100%;object-fit:cover;display:block;opacity:0.9;transition:transform 0.3s,opacity 0.3s}
 .photo-card:hover img{transform:scale(1.03);opacity:1}
-
-/* Placeholder photos */
-.photo-placeholder{
-  width:100%;height:100%;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  gap:8px;background:var(--surface2);
-}
-.photo-placeholder .ph-icon{font-size:28px;opacity:0.25}
-.photo-placeholder .ph-text{font-size:11px;color:var(--text-muted);letter-spacing:0.06em}
-
-/* Description */
-#panel-desc{
-  font-size:14px;line-height:1.75;
-  color:var(--text);margin-bottom:20px;
-}
-
-/* Highlights */
-#highlights{
-  display:flex;flex-wrap:wrap;gap:7px;
-  margin-bottom:22px;
-}
-.highlight-tag{
-  background:var(--accent-dim);
-  border:1px solid rgba(201,168,76,0.25);
-  border-radius:20px;
-  padding:4px 13px;
-  font-size:11.5px;
-  color:var(--accent2);
-}
-
-/* Not-visited panel state */
-#panel-no-visit{
-  text-align:center;
-  padding:40px 20px;
-}
-#panel-no-visit .nv-icon{font-size:40px;opacity:0.2;margin-bottom:12px}
-#panel-no-visit .nv-title{
-  font-family:'Playfair Display',serif;
-  font-size:18px;color:var(--text-dim);margin-bottom:8px
-}
-#panel-no-visit .nv-sub{font-size:13px;color:var(--text-muted)}
+.photo-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.ph-icon{font-size:26px;opacity:0.2}
+.ph-text{font-size:11px;color:var(--text-muted);letter-spacing:0.06em}
+#panel-desc{font-size:14px;line-height:1.75;color:var(--text)}
+#panel-no-visit{text-align:center;padding:40px 20px}
+.nv-icon{font-size:40px;opacity:0.2;margin-bottom:12px}
+.nv-title{font-family:'Playfair Display',serif;font-size:18px;color:var(--text-dim);margin-bottom:8px}
+.nv-sub{font-size:13px;color:var(--text-muted)}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div id="header">
   <div class="header-left">
     <h1>Janis' World Explorer</h1>
-    <p class="tagline">Alle Länder der Welt — ein Land nach dem anderen</p>
+    <p class="tagline">Every country in the world — one at a time</p>
   </div>
   <div class="header-stats">
     <div class="hstat">
       <div class="hstat-num" id="h-visited">0</div>
-      <div class="hstat-label">Besucht</div>
+      <div class="hstat-label">Visited</div>
     </div>
     <div class="hstat-divider"></div>
     <div class="hstat">
-      <div class="hstat-num" id="h-total">195</div>
-      <div class="hstat-label">Länder</div>
+      <div class="hstat-num" id="h-un">0</div>
+      <div class="hstat-label">UN Members</div>
     </div>
     <div class="hstat-divider"></div>
-    <div class="header-prog">
-      <span class="prog-label">Fortschritt <span id="h-pct">0.0%</span></span>
-      <div class="prog-track"><div class="prog-fill" id="h-fill"></div></div>
+    <div class="prog-row">
+      <div class="prog-item">
+        <span class="prog-label">of 252 countries &nbsp;<span id="h-pct1">0%</span></span>
+        <div class="prog-track"><div class="prog-fill" id="h-fill1"></div></div>
+      </div>
+      <div class="prog-item">
+        <span class="prog-label">of 193 UN states &nbsp;<span id="h-pct2">0%</span></span>
+        <div class="prog-track"><div class="prog-fill" id="h-fill2"></div></div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- MAP -->
 <div id="map-wrap">
   <div id="loading">
-    <div class="l-title">Karte wird geladen</div>
+    <div class="l-title">Loading map</div>
     <div class="l-bar"><div class="l-bar-fill"></div></div>
   </div>
   <svg id="map-svg"></svg>
@@ -432,18 +141,11 @@ body::before{
     <button class="zbtn" id="zr" style="font-size:13px">⟲</button>
   </div>
   <div id="bottom-bar">
-    <div class="legend-item">
-      <div class="legend-dot" style="background:var(--visited)"></div>
-      Besucht
-    </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background:var(--land)"></div>
-      Noch nicht besucht
-    </div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--visited)"></div>Visited</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--land)"></div>Not yet visited</div>
   </div>
 </div>
 
-<!-- COUNTRY OVERLAY -->
 <div id="overlay">
   <div id="panel">
     <div id="panel-head">
@@ -458,167 +160,283 @@ body::before{
 </div>
 
 <script>
-// ─────────────────────────────────────────────
-//  DATA  (= später deine data.json)
-// ─────────────────────────────────────────────
-// Fotos: Pfad relativ zum tracker/-Ordner
-// z.B. "photos/deutschland/01.jpg"
-// Platzhalter-Fotos werden automatisch angezeigt wenn kein Pfad angegeben
-
+// ═══════════════════════════════════════════════════════════════════════════
+//  YOUR DATA — edit this block to update your travels
+//
+//  Fields per country:
+//    name        Display name
+//    visited     true / false
+//    un_member   true / false  (used for the UN member counter)
+//    date        e.g. "Summer 2023" or "March 2024"
+//    type        "Private" | "Work" | "Both"
+//    description Your story / memories
+//    photos      [{ src: "photos/country/file.jpg", caption: "..." }, ...]
+//                Leave src as "" to show a placeholder
+// ═══════════════════════════════════════════════════════════════════════════
 const DATA = {
-  // Deutschland
-  276: {
-    name: "Deutschland",
-    visited: true,
-    date: "Heimatland",
-    description: "Mein Zuhause – von Leopoldshöhe aus erkunde ich die Welt. Deutschland hat so viel zu bieten: die Alpen im Süden, die Küste im Norden, und alles dazwischen.",
-    highlights: ["Heimatland", "Leopoldshöhe", "Bielefeld", "Alpen", "Ostsee"],
-    photos: [
-      { src: "", caption: "Titelbild Deutschland" },
-      { src: "", caption: "Foto 2" },
-      { src: "", caption: "Foto 3" }
-    ]
+
+  // ── Europe ────────────────────────────────────────────────────────────
+
+  276: { name:"Germany", visited:true, un_member:true,
+    date:"Home country", type:"Both",
+    description:"Home — based in Leopoldshöhe, North Rhine-Westphalia. Germany has everything: the Alps in the south, the coast in the north, and endless variety in between.",
+    photos:[{src:"",caption:"Cover photo"},{src:"",caption:"Photo 2"},{src:"",caption:"Photo 3"}]
   },
-  // Dänemark
-  208: {
-    name: "Dänemark",
-    visited: true,
-    date: "Platzhalter-Datum",
-    description: "Platzhalter – ersetze diesen Text mit deinen eigenen Erlebnissen in Dänemark.",
-    highlights: ["Kopenhagen", "Lego", "Hygge"],
-    photos: [
-      { src: "", caption: "Titelbild Dänemark" },
-      { src: "", caption: "Foto 2" }
-    ]
+
+  8: { name:"Albania", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Albania here.",
+    photos:[{src:"",caption:"Cover photo"}]
   },
-  // Niederlande
-  528: {
-    name: "Niederlande",
-    visited: true,
-    date: "Platzhalter-Datum",
-    description: "Platzhalter – ersetze diesen Text mit deinen eigenen Erlebnissen in den Niederlanden.",
-    highlights: ["Amsterdam", "Tulpen", "Fahrräder"],
-    photos: [{ src: "", caption: "Titelbild Niederlande" }]
+
+  40: { name:"Austria", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Austria here.",
+    photos:[{src:"",caption:"Cover photo"}]
   },
-  // Belgien
-  56: {
-    name: "Belgien",
-    visited: true,
-    date: "Platzhalter-Datum",
-    description: "Platzhalter – ersetze diesen Text mit deinen eigenen Erlebnissen in Belgien.",
-    highlights: ["Brüssel", "Schokolade", "Bier"],
-    photos: [{ src: "", caption: "Titelbild Belgien" }]
+
+  56: { name:"Belgium", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Belgium here.",
+    photos:[{src:"",caption:"Cover photo"}]
   },
-  // Luxemburg
-  442: {
-    name: "Luxemburg",
-    visited: true,
-    date: "Platzhalter-Datum",
-    description: "Platzhalter – ersetze diesen Text mit deinen eigenen Erlebnissen in Luxemburg.",
-    highlights: ["Luxemburg-Stadt", "Schlossberg"],
-    photos: [{ src: "", caption: "Titelbild Luxemburg" }]
+
+  70: { name:"Bosnia & Herzegovina", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Bosnia here.",
+    photos:[{src:"",caption:"Cover photo"}]
   },
-  // Frankreich
-  250: {
-    name: "Frankreich",
-    visited: true,
-    date: "Platzhalter-Datum",
-    description: "Platzhalter – ersetze diesen Text mit deinen eigenen Erlebnissen in Frankreich.",
-    highlights: ["Paris", "Eiffelturm", "Côte d'Azur", "Wein"],
-    photos: [
-      { src: "", caption: "Titelbild Frankreich" },
-      { src: "", caption: "Foto 2" }
-    ]
+
+  191: { name:"Croatia", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Croatia here.",
+    photos:[{src:"",caption:"Cover photo"}]
   },
-  // Schweiz
-  756: {
-    name: "Schweiz",
-    visited: true,
-    date: "Platzhalter-Datum",
-    description: "Platzhalter – ersetze diesen Text mit deinen eigenen Erlebnissen in der Schweiz.",
-    highlights: ["Alpen", "Zürich", "Schokolade"],
-    photos: [{ src: "", caption: "Titelbild Schweiz" }]
+
+  203: { name:"Czech Republic", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in the Czech Republic here.",
+    photos:[{src:"",caption:"Cover photo"}]
   },
-  // Österreich
-  40: {
-    name: "Österreich",
-    visited: true,
-    date: "Platzhalter-Datum",
-    description: "Platzhalter – ersetze diesen Text mit deinen eigenen Erlebnissen in Österreich.",
-    highlights: ["Wien", "Alpen", "Schnitzel"],
-    photos: [{ src: "", caption: "Titelbild Österreich" }]
+
+  208: { name:"Denmark", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Denmark here.",
+    photos:[{src:"",caption:"Cover photo"}]
   },
-  // Tschechien
-  203: {
-    name: "Tschechien",
-    visited: true,
-    date: "Platzhalter-Datum",
-    description: "Platzhalter – ersetze diesen Text mit deinen eigenen Erlebnissen in Tschechien.",
-    highlights: ["Prag", "Bier", "Böhmen"],
-    photos: [{ src: "", caption: "Titelbild Tschechien" }]
+
+  246: { name:"Finland", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Finland here.",
+    photos:[{src:"",caption:"Cover photo"}]
   },
-  // Polen
-  616: {
-    name: "Polen",
-    visited: true,
-    date: "Platzhalter-Datum",
-    description: "Platzhalter – ersetze diesen Text mit deinen eigenen Erlebnissen in Polen.",
-    highlights: ["Warschau", "Krakau", "Pierogi"],
-    photos: [{ src: "", caption: "Titelbild Polen" }]
+
+  250: { name:"France", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in France here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  // Gibraltar — British Overseas Territory (not a UN member state).
+  // It is too small to appear as its own shape on the map.
+  292: { name:"Gibraltar", visited:true, un_member:false,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Gibraltar here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  300: { name:"Greece", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Greece here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  348: { name:"Hungary", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Hungary here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  352: { name:"Iceland", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Iceland here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  380: { name:"Italy", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Italy here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  428: { name:"Latvia", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Latvia here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  440: { name:"Lithuania", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Lithuania here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  442: { name:"Luxembourg", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Luxembourg here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  499: { name:"Montenegro", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Montenegro here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  807: { name:"North Macedonia", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in North Macedonia here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  528: { name:"Netherlands", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in the Netherlands here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  616: { name:"Poland", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Poland here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  620: { name:"Portugal", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Portugal here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  642: { name:"Romania", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Romania here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  688: { name:"Serbia", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Serbia here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  724: { name:"Spain", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Spain here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  752: { name:"Sweden", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Sweden here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  756: { name:"Switzerland", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Switzerland here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  826: { name:"United Kingdom", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in the United Kingdom here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  // ── Africa ────────────────────────────────────────────────────────────
+
+  818: { name:"Egypt", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Egypt here.",
+    photos:[{src:"",caption:"Cover photo"}]
+  },
+
+  788: { name:"Tunisia", visited:true, un_member:true,
+    date:"Placeholder date", type:"Private",
+    description:"Add your experience in Tunisia here.",
+    photos:[{src:"",caption:"Cover photo"}]
   }
+
 };
 
 // ─────────────────────────────────────────────
-//  ISO numeric → Name (Fallback für alle Länder)
+//  FALLBACK NAMES (for unvisited countries)
 // ─────────────────────────────────────────────
-const ALL_COUNTRIES = {
-  4:"Afghanistan",8:"Albanien",12:"Algerien",24:"Angola",32:"Argentinien",
-  36:"Australien",40:"Österreich",31:"Aserbaidschan",50:"Bangladesch",
-  56:"Belgien",64:"Bhutan",68:"Bolivien",76:"Brasilien",100:"Bulgarien",
-  116:"Kambodscha",120:"Kamerun",124:"Kanada",152:"Chile",156:"China",
-  170:"Kolumbien",191:"Kroatien",192:"Kuba",203:"Tschechien",208:"Dänemark",
-  218:"Ecuador",231:"Äthiopien",233:"Estland",246:"Finnland",250:"Frankreich",
-  276:"Deutschland",288:"Ghana",300:"Griechenland",320:"Guatemala",
-  348:"Ungarn",356:"Indien",360:"Indonesien",364:"Iran",368:"Irak",
-  372:"Irland",376:"Israel",380:"Italien",388:"Jamaika",392:"Japan",
-  398:"Kasachstan",400:"Jordanien",404:"Kenia",408:"Nordkorea",410:"Südkorea",
-  414:"Kuwait",417:"Kirgisistan",418:"Laos",422:"Libanon",426:"Lesotho",
-  428:"Lettland",430:"Liberia",434:"Libyen",440:"Litauen",442:"Luxemburg",
-  450:"Madagaskar",454:"Malawi",458:"Malaysia",466:"Mali",470:"Malta",
-  484:"Mexiko",496:"Mongolei",499:"Montenegro",504:"Marokko",508:"Mosambik",
-  104:"Myanmar",516:"Namibia",524:"Nepal",528:"Niederlande",554:"Neuseeland",
-  558:"Nicaragua",562:"Niger",566:"Nigeria",578:"Norwegen",512:"Oman",
-  586:"Pakistan",591:"Panama",600:"Paraguay",604:"Peru",608:"Philippinen",
-  616:"Polen",620:"Portugal",634:"Katar",642:"Rumänien",643:"Russland",
-  646:"Ruanda",682:"Saudi-Arabien",686:"Senegal",688:"Serbien",694:"Sierra Leone",
-  703:"Slowakei",705:"Slowenien",706:"Somalia",710:"Südafrika",724:"Spanien",
-  144:"Sri Lanka",729:"Sudan",752:"Schweden",756:"Schweiz",760:"Syrien",
-  762:"Tadschikistan",764:"Thailand",788:"Tunesien",792:"Türkei",
-  804:"Ukraine",784:"VAE",826:"Vereinigtes Königreich",840:"USA",
-  858:"Uruguay",704:"Vietnam",887:"Jemen",894:"Sambia",716:"Simbabwe",
-  807:"Nordmazedonien",275:"Palästina",798:"Tuvalu",548:"Vanuatu"
+const NAMES = {
+  4:"Afghanistan",8:"Albania",12:"Algeria",24:"Angola",32:"Argentina",
+  36:"Australia",40:"Austria",31:"Azerbaijan",50:"Bangladesh",56:"Belgium",
+  64:"Bhutan",68:"Bolivia",70:"Bosnia & Herzegovina",76:"Brazil",100:"Bulgaria",
+  116:"Cambodia",120:"Cameroon",124:"Canada",152:"Chile",156:"China",
+  170:"Colombia",191:"Croatia",192:"Cuba",203:"Czech Republic",208:"Denmark",
+  218:"Ecuador",231:"Ethiopia",233:"Estonia",246:"Finland",250:"France",
+  276:"Germany",288:"Ghana",292:"Gibraltar",300:"Greece",320:"Guatemala",
+  348:"Hungary",352:"Iceland",356:"India",360:"Indonesia",364:"Iran",368:"Iraq",
+  372:"Ireland",376:"Israel",380:"Italy",388:"Jamaica",392:"Japan",
+  398:"Kazakhstan",400:"Jordan",404:"Kenya",408:"North Korea",410:"South Korea",
+  414:"Kuwait",417:"Kyrgyzstan",418:"Laos",422:"Lebanon",426:"Lesotho",
+  428:"Latvia",430:"Liberia",434:"Libya",440:"Lithuania",442:"Luxembourg",
+  450:"Madagascar",454:"Malawi",458:"Malaysia",466:"Mali",470:"Malta",
+  484:"Mexico",496:"Mongolia",499:"Montenegro",504:"Morocco",508:"Mozambique",
+  104:"Myanmar",516:"Namibia",524:"Nepal",528:"Netherlands",554:"New Zealand",
+  558:"Nicaragua",562:"Niger",566:"Nigeria",578:"Norway",512:"Oman",
+  586:"Pakistan",591:"Panama",600:"Paraguay",604:"Peru",608:"Philippines",
+  616:"Poland",620:"Portugal",634:"Qatar",642:"Romania",643:"Russia",
+  646:"Rwanda",682:"Saudi Arabia",686:"Senegal",688:"Serbia",694:"Sierra Leone",
+  703:"Slovakia",705:"Slovenia",706:"Somalia",710:"South Africa",
+  728:"South Sudan",724:"Spain",144:"Sri Lanka",729:"Sudan",752:"Sweden",
+  756:"Switzerland",760:"Syria",762:"Tajikistan",764:"Thailand",788:"Tunisia",
+  792:"Turkey",804:"Ukraine",784:"UAE",826:"United Kingdom",840:"USA",
+  818:"Egypt",858:"Uruguay",704:"Vietnam",887:"Yemen",894:"Zambia",
+  716:"Zimbabwe",807:"North Macedonia",275:"Palestine",548:"Vanuatu",798:"Tuvalu"
 };
 
 // ─────────────────────────────────────────────
 //  STATS
 // ─────────────────────────────────────────────
 function updateStats(){
-  const n = Object.values(DATA).filter(d=>d.visited).length;
-  const tot = 195;
-  const pct = (n/tot*100).toFixed(1);
-  document.getElementById('h-visited').textContent = n;
-  document.getElementById('h-total').textContent = tot;
-  document.getElementById('h-pct').textContent = pct + '%';
-  document.getElementById('h-fill').style.width = pct + '%';
+  const entries  = Object.values(DATA).filter(d => d.visited);
+  const total    = entries.length;
+  const unCount  = entries.filter(d => d.un_member).length;
+  const pct1 = (total   / 252 * 100).toFixed(1);
+  const pct2 = (unCount / 193 * 100).toFixed(1);
+  document.getElementById('h-visited').textContent = total;
+  document.getElementById('h-un').textContent      = unCount;
+  document.getElementById('h-pct1').textContent    = pct1 + '%';
+  document.getElementById('h-pct2').textContent    = pct2 + '%';
+  document.getElementById('h-fill1').style.width   = pct1 + '%';
+  document.getElementById('h-fill2').style.width   = pct2 + '%';
+}
+
+// ─────────────────────────────────────────────
+//  TYPE BADGE
+// ─────────────────────────────────────────────
+function typeBadge(type){
+  if(!type) return '';
+  const map = {
+    'Private': ['type-private','✈ Private'],
+    'Work':    ['type-work',   '💼 Work'],
+    'Both':    ['type-both',   '✈ Private + 💼 Work']
+  };
+  const [cls, label] = map[type] || ['type-private', type];
+  return `<span class="type-badge ${cls}">${label}</span>`;
 }
 
 // ─────────────────────────────────────────────
 //  OVERLAY
 // ─────────────────────────────────────────────
 function openPanel(id){
-  const d = DATA[id];
-  const name = (d && d.name) || ALL_COUNTRIES[id] || 'Unbekannt';
-
+  const d    = DATA[id];
+  const name = (d && d.name) || NAMES[id] || 'Unknown';
   document.getElementById('panel-country').textContent = name;
 
   const body = document.getElementById('panel-body');
@@ -629,40 +447,26 @@ function openPanel(id){
     body.innerHTML = `
       <div id="panel-no-visit">
         <div class="nv-icon">🗺️</div>
-        <div class="nv-title">Noch nicht besucht</div>
-        <div class="nv-sub">${name} steht noch auf der Liste. Irgendwann!</div>
+        <div class="nv-title">Not yet visited</div>
+        <div class="nv-sub">${name} is still on the list. One day!</div>
       </div>`;
   } else {
     meta.innerHTML = `
       <div class="pmeta-item"><div class="pmeta-dot"></div>${d.date}</div>
-      ${d.highlights && d.highlights.length ? `<div class="pmeta-item"><div class="pmeta-dot"></div>${d.highlights.length} Highlights</div>` : ''}
+      ${typeBadge(d.type)}
+      ${!d.un_member ? '<span style="font-size:10px;color:var(--text-muted);font-style:italic">Territory / Non-UN</span>' : ''}
     `;
-
-    // Photos
-    const photosHtml = (d.photos || []).map((p,i) => {
-      if(p.src){
-        return `<div class="photo-card"><img src="${p.src}" alt="${p.caption}" loading="lazy"></div>`;
-      } else {
-        return `<div class="photo-card">
-          <div class="photo-placeholder">
-            <div class="ph-icon">📷</div>
-            <div class="ph-text">${p.caption || 'Foto ' + (i+1)}</div>
-          </div>
-        </div>`;
-      }
-    }).join('');
-
-    const tagsHtml = (d.highlights || []).map(h =>
-      `<span class="highlight-tag">${h}</span>`
+    const photosHtml = (d.photos||[]).map((p,i) =>
+      p.src
+        ? `<div class="photo-card"><img src="${p.src}" alt="${p.caption}" loading="lazy"></div>`
+        : `<div class="photo-card"><div class="photo-placeholder"><div class="ph-icon">📷</div><div class="ph-text">${p.caption||'Photo '+(i+1)}</div></div></div>`
     ).join('');
 
     body.innerHTML = `
       ${photosHtml ? `<div id="gallery">${photosHtml}</div>` : ''}
       ${d.description ? `<p id="panel-desc">${d.description}</p>` : ''}
-      ${tagsHtml ? `<div id="highlights">${tagsHtml}</div>` : ''}
     `;
   }
-
   document.getElementById('overlay').classList.add('open');
 }
 
@@ -671,10 +475,7 @@ document.getElementById('overlay').addEventListener('click', e => {
   if(e.target === document.getElementById('overlay')) closePanel();
 });
 document.addEventListener('keydown', e => { if(e.key==='Escape') closePanel(); });
-
-function closePanel(){
-  document.getElementById('overlay').classList.remove('open');
-}
+function closePanel(){ document.getElementById('overlay').classList.remove('open'); }
 
 // ─────────────────────────────────────────────
 //  MAP
@@ -682,83 +483,49 @@ function closePanel(){
 async function initMap(){
   const wrap = document.getElementById('map-wrap');
   const W = wrap.clientWidth, H = wrap.clientHeight;
-
   const svg = d3.select('#map-svg').attr('width',W).attr('height',H);
-
-  const proj = d3.geoNaturalEarth1()
-    .scale(W / 6.1)
-    .translate([W/2, H/2]);
-
+  const proj = d3.geoNaturalEarth1().scale(W/6.1).translate([W/2,H/2]);
   const geoPath = d3.geoPath().projection(proj);
 
   svg.append('path').datum({type:'Sphere'}).attr('class','sphere').attr('d',geoPath);
   svg.append('path').datum(d3.geoGraticule()()).attr('class','graticule').attr('d',geoPath);
 
   const g = svg.append('g');
-
-  const zoom = d3.zoom().scaleExtent([1,12])
-    .on('zoom', e => g.attr('transform', e.transform));
+  const zoom = d3.zoom().scaleExtent([1,12]).on('zoom',e=>g.attr('transform',e.transform));
   svg.call(zoom);
-
-  document.getElementById('zi').onclick = () => svg.transition().duration(280).call(zoom.scaleBy,1.65);
-  document.getElementById('zo').onclick = () => svg.transition().duration(280).call(zoom.scaleBy,0.6);
-  document.getElementById('zr').onclick = () => svg.transition().duration(400).call(zoom.transform, d3.zoomIdentity);
+  document.getElementById('zi').onclick = ()=>svg.transition().duration(280).call(zoom.scaleBy,1.65);
+  document.getElementById('zo').onclick = ()=>svg.transition().duration(280).call(zoom.scaleBy,0.6);
+  document.getElementById('zr').onclick = ()=>svg.transition().duration(400).call(zoom.transform,d3.zoomIdentity);
 
   let world;
-  try {
-    world = await d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
-  } catch(e) {
-    document.getElementById('loading').innerHTML =
-      '<div class="l-title" style="color:#c94c4c">Karte konnte nicht geladen werden</div>';
-    return;
-  }
+  try { world = await d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'); }
+  catch(e){ document.getElementById('loading').innerHTML='<div class="l-title" style="color:#c94c4c">Map could not be loaded</div>'; return; }
 
-  document.getElementById('loading').style.display = 'none';
-
-  const tooltip = document.getElementById('tooltip');
-  const ttN = document.getElementById('tt-n');
-  const ttM = document.getElementById('tt-m');
-  const ttH = document.getElementById('tt-h');
+  document.getElementById('loading').style.display='none';
+  const tooltip=document.getElementById('tooltip');
+  const ttN=document.getElementById('tt-n'),ttM=document.getElementById('tt-m'),ttH=document.getElementById('tt-h');
 
   g.selectAll('.land')
-    .data(topojson.feature(world, world.objects.countries).features)
+    .data(topojson.feature(world,world.objects.countries).features)
     .join('path')
-    .attr('class', d => {
-      const isVis = DATA[d.id] && DATA[d.id].visited;
-      return 'land' + (isVis ? ' visited' : '');
-    })
-    .attr('d', geoPath)
-    .on('mousemove', function(e, d){
-      const id = d.id;
-      const entry = DATA[id];
-      const name = (entry && entry.name) || ALL_COUNTRIES[id] || '—';
-      const vis = entry && entry.visited;
-
-      ttN.textContent = name;
-      ttM.textContent = vis ? '✓ Besucht' + (entry.date ? ' · ' + entry.date : '') : 'Noch nicht besucht';
-      ttM.className = 'tt-meta' + (vis ? ' visited' : '');
-      ttH.textContent = vis ? 'Klicken für Details & Fotos' : '';
-
-      const rect = wrap.getBoundingClientRect();
-      let tx = e.clientX - rect.left + 14;
-      let ty = e.clientY - rect.top - 52;
-      if(tx + 180 > W) tx = e.clientX - rect.left - 180;
-      if(ty < 0) ty = e.clientY - rect.top + 18;
-      tooltip.style.left = tx + 'px';
-      tooltip.style.top  = ty + 'px';
+    .attr('class',d=>'land'+(DATA[d.id]&&DATA[d.id].visited?' visited':''))
+    .attr('d',geoPath)
+    .on('mousemove',function(e,d){
+      const en=DATA[d.id]; const nm=(en&&en.name)||NAMES[d.id]||'—'; const vis=en&&en.visited;
+      ttN.textContent=nm;
+      ttM.textContent=vis?'✓ Visited · '+en.date:'Not yet visited';
+      ttM.className='tt-meta'+(vis?' visited':'');
+      ttH.textContent=vis?'Click for details & photos':'';
+      const r=wrap.getBoundingClientRect();
+      let tx=e.clientX-r.left+14,ty=e.clientY-r.top-52;
+      if(tx+180>W)tx=e.clientX-r.left-180; if(ty<0)ty=e.clientY-r.top+18;
+      tooltip.style.left=tx+'px'; tooltip.style.top=ty+'px';
       tooltip.classList.add('show');
     })
-    .on('mouseleave', () => tooltip.classList.remove('show'))
-    .on('click', (e, d) => {
-      e.stopPropagation();
-      tooltip.classList.remove('show');
-      openPanel(d.id);
-    });
+    .on('mouseleave',()=>tooltip.classList.remove('show'))
+    .on('click',(e,d)=>{e.stopPropagation();tooltip.classList.remove('show');openPanel(d.id);});
 }
 
-// ─────────────────────────────────────────────
-//  BOOT
-// ─────────────────────────────────────────────
 updateStats();
 initMap();
 </script>
