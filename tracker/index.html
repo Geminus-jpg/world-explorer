@@ -21,70 +21,41 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;heigh
 
 /* ── HEADER ── */
 #header{
-  padding:20px 44px;
-  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 44px;display:flex;align-items:center;justify-content:space-between;
   border-bottom:1px solid var(--border);
   background:linear-gradient(180deg,rgba(14,15,28,0.99),rgba(7,8,15,0.96));
   flex-shrink:0;z-index:10;gap:32px;
 }
-.h-title h1{
-  font-family:'Space Grotesk',sans-serif;
-  font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.02em;
-}
+.h-title h1{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.02em}
 .h-title p{font-size:11.5px;color:var(--text-dim);letter-spacing:0.12em;text-transform:uppercase;margin-top:3px}
-
 .h-right{display:flex;align-items:center;gap:36px}
-
 .h-stat{text-align:center}
-.h-stat-num{
-  font-family:'Space Grotesk',sans-serif;
-  font-size:42px;font-weight:700;color:var(--accent);
-  line-height:1;letter-spacing:-0.03em;
-}
+.h-stat-num{font-family:'Space Grotesk',sans-serif;font-size:42px;font-weight:700;color:var(--accent);line-height:1;letter-spacing:-0.03em}
 .h-stat-label{font-size:11px;color:var(--text-dim);letter-spacing:0.08em;text-transform:uppercase;margin-top:5px}
-
 .h-divider{width:1px;height:52px;background:var(--border)}
-
 .h-progress{min-width:240px}
 .h-prog-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
 .h-prog-label{font-size:13px;color:var(--text-dim)}
-.h-prog-pct{
-  font-family:'Space Grotesk',sans-serif;
-  font-size:28px;font-weight:700;color:var(--accent);letter-spacing:-0.02em;
-}
-.h-prog-track{
-  width:100%;height:6px;
-  background:var(--border);border-radius:3px;overflow:hidden;
-}
-.h-prog-fill{
-  height:100%;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  border-radius:3px;
-  transition:width 0.7s cubic-bezier(0.4,0,0.2,1);
-  width:0%;
-}
+.h-prog-pct{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--accent);letter-spacing:-0.02em}
+.h-prog-track{width:100%;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.h-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width 0.7s cubic-bezier(0.4,0,0.2,1);width:0%}
 .h-prog-sub{font-size:11px;color:var(--text-muted);margin-top:6px}
 
 /* ── MAP ── */
-#map-wrap{flex:1;position:relative;overflow:hidden}
+#map-wrap{flex:1;position:relative;overflow:hidden;background:var(--ocean)}
 #map-svg{width:100%;height:100%;display:block;cursor:grab}
 #map-svg:active{cursor:grabbing}
+/* No sphere/oval — ocean background comes from #map-wrap */
 .land{fill:var(--land);stroke:#060710;stroke-width:0.5px;cursor:pointer;transition:fill 0.12s}
 .land:hover{fill:var(--land-h)}
 .land.visited{fill:var(--visited)}
 .land.visited:hover{fill:var(--visited-h)}
-.sphere{fill:var(--ocean)}
 .graticule{fill:none;stroke:rgba(255,255,255,0.015);stroke-width:0.5px}
 
 /* ── TOOLTIP ── */
 #tooltip{position:absolute;pointer-events:none;z-index:200;opacity:0;transition:opacity 0.08s}
 #tooltip.show{opacity:1}
-.tt-inner{
-  background:rgba(14,15,28,0.97);
-  border:1px solid var(--border);border-radius:10px;
-  padding:12px 16px;min-width:160px;
-  backdrop-filter:blur(8px);
-}
+.tt-inner{background:rgba(14,15,28,0.97);border:1px solid var(--border);border-radius:10px;padding:12px 16px;min-width:160px;backdrop-filter:blur(8px)}
 .tt-name{font-size:14px;font-weight:600;color:#fff}
 .tt-meta{font-size:11.5px;margin-top:3px;color:var(--text-dim)}
 .tt-meta.v{color:var(--accent)}
@@ -92,13 +63,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;heigh
 
 /* ── ZOOM ── */
 #zoom-ctrl{position:absolute;bottom:88px;right:28px;display:flex;flex-direction:column;gap:5px;z-index:50}
-.zbtn{
-  width:38px;height:38px;background:rgba(14,15,28,0.9);
-  border:1px solid var(--border);border-radius:8px;
-  color:var(--text-dim);font-size:18px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:all 0.15s;user-select:none;backdrop-filter:blur(4px);
-}
+.zbtn{width:38px;height:38px;background:rgba(14,15,28,0.9);border:1px solid var(--border);border-radius:8px;color:var(--text-dim);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;user-select:none;backdrop-filter:blur(4px)}
 .zbtn:hover{border-color:var(--accent);color:var(--accent)}
 
 /* ── LEGEND ── */
@@ -107,32 +72,12 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;heigh
 .leg-dot{width:10px;height:10px;border-radius:3px}
 
 /* ── MICROSTATE STRIP ── */
-#microstrip{
-  flex-shrink:0;
-  background:var(--surface);
-  border-top:1px solid var(--border);
-  padding:10px 44px;
-  display:flex;align-items:center;gap:10px;
-  min-height:52px;
-}
-#microstrip .ms-label{
-  font-size:11px;color:var(--text-dim);
-  letter-spacing:0.1em;text-transform:uppercase;
-  white-space:nowrap;margin-right:4px;flex-shrink:0;
-}
+#microstrip{flex-shrink:0;background:var(--surface);border-top:1px solid var(--border);padding:10px 44px;display:flex;align-items:center;gap:10px;min-height:52px}
+#microstrip .ms-label{font-size:11px;color:var(--text-dim);letter-spacing:0.1em;text-transform:uppercase;white-space:nowrap;margin-right:4px;flex-shrink:0}
 .ms-chips{display:flex;gap:7px;flex-wrap:wrap}
-.ms-chip{
-  padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;
-  cursor:pointer;border:1px solid var(--border);
-  background:var(--surface2);color:var(--text-dim);
-  transition:all 0.15s;white-space:nowrap;
-}
+.ms-chip{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text-dim);transition:all 0.15s;white-space:nowrap}
 .ms-chip:hover{border-color:var(--accent);color:var(--accent)}
-.ms-chip.visited{
-  background:var(--accent-dim);
-  border-color:rgba(200,168,74,0.4);
-  color:var(--accent2);
-}
+.ms-chip.visited{background:var(--accent-dim);border-color:rgba(200,168,74,0.4);color:var(--accent2)}
 
 /* ── LOADING ── */
 #loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--ocean);z-index:100;gap:18px}
@@ -145,14 +90,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;heigh
 /* ── OVERLAY ── */
 #overlay{position:fixed;inset:0;background:rgba(4,5,14,0.9);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.22s;backdrop-filter:blur(8px)}
 #overlay.open{opacity:1;pointer-events:all}
-#panel{
-  background:var(--surface);border:1px solid var(--border);border-radius:20px;
-  width:min(720px,93vw);max-height:90vh;overflow:hidden;
-  display:flex;flex-direction:column;
-  transform:translateY(24px) scale(0.97);
-  transition:transform 0.26s cubic-bezier(0.34,1.5,0.64,1);
-  box-shadow:0 48px 96px rgba(0,0,0,0.7);
-}
+#panel{background:var(--surface);border:1px solid var(--border);border-radius:20px;width:min(720px,93vw);max-height:90vh;overflow:hidden;display:flex;flex-direction:column;transform:translateY(24px) scale(0.97);transition:transform 0.26s cubic-bezier(0.34,1.5,0.64,1);box-shadow:0 48px 96px rgba(0,0,0,0.7)}
 #overlay.open #panel{transform:translateY(0) scale(1)}
 #panel-head{padding:28px 32px 22px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0}
 #panel-country{font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;color:#fff;line-height:1.1;letter-spacing:-0.02em}
@@ -189,7 +127,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;heigh
 <div id="header">
   <div class="h-title">
     <h1>Janis' World Explorer</h1>
-    <p>One at a time</p>
+    <p>Every country in the world — one at a time</p>
   </div>
   <div class="h-right">
     <div class="h-stat">
@@ -230,7 +168,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;heigh
   </div>
 </div>
 
-<!-- Microstates + territories too small for the map -->
 <div id="microstrip">
   <span class="ms-label">Too small for map:</span>
   <div class="ms-chips" id="ms-chips"></div>
@@ -257,123 +194,90 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;heigh
 // ═══════════════════════════════════════════════════════════════════════════
 const DATA = {
 
-  // ── Europe ───────────────────────────────────────────────────────────
+  "kosovo":{ name:"Kosovo", visited:true, un_member:false, date:"June 2025", type:"Private",
+    description:"",
+    photos:[{src:"",caption:"Cover photo"}]},
   276:{ name:"Germany", visited:true, un_member:true, date:"Home country", type:"Both",
-    description:"My home country.",
+    description:"My home country. My dad and my mom are the best!",
     photos:[{src:"",caption:"Cover photo"},{src:"",caption:"Photo 2"},{src:"",caption:"Photo 3"}]},
-
   8:{ name:"Albania", visited:true, un_member:true, date:"June 2025", type:"Private",
     description:"Food poisoning on the first day.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   40:{ name:"Austria", visited:true, un_member:true, date:"May 2026", type:"Both",
     description:"Visiting my best friend living in Graz.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   56:{ name:"Belgium", visited:true, un_member:true, date:"October 2023", type:"Work",
     description:"Short work trip for 4 hours in Belgium.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   70:{ name:"Bosnia & Herzegovina", visited:true, un_member:true, date:"June 2025", type:"Private",
     description:"Visited the place where Franz Ferdinand from Austria was murdered in 1914.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   191:{ name:"Croatia", visited:true, un_member:true, date:"April 2022", type:"Work",
     description:"Delicious and cheap food.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   203:{ name:"Czech Republic", visited:true, un_member:true, date:"September 2024", type:"Private",
     description:"Visited Prague for sightseeing.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   208:{ name:"Denmark", visited:true, un_member:true, date:"March 2022", type:"Work",
     description:"Expensive food but nice people.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   246:{ name:"Finland", visited:true, un_member:true, date:"August 2024", type:"Work",
     description:"Visited Turku and slept in a prison hotel.",
     photos:[{src:"",caption:"Cover photo"}]},
-
-  250:{ name:"France", visited:true, un_member:true, date:"August 2018", type:"Private",
-    description:"Visited a 4 house town in the mountains for a week",
+  250:{ name:"France", visited:true, un_member:true, date:"Placeholder date", type:"Private",
+    description:"Add your experience in France here.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   300:{ name:"Greece", visited:true, un_member:true, date:"September 2022", type:"Private",
     description:"Best vacation so far. I visited Limnos which is a playable map in Arma 3, so I knew where I was without a map.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   348:{ name:"Hungary", visited:true, un_member:true, date:"June 2022", type:"Work",
     description:"I was at a go-kart hotel and they woke me up really early and loudly with their engines.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   352:{ name:"Iceland", visited:true, un_member:true, date:"October 2023", type:"Private",
     description:"We drove around the complete island in 14 days and saw a lot of the beautiful nature.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   380:{ name:"Italy", visited:true, un_member:true, date:"Date Not Available", type:"Private",
     description:"Food!",
     photos:[{src:"",caption:"Cover photo"}]},
-
   428:{ name:"Latvia", visited:true, un_member:true, date:"April 2018", type:"Private",
     description:"I visited Riga with my mom for sightseeing.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   440:{ name:"Lithuania", visited:true, un_member:true, date:"May 2023", type:"Work",
     description:"Stressful intervention with 0 time for sightseeing in Vilnius.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   442:{ name:"Luxembourg", visited:true, un_member:true, date:"July 2025", type:"Private",
     description:"Visited some online friends with our friend group.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   499:{ name:"Montenegro", visited:true, un_member:true, date:"June 2025", type:"Private",
     description:"Started the Balkan trip with some friends.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   807:{ name:"North Macedonia", visited:true, un_member:true, date:"June 2025", type:"Private",
     description:"Beautiful nature and nice people.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   528:{ name:"Netherlands", visited:true, un_member:true, date:"Date Not Available", type:"Private",
     description:"Visited the Netherlands multiple times with my parents.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   616:{ name:"Poland", visited:true, un_member:true, date:"August 2022", type:"Work",
     description:"Stressful intervention but one of the most interesting ones.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   620:{ name:"Portugal", visited:true, un_member:true, date:"Date Not Available", type:"Private",
     description:"Visited with my parents and my half-brother.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   642:{ name:"Romania", visited:true, un_member:true, date:"July 2024", type:"Work",
     description:"Visited 2 customers far apart, so I had a nice road trip through Transylvania.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   688:{ name:"Serbia", visited:true, un_member:true, date:"October 2022", type:"Work",
     description:"I was just working 15h+ each day.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   724:{ name:"Spain", visited:true, un_member:true, date:"Date Not Available", type:"Private",
     description:"Visited Spain multiple times with my parents during school vacations.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   752:{ name:"Sweden", visited:true, un_member:true, date:"Date Not Available", type:"Private",
     description:"Visited Sweden with my parents multiple times.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   756:{ name:"Switzerland", visited:true, un_member:true, date:"August 2023", type:"Work",
     description:"Very expensive and hardly understandable language.",
     photos:[{src:"",caption:"Cover photo"}]},
-
-  383:{ name:"Kosovo", visited:true, un_member:false, date:"June 2025", type:"Private",
-    description:"Visited with friends in the Balkan Tour",
-    photos:[{src:"",caption:"Cover photo"}]},
-  
-   292:{ name:"Gibraltar", visited:true, un_member:false, date:"Date not Available", type:"Private",
-    description:"Visited with my parents when we visited spain",
-    photos:[{src:"",caption:"Cover photo"}]},
-
   826:{ name:"United Kingdom", visited:true, un_member:true, date:"March 2024", type:"Private",
     description:"Visited London for sightseeing.",
     photos:[
@@ -381,32 +285,41 @@ const DATA = {
       {src:"photos/UK/20240401_130822.jpg", caption:"Photo 2"},
       {src:"photos/UK/20240330_192052.jpg", caption:"Photo 3"}
     ]},
-
-  // ── Africa ───────────────────────────────────────────────────────────
   818:{ name:"Egypt", visited:true, un_member:true, date:"Date Not Available", type:"Private",
     description:"Visited Egypt as a child.",
     photos:[{src:"",caption:"Cover photo"}]},
-
   788:{ name:"Tunisia", visited:true, un_member:true, date:"February 2025", type:"Work",
     description:"Poor country but the people are so kind.",
     photos:[{src:"",caption:"Cover photo"}]}
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
-//  MICROSTATES — too small to appear on the map
+//  MICROSTATES — confirmed too small to appear on the 110m map
+//  European microstates + tiny island nations
 // ═══════════════════════════════════════════════════════════════════════════
 const MICROSTATES = [
-  { id:20,  name:"Andorra",        un_member:true  },
-  { id:438, name:"Liechtenstein",  un_member:true  },
-  { id:492, name:"Monaco",         un_member:true  },
-  { id:674, name:"San Marino",     un_member:true  },
-  { id:336, name:"Vatican City",   un_member:false },
-  { id:383, name:"Kosovo",         un_member:false },
-  { id:292, name:"Gibraltar",      un_member:false },
+  // European microstates
+  
+  { id:20,  name:"Andorra",          un_member:true  },
+  { id:438, name:"Liechtenstein",    un_member:true  },
+  { id:492, name:"Monaco",           un_member:true  },
+  { id:674, name:"San Marino",       un_member:true  },
+  { id:336, name:"Vatican City",     un_member:false },
+  { id:292, name:"Gibraltar",        un_member:false },
+  // Tiny island nations
+  { id:520, name:"Nauru",            un_member:true  },
+  { id:798, name:"Tuvalu",           un_member:true  },
+  { id:584, name:"Marshall Islands", un_member:true  },
+  { id:585, name:"Palau",            un_member:true  },
+  { id:583, name:"Micronesia",       un_member:true  },
+  { id:882, name:"Samoa",            un_member:true  },
+  { id:462, name:"Maldives",         un_member:true  },
+  { id:702, name:"Singapore",        un_member:true  },
+  { id:48,  name:"Bahrain",          un_member:true  },
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════
-//  NAMES — fallback for all unvisited countries on the map
+//  NAMES — fallback for unvisited countries
 // ═══════════════════════════════════════════════════════════════════════════
 const NAMES = {
   4:"Afghanistan",8:"Albania",12:"Algeria",20:"Andorra",24:"Angola",
@@ -422,40 +335,43 @@ const NAMES = {
   222:"El Salvador",226:"Equatorial Guinea",231:"Ethiopia",232:"Eritrea",
   233:"Estonia",242:"Fiji",246:"Finland",250:"France",262:"Djibouti",
   266:"Gabon",268:"Georgia",270:"Gambia",276:"Germany",288:"Ghana",
-  296:"Kiribati",300:"Greece",308:"Grenada",320:"Guatemala",324:"Guinea",
-  328:"Guyana",332:"Haiti",340:"Honduras",348:"Hungary",352:"Iceland",
-  356:"India",360:"Indonesia",364:"Iran",368:"Iraq",372:"Ireland",
-  376:"Israel",380:"Italy",388:"Jamaica",392:"Japan",398:"Kazakhstan",
-  400:"Jordan",404:"Kenya",408:"North Korea",410:"South Korea",414:"Kuwait",
-  417:"Kyrgyzstan",418:"Laos",422:"Lebanon",426:"Lesotho",428:"Latvia",
-  430:"Liberia",434:"Libya",438:"Liechtenstein",440:"Lithuania",442:"Luxembourg",
-  450:"Madagascar",454:"Malawi",458:"Malaysia",462:"Maldives",466:"Mali",
-  470:"Malta",478:"Mauritania",480:"Mauritius",484:"Mexico",492:"Monaco",
-  496:"Mongolia",498:"Moldova",499:"Montenegro",504:"Morocco",508:"Mozambique",
-  516:"Namibia",520:"Nauru",524:"Nepal",528:"Netherlands",554:"New Zealand",
-  558:"Nicaragua",562:"Niger",566:"Nigeria",578:"Norway",512:"Oman",
-  585:"Palau",586:"Pakistan",591:"Panama",598:"Papua New Guinea",600:"Paraguay",
-  604:"Peru",608:"Philippines",616:"Poland",620:"Portugal",624:"Guinea-Bissau",
-  626:"East Timor",634:"Qatar",642:"Romania",643:"Russia",646:"Rwanda",
+  292:"Gibraltar",296:"Kiribati",300:"Greece",308:"Grenada",320:"Guatemala",
+  324:"Guinea",328:"Guyana",332:"Haiti",340:"Honduras",348:"Hungary",
+  352:"Iceland",356:"India",360:"Indonesia",364:"Iran",368:"Iraq",
+  372:"Ireland",376:"Israel",380:"Italy",388:"Jamaica","kosovo":"Kosovo","n_cyprus":"Northern Cyprus","somaliland":"Somaliland",
+  392:"Japan",398:"Kazakhstan",400:"Jordan",404:"Kenya",408:"North Korea",
+  410:"South Korea",414:"Kuwait",417:"Kyrgyzstan",418:"Laos",422:"Lebanon",
+  426:"Lesotho",428:"Latvia",430:"Liberia",434:"Libya",438:"Liechtenstein",
+  440:"Lithuania",442:"Luxembourg",450:"Madagascar",454:"Malawi",458:"Malaysia",
+  462:"Maldives",466:"Mali",470:"Malta",478:"Mauritania",480:"Mauritius",
+  484:"Mexico",492:"Monaco",496:"Mongolia",498:"Moldova",499:"Montenegro",
+  504:"Morocco",508:"Mozambique",516:"Namibia",520:"Nauru",524:"Nepal",
+  528:"Netherlands",554:"New Zealand",558:"Nicaragua",562:"Niger",566:"Nigeria",
+  578:"Norway",512:"Oman",585:"Palau",586:"Pakistan",591:"Panama",
+  598:"Papua New Guinea",600:"Paraguay",604:"Peru",608:"Philippines",
+  616:"Poland",620:"Portugal",624:"Guinea-Bissau",626:"East Timor",
+  634:"Qatar",642:"Romania",643:"Russia",646:"Rwanda",
   659:"Saint Kitts and Nevis",662:"Saint Lucia",670:"Saint Vincent",
   674:"San Marino",682:"Saudi Arabia",686:"Senegal",688:"Serbia",
-  690:"Seychelles",694:"Sierra Leone",703:"Slovakia",705:"Slovenia",
-  706:"Somalia",710:"South Africa",716:"Zimbabwe",724:"Spain",728:"South Sudan",
-  729:"Sudan",740:"Suriname",748:"Eswatini",752:"Sweden",756:"Switzerland",
-  760:"Syria",762:"Tajikistan",764:"Thailand",768:"Togo",776:"Tonga",
-  780:"Trinidad and Tobago",788:"Tunisia",792:"Turkey",795:"Turkmenistan",
-  798:"Tuvalu",800:"Uganda",804:"Ukraine",784:"UAE",826:"United Kingdom",
-  840:"USA",858:"Uruguay",860:"Uzbekistan",548:"Vanuatu",862:"Venezuela",
-  704:"Vietnam",887:"Yemen",894:"Zambia",807:"North Macedonia",818:"Egypt",
-  304:"Greenland",275:"Palestine",583:"Micronesia",584:"Marshall Islands",
-  882:"Samoa",90:"Solomon Islands",336:"Vatican City",383:"Kosovo",292:"Gibraltar"
+  690:"Seychelles",694:"Sierra Leone",702:"Singapore",703:"Slovakia",
+  705:"Slovenia",706:"Somalia",710:"South Africa",716:"Zimbabwe",
+  724:"Spain",728:"South Sudan",729:"Sudan",740:"Suriname",748:"Eswatini",
+  752:"Sweden",756:"Switzerland",760:"Syria",762:"Tajikistan",764:"Thailand",
+  768:"Togo",776:"Tonga",780:"Trinidad and Tobago",788:"Tunisia",792:"Turkey",
+  795:"Turkmenistan",798:"Tuvalu",800:"Uganda",804:"Ukraine",784:"UAE",
+  826:"United Kingdom",840:"USA",858:"Uruguay",860:"Uzbekistan",548:"Vanuatu",
+  862:"Venezuela",704:"Vietnam",887:"Yemen",894:"Zambia",807:"North Macedonia",
+  818:"Egypt",304:"Greenland",275:"Palestine",583:"Micronesia",
+  584:"Marshall Islands",882:"Samoa",90:"Solomon Islands",336:"Vatican City"
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  HELPERS
 // ═══════════════════════════════════════════════════════════════════════════
-function getEntry(id){ return DATA[id]??DATA[+id]??DATA[String(id)]??null; }
-function getName(id){ return NAMES[id]??NAMES[+id]??NAMES[String(id)]??null; }
+function identifyUndefined(f){ const [lon,lat]=d3.geoCentroid(f); if(lat>41&&lat<44&&lon>19&&lon<23)return'kosovo'; if(lat>34&&lat<36&&lon>32&&lon<36)return'n_cyprus'; if(lat>8&&lat<12&&lon>43&&lon<50)return'somaliland'; return'unknown_territory'; }
+function resolveId(raw,f){ return raw!==undefined?raw:identifyUndefined(f); }
+function getEntry(id){ const k=resolveId(id); return DATA[k]??DATA[+k]??DATA[String(k)]??null; }
+function getName(id){ const k=resolveId(id); return NAMES[k]??NAMES[+k]??NAMES[String(k)]??null; }
 
 function typeBadge(type){
   if(!type) return '';
@@ -468,16 +384,14 @@ function typeBadge(type){
 //  STATS
 // ─────────────────────────────────────────────
 function updateStats(){
-  // Count map countries
-  const mapVisited = Object.values(DATA).filter(d=>d.visited&&d.un_member).length;
-  // Count microstates that are visited + UN member
-  const msVisited  = MICROSTATES.filter(m=>{const e=getEntry(m.id);return e&&e.visited&&m.un_member;}).length;
-  const n   = mapVisited + msVisited;
-  const pct = (n/193*100).toFixed(1);
+  const mapN = Object.values(DATA).filter(d=>d.visited&&d.un_member).length;
+  const msN  = MICROSTATES.filter(m=>{const e=getEntry(m.id);return e&&e.visited&&m.un_member;}).length;
+  const n    = mapN + msN;
+  const pct  = (n/193*100).toFixed(1);
   document.getElementById('h-n').textContent   = n;
   document.getElementById('h-pct').textContent  = pct+'%';
   document.getElementById('h-fill').style.width = pct+'%';
-  document.getElementById('h-sub').textContent  = `${n} of 193 countries`;
+  document.getElementById('h-sub').textContent  = `${n} of 193 UN member states`;
 }
 
 // ─────────────────────────────────────────────
@@ -485,17 +399,15 @@ function updateStats(){
 // ─────────────────────────────────────────────
 function openPanel(id){
   const d    = getEntry(id);
-  const ms   = MICROSTATES.find(m=>m.id==id||m.id==+id);
+  const ms   = MICROSTATES.find(m=>m.id==id||m.id==+id||String(m.id)==String(id));
   const name = (d&&d.name)||(ms&&ms.name)||getName(id)||'—';
   const isUN = d?d.un_member:(ms?ms.un_member:true);
-
   document.getElementById('panel-country').textContent = name;
-  const body = document.getElementById('panel-body');
-  const meta = document.getElementById('panel-meta');
-
+  const body=document.getElementById('panel-body');
+  const meta=document.getElementById('panel-meta');
   if(!d||!d.visited){
     meta.innerHTML='';
-    body.innerHTML=`<div id="panel-no-visit"><div class="nv-icon">🗺️</div><div class="nv-title">Not yet visited</div><div class="nv-sub">${name} is still on the list. One day!${!isUN?' <br><span style="font-size:12px;color:var(--text-muted)">(Non-UN territory)</span>':''}</div></div>`;
+    body.innerHTML=`<div id="panel-no-visit"><div class="nv-icon">🗺️</div><div class="nv-title">Not yet visited</div><div class="nv-sub">${name} is still on the list. One day!${!isUN?'<br><span style="font-size:12px;color:var(--text-muted)">(Non-UN territory)</span>':''}</div></div>`;
   } else {
     meta.innerHTML=`
       <div class="pmeta-item"><div class="pmeta-dot"></div>${d.date}</div>
@@ -521,11 +433,12 @@ function closePanel(){document.getElementById('overlay').classList.remove('open'
 //  MICROSTATE CHIPS
 // ─────────────────────────────────────────────
 function buildMicrostrip(){
-  const wrap = document.getElementById('ms-chips');
-  wrap.innerHTML = MICROSTATES.map(m=>{
-    const e   = getEntry(m.id);
-    const vis = e && e.visited;
-    return `<div class="ms-chip${vis?' visited':''}" data-id="${m.id}">${m.name}${!m.un_member?' <span style="opacity:0.5;font-size:10px">(non-UN)</span>':''}</div>`;
+  const wrap=document.getElementById('ms-chips');
+  wrap.innerHTML=MICROSTATES.map(m=>{
+    const e=getEntry(m.id);
+    const vis=e&&e.visited;
+    const nonUN=!m.un_member?` <span style="opacity:0.45;font-size:10px">(non-UN)</span>`:'';
+    return `<div class="ms-chip${vis?' visited':''}" data-id="${m.id}">${m.name}${nonUN}</div>`;
   }).join('');
   wrap.querySelectorAll('.ms-chip').forEach(el=>
     el.addEventListener('click',()=>openPanel(el.dataset.id))
@@ -533,7 +446,7 @@ function buildMicrostrip(){
 }
 
 // ─────────────────────────────────────────────
-//  MAP
+//  MAP — no sphere path, ocean = background color
 // ─────────────────────────────────────────────
 async function initMap(){
   const wrap=document.getElementById('map-wrap');
@@ -541,8 +454,10 @@ async function initMap(){
   const svg=d3.select('#map-svg').attr('width',W).attr('height',H);
   const proj=d3.geoNaturalEarth1().scale(W/6.1).translate([W/2,H/2]);
   const gp=d3.geoPath().projection(proj);
-  svg.append('path').datum({type:'Sphere'}).attr('class','sphere').attr('d',gp);
+
+  // Graticule only — no sphere oval
   svg.append('path').datum(d3.geoGraticule()()).attr('class','graticule').attr('d',gp);
+
   const g=svg.append('g');
   const zoom=d3.zoom().scaleExtent([1,12]).on('zoom',e=>g.attr('transform',e.transform));
   svg.call(zoom);
@@ -561,11 +476,11 @@ async function initMap(){
   g.selectAll('.land')
     .data(topojson.feature(world,world.objects.countries).features)
     .join('path')
-    .attr('class',d=>{const e=getEntry(d.id);return 'land'+(e&&e.visited?' visited':'');})
+    .attr('class',d=>{const rid=resolveId(d.id,d);const e=getEntry(rid);return 'land'+(e&&e.visited?' visited':'');})
     .attr('d',gp)
     .on('mousemove',function(e,d){
-      const en=getEntry(d.id);
-      const nm=(en&&en.name)||getName(d.id)||'—';
+      const rid=resolveId(d.id,d);const en=getEntry(rid);
+      const nm=(en&&en.name)||getName(rid)||'—';
       const vis=en&&en.visited;
       ttN.textContent=nm;
       ttM.textContent=vis?'✓ Visited · '+en.date:'Not yet visited';
@@ -579,12 +494,9 @@ async function initMap(){
       tt.classList.add('show');
     })
     .on('mouseleave',()=>tt.classList.remove('show'))
-    .on('click',(e,d)=>{e.stopPropagation();tt.classList.remove('show');openPanel(d.id);});
+    .on('click',(e,d)=>{e.stopPropagation();tt.classList.remove('show');openPanel(resolveId(d.id,d));});
 }
 
-// ─────────────────────────────────────────────
-//  BOOT
-// ─────────────────────────────────────────────
 updateStats();
 buildMicrostrip();
 initMap();
