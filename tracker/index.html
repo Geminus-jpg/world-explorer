@@ -90,7 +90,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;heigh
 /* ── OVERLAY ── */
 #overlay{position:fixed;inset:0;background:rgba(4,5,14,0.9);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.22s;backdrop-filter:blur(8px)}
 #overlay.open{opacity:1;pointer-events:all}
-#panel{background:var(--surface);border:1px solid var(--border);border-radius:20px;width:min(720px,93vw);max-height:90vh;overflow:hidden;display:flex;flex-direction:column;transform:translateY(24px) scale(0.97);transition:transform 0.26s cubic-bezier(0.34,1.5,0.64,1);box-shadow:0 48px 96px rgba(0,0,0,0.7)}
+#panel{background:var(--surface);border:1px solid var(--border);border-radius:20px;width:min(1100px,96vw);max-height:95vh;overflow:hidden;display:flex;flex-direction:column;transform:translateY(24px) scale(0.97);transition:transform 0.26s cubic-bezier(0.34,1.5,0.64,1);box-shadow:0 48px 96px rgba(0,0,0,0.7)}
 #overlay.open #panel{transform:translateY(0) scale(1)}
 #panel-head{padding:28px 32px 22px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0}
 #panel-country{font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;color:#fff;line-height:1.1;letter-spacing:-0.02em}
@@ -107,9 +107,9 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;heigh
 #panel-body::-webkit-scrollbar{width:4px}
 #panel-body::-webkit-scrollbar-track{background:transparent}
 #panel-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-#gallery{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
-.photo-card{border-radius:12px;overflow:hidden;aspect-ratio:4/3;background:var(--surface2);border:1px solid var(--border)}
-.photo-card:first-child{grid-column:1/-1;aspect-ratio:16/7}
+#gallery{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
+.photo-card{border-radius:14px;overflow:hidden;aspect-ratio:4/3;background:var(--surface2);border:1px solid var(--border)}
+.photo-card:first-child{grid-column:1/-1;aspect-ratio:16/8}
 .photo-card img{width:100%;height:100%;object-fit:cover;display:block;opacity:0.9;transition:transform 0.3s,opacity 0.3s}
 .photo-card:hover img{transform:scale(1.03);opacity:1}
 .photo-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px}
@@ -194,11 +194,11 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;heigh
 // ═══════════════════════════════════════════════════════════════════════════
 const DATA = {
 
-  "kosovo":{ name:"Kosovo", visited:true, un_member:false, date:"June 2025", type:"Private",
-    description:"",
+  "kosovo":{ name:"Kosovo", visited:true, un_member:false, date:"Jun2025", type:"Private",
+    description:"Balkantour drivethrough",
     photos:[{src:"",caption:"Cover photo"}]},
   276:{ name:"Germany", visited:true, un_member:true, date:"Home country", type:"Both",
-    description:"My home country",
+    description:"My home country. My dad and my mom are the best!",
     photos:[{src:"",caption:"Cover photo"},{src:"",caption:"Photo 2"},{src:"",caption:"Photo 3"}]},
   8:{ name:"Albania", visited:true, un_member:true, date:"June 2025", type:"Private",
     description:"Food poisoning on the first day.",
@@ -224,8 +224,8 @@ const DATA = {
   246:{ name:"Finland", visited:true, un_member:true, date:"August 2024", type:"Work",
     description:"Visited Turku and slept in a prison hotel.",
     photos:[{src:"",caption:"Cover photo"}]},
-  250:{ name:"France", visited:true, un_member:true, date:"Placeholder date", type:"Private",
-    description:"Add your experience in France here.",
+  250:{ name:"France", visited:true, un_member:true, date:"Date Not Available", type:"Private",
+    description:"Stayed a few nights with my parents while traveling to Spain",
     photos:[{src:"",caption:"Cover photo"}]},
   300:{ name:"Greece", visited:true, un_member:true, date:"September 2022", type:"Private",
     description:"Best vacation so far. I visited Limnos which is a playable map in Arma 3, so I knew where I was without a map.",
@@ -299,7 +299,6 @@ const DATA = {
 // ═══════════════════════════════════════════════════════════════════════════
 const MICROSTATES = [
   // European microstates
-  
   { id:20,  name:"Andorra",          un_member:true  },
   { id:438, name:"Liechtenstein",    un_member:true  },
   { id:492, name:"Monaco",           un_member:true  },
@@ -362,7 +361,13 @@ const NAMES = {
   826:"United Kingdom",840:"USA",858:"Uruguay",860:"Uzbekistan",548:"Vanuatu",
   862:"Venezuela",704:"Vietnam",887:"Yemen",894:"Zambia",807:"North Macedonia",
   818:"Egypt",304:"Greenland",275:"Palestine",583:"Micronesia",
-  584:"Marshall Islands",882:"Samoa",90:"Solomon Islands",336:"Vatican City"
+  584:"Marshall Islands",882:"Samoa",90:"Solomon Islands",336:"Vatican City",
+  51:"Armenia",84:"Belize",158:"Taiwan",254:"French Guiana",
+  384:"Ivory Coast",630:"Puerto Rico",732:"Western Sahara",
+  834:"Tanzania",854:"Burkina Faso",238:"Falkland Islands",
+  260:"French Southern Territories",10:"Antarctica",540:"New Caledonia",
+  312:"Guadeloupe",474:"Martinique",638:"Reunion",175:"Mayotte",
+  239:"South Georgia",275:"Palestine",275:"Palestine"
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -473,8 +478,28 @@ async function initMap(){
   const tt=document.getElementById('tooltip');
   const ttN=document.getElementById('tt-n'),ttM=document.getElementById('tt-m'),ttH=document.getElementById('tt-h');
 
+  // Split MultiPolygon countries into individual sub-features.
+  // This lets us detect and separately identify French Guiana (and similar
+  // overseas territories that share a feature with their sovereign state).
+  const rawFeatures = topojson.feature(world, world.objects.countries).features;
+  const features = [];
+  const SPLIT_IDS = new Set([250, '250']); // France — split to expose French Guiana
+  for (const f of rawFeatures) {
+    if (SPLIT_IDS.has(f.id) && f.geometry && f.geometry.type === 'MultiPolygon') {
+      for (const coords of f.geometry.coordinates) {
+        const sub = { type:'Feature', id:f.id, geometry:{type:'Polygon',coordinates:coords}, properties:f.properties };
+        const [lon,lat] = d3.geoCentroid(sub);
+        // French Guiana: ~4°N 53°W
+        if (lat > -6 && lat < 8 && lon > -58 && lon < -50) sub.id = 254;
+        features.push(sub);
+      }
+    } else {
+      features.push(f);
+    }
+  }
+
   g.selectAll('.land')
-    .data(topojson.feature(world,world.objects.countries).features)
+    .data(features)
     .join('path')
     .attr('class',d=>{const rid=resolveId(d.id,d);const e=getEntry(rid);return 'land'+(e&&e.visited?' visited':'');})
     .attr('d',gp)
