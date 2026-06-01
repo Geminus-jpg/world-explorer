@@ -11,7 +11,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
   --bg:#07080f;--surface:#0e0f1c;--surface2:#151628;--border:#1a1d32;
-  --accent:#c8a84a;--accent2:#e6c76e;--accent-dim:rgba(200,168,74,0.1);
+  --accent:#c8a84a;--accent2:#e6c76e;--accent-dim:rgba(79,195,200,0.07);
   --text:#ccc8c0;--text-dim:#5a5870;--text-muted:#272a40;
   --visited:#c8a84a;--visited-h:#e6c76e;
   --land:#14162a;--land-h:#1e2240;--ocean:#04050e;
@@ -23,7 +23,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;heigh
 #header{
   padding:20px 44px;display:flex;align-items:center;justify-content:space-between;
   border-bottom:1px solid var(--border);
-  background:linear-gradient(180deg,rgba(14,15,28,0.99),rgba(7,8,15,0.96));
+  background:linear-gradient(180deg,rgba(28,30,50,0.99),rgba(7,8,15,0.96));
   flex-shrink:0;z-index:10;gap:32px;
 }
 .h-title h1{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.02em}
@@ -55,7 +55,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;heigh
 /* ── TOOLTIP ── */
 #tooltip{position:absolute;pointer-events:none;z-index:200;opacity:0;transition:opacity 0.08s}
 #tooltip.show{opacity:1}
-.tt-inner{background:rgba(14,15,28,0.97);border:1px solid var(--border);border-radius:10px;padding:12px 16px;min-width:160px;backdrop-filter:blur(8px)}
+.tt-inner{background:rgba(28,30,50,0.97);border:1px solid var(--border);border-radius:10px;padding:12px 16px;min-width:160px;backdrop-filter:blur(8px)}
 .tt-name{font-size:14px;font-weight:600;color:#fff}
 .tt-meta{font-size:11.5px;margin-top:3px;color:var(--text-dim)}
 .tt-meta.v{color:var(--accent)}
@@ -63,7 +63,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;heigh
 
 /* ── ZOOM ── */
 #zoom-ctrl{position:absolute;bottom:88px;right:28px;display:flex;flex-direction:column;gap:5px;z-index:50}
-.zbtn{width:38px;height:38px;background:rgba(14,15,28,0.9);border:1px solid var(--border);border-radius:8px;color:var(--text-dim);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;user-select:none;backdrop-filter:blur(4px)}
+.zbtn{width:38px;height:38px;background:rgba(28,30,50,0.9);border:1px solid var(--border);border-radius:8px;color:var(--text-dim);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;user-select:none;backdrop-filter:blur(4px)}
 .zbtn:hover{border-color:var(--accent);color:var(--accent)}
 
 /* ── LEGEND ── */
@@ -77,7 +77,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;heigh
 .ms-chips{display:flex;gap:7px;flex-wrap:wrap}
 .ms-chip{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text-dim);transition:all 0.15s;white-space:nowrap}
 .ms-chip:hover{border-color:var(--accent);color:var(--accent)}
-.ms-chip.visited{background:var(--accent-dim);border-color:rgba(200,168,74,0.4);color:var(--accent2)}
+.ms-chip.visited{background:var(--accent-dim);border-color:rgba(79,195,200,0.07);color:var(--accent2)}
 
 /* ── LOADING ── */
 #loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--ocean);z-index:100;gap:18px}
@@ -100,7 +100,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;heigh
 .type-badge{padding:4px 14px;border-radius:20px;font-size:12px;font-weight:500}
 .tp{background:rgba(61,184,112,0.12);border:1px solid rgba(61,184,112,0.25);color:var(--green)}
 .tw{background:rgba(61,143,224,0.12);border:1px solid rgba(61,143,224,0.25);color:var(--blue)}
-.tb{background:var(--accent-dim);border:1px solid rgba(200,168,74,0.25);color:var(--accent2)}
+.tb{background:var(--accent-dim);border:1px solid rgba(79,195,200,0.07);color:var(--accent2)}
 #close-btn{background:none;border:1px solid var(--border);border-radius:8px;width:38px;height:38px;color:var(--text-dim);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;margin-left:18px}
 #close-btn:hover{border-color:var(--accent);color:var(--accent)}
 #panel-body{overflow-y:auto;flex:1;padding:28px 32px}
