@@ -42,11 +42,11 @@ body {
 body:has(a:hover) #cur-ring { width:55px;height:55px;border-color:rgba(93,216,222,0.75); }
 
 /* ── SCROLL BAR ── */
-#scroll-bar { position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--cyan),var(--cyan2));width:0%;z-index:999; }
+#scroll-bar { position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--cyan2));width:0%;z-index:999; }
 
 /* ── LAYOUT ── */
 main { position:relative;z-index:1;max-width:984px;margin:0 auto;padding:0 58px; }
-  
+
 /* ── NAV ── */
 nav {
   position:fixed;top:0;left:0;right:0;z-index:100;
@@ -54,7 +54,6 @@ nav {
   display:flex;justify-content:space-between;align-items:center;
   background:linear-gradient(180deg,rgba(4,5,13,0.95) 0%,transparent 100%);
   transition:background .3s,border-color .3s;
-  margin-left: -50px;
 }
 nav.scrolled { background:rgba(4,5,13,0.96);border-bottom:1px solid var(--border); }
 .nav-logo {
@@ -99,7 +98,6 @@ h1 {
   font-size:clamp(72px,9vw,122px);
   font-weight:800;color:var(--white);
   line-height:.92;letter-spacing:-.03em;
-  margin-left: -50px;
 }
 h1 .last {
   display:block;color:transparent;
@@ -256,7 +254,70 @@ footer {
 @keyframes fadeUp{from{opacity:0;transform:translateY(19px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
-.live-time{color:var(--cyan);font-variant-numeric:tabular-nums}
+/* ── DEEP SPACE MODE (post-warp) ── */
+body.deep-space { --cyan:#e0b84e; --cyan2:#f5d070; --bg:#06040e; }
+body.deep-space #cur      { background:var(--gold); }
+body.deep-space #cur-ring { border-color:rgba(224,184,78,.4); }
+body.deep-space #scroll-bar { background:linear-gradient(90deg,#e0b84e,#f5d070); }
+body.deep-space .status-dot { background:var(--gold);box-shadow:0 0 10px var(--gold); }
+body.deep-space .orbit:nth-child(1)::after { background:var(--gold); box-shadow:0 0 16px var(--gold); }
+body.deep-space h1 { text-shadow:0 0 80px rgba(224,184,78,.18); }
+body.deep-space h1 .last { -webkit-text-stroke:1.5px rgba(224,184,78,.55); }
+
+/* Warp badge */
+#warp-badge {
+  position:fixed;bottom:28px;right:28px;z-index:9000;
+  display:none;
+  background:rgba(10,8,18,.9);
+  border:1px solid rgba(224,184,78,.35);
+  border-radius:20px;
+  padding:7px 16px;
+  font-family:'Space Mono',monospace;
+  font-size:11px;
+  color:#e0b84e;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  backdrop-filter:blur(8px);
+  animation:badgeFade .6s ease forwards;
+  pointer-events:none;
+}
+@keyframes badgeFade { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+/* Warp overlay canvas */
+#warp-overlay {
+  position:fixed;inset:0;z-index:8000;
+  pointer-events:none;
+  opacity:0;
+}
+
+/* Flash */
+#warp-flash {
+  position:fixed;inset:0;z-index:8500;
+  background:#fff;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .08s;
+}
+
+/* Konami hint (subtle key press indicator) */
+#konami-hint {
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+  z-index:7000;pointer-events:none;
+  display:flex;gap:5px;opacity:0;
+  transition:opacity .3s;
+}
+#konami-hint.show { opacity:1; }
+.k-key {
+  width:22px;height:22px;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:4px;
+  background:rgba(255,255,255,.05);
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;color:rgba(255,255,255,.3);
+  transition:background .15s,border-color .15s,color .15s;
+}
+.k-key.lit { background:rgba(93,216,222,.2);border-color:var(--cyan);color:var(--cyan); }
+
 
 @media(max-width:816px){
   main{padding:0 29px}
@@ -268,6 +329,22 @@ footer {
 </style>
 </head>
 <body>
+
+<canvas id="warp-overlay"></canvas>
+<div id="warp-flash"></div>
+<div id="warp-badge">⚡ DEEP SPACE MODE</div>
+<div id="konami-hint">
+  <div class="k-key" id="kk0">↑</div>
+  <div class="k-key" id="kk1">↑</div>
+  <div class="k-key" id="kk2">↓</div>
+  <div class="k-key" id="kk3">↓</div>
+  <div class="k-key" id="kk4">←</div>
+  <div class="k-key" id="kk5">→</div>
+  <div class="k-key" id="kk6">←</div>
+  <div class="k-key" id="kk7">→</div>
+  <div class="k-key" id="kk8">B</div>
+  <div class="k-key" id="kk9">A</div>
+</div>
 
 <canvas id="starfield"></canvas>
 <div id="cur"></div>
@@ -483,6 +560,149 @@ window.addEventListener('scroll',()=>{ if(orb) orb.style.transform=`translateY(c
 
 // ── YEAR ──────────────────────────────────────────────────────────────────
 document.getElementById('yr').textContent=new Date().getFullYear();
+
+// ── KONAMI CODE + WARP EFFECT ─────────────────────────────────────────────
+const KONAMI   = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','KeyB','KeyA'];
+const kHint    = document.getElementById('konami-hint');
+const kKeys    = Array.from({length:10},(_,i)=>document.getElementById('kk'+i));
+const warpCvs  = document.getElementById('warp-overlay');
+const warpCtx  = warpCvs.getContext('2d');
+const flash    = document.getElementById('warp-flash');
+const badge    = document.getElementById('warp-badge');
+let kProgress  = 0, kTimer = null, warpActive = false;
+
+document.addEventListener('keydown', e => {
+  if(warpActive) return;
+
+  if(e.code === KONAMI[kProgress]){
+    // Light up the key indicator
+    kHint.classList.add('show');
+    kKeys[kProgress].classList.add('lit');
+    kProgress++;
+
+    clearTimeout(kTimer);
+    kTimer = setTimeout(() => {
+      // Reset on timeout
+      kKeys.forEach(k=>k.classList.remove('lit'));
+      kHint.classList.remove('show');
+      kProgress = 0;
+    }, 3000);
+
+    if(kProgress === KONAMI.length){
+      clearTimeout(kTimer);
+      setTimeout(()=>{ kHint.classList.remove('show'); kKeys.forEach(k=>k.classList.remove('lit')); }, 400);
+      launchWarp();
+    }
+  } else {
+    kProgress = 0;
+    kKeys.forEach(k=>k.classList.remove('lit'));
+    kHint.classList.remove('show');
+    clearTimeout(kTimer);
+    // Check if this key starts a new sequence
+    if(e.code === KONAMI[0]){ kProgress=1; kHint.classList.add('show'); kKeys[0].classList.add('lit'); }
+  }
+});
+
+function launchWarp(){
+  warpActive = true;
+  warpCvs.width  = window.innerWidth;
+  warpCvs.height = window.innerHeight;
+  warpCvs.style.opacity = '1';
+
+  const cx = warpCvs.width  / 2;
+  const cy = warpCvs.height / 2;
+
+  // Build warp stars — each one is a point that streaks outward
+  const warpStars = Array.from({length:500}, ()=>{
+    const angle = Math.random() * Math.PI * 2;
+    const dist  = 10 + Math.random() * Math.max(cx, cy) * 0.3;
+    return {
+      x: cx + Math.cos(angle) * dist,
+      y: cy + Math.sin(angle) * dist,
+      angle,
+      speed: 0.5 + Math.random() * 2.5,
+      r: Math.random() * 1.5 + 0.3,
+      hue: Math.random() < 0.7 ? '180,220,255' : '255,220,140'
+    };
+  });
+
+  let startT   = null;
+  const PHASE1 = 2200;  // warp streaks build up
+  const PHASE2 = 2800;  // flash moment
+  const PHASE3 = 3400;  // fade out + transform
+
+  function animWarp(t){
+    if(!startT) startT = t;
+    const elapsed = t - startT;
+    const prog    = Math.min(elapsed / PHASE1, 1); // 0→1 during phase 1
+    const eased   = prog < .5 ? 2*prog*prog : 1-((-2*prog+2)**2)/2;
+
+    warpCtx.clearRect(0,0,warpCvs.width,warpCvs.height);
+
+    // Deep space background that builds up
+    warpCtx.fillStyle = `rgba(4,4,16,${eased * 0.85})`;
+    warpCtx.fillRect(0,0,warpCvs.width,warpCvs.height);
+
+    warpStars.forEach(s=>{
+      const stretch = 2 + eased * 80 * s.speed;  // stars become long streaks
+      const curDist = (10 + Math.random()*5) + eased * 600 * s.speed;
+
+      const x1 = cx + Math.cos(s.angle) * (curDist - stretch);
+      const y1 = cy + Math.sin(s.angle) * (curDist - stretch);
+      const x2 = cx + Math.cos(s.angle) * curDist;
+      const y2 = cy + Math.sin(s.angle) * curDist;
+
+      const alpha = Math.min(eased * 1.8, 1);
+      const g = warpCtx.createLinearGradient(x1,y1,x2,y2);
+      g.addColorStop(0,'transparent');
+      g.addColorStop(1,`rgba(${s.hue},${alpha})`);
+
+      warpCtx.beginPath();
+      warpCtx.moveTo(x1,y1);
+      warpCtx.lineTo(x2,y2);
+      warpCtx.strokeStyle = g;
+      warpCtx.lineWidth   = s.r * (1 + eased * 1.5);
+      warpCtx.stroke();
+    });
+
+    // Central glow that builds
+    const glowR = eased * 300;
+    const glow = warpCtx.createRadialGradient(cx,cy,0,cx,cy,glowR);
+    glow.addColorStop(0,`rgba(255,255,255,${eased * 0.15})`);
+    glow.addColorStop(0.3,`rgba(93,216,222,${eased * 0.08})`);
+    glow.addColorStop(1,'transparent');
+    warpCtx.fillStyle = glow;
+    warpCtx.fillRect(0,0,warpCvs.width,warpCvs.height);
+
+    if(elapsed < PHASE2){
+      requestAnimationFrame(animWarp);
+    } else if(elapsed < PHASE2 + 120){
+      // FLASH
+      flash.style.opacity = String(Math.min((elapsed-PHASE2)/80, 1));
+      requestAnimationFrame(animWarp);
+    } else if(elapsed < PHASE3){
+      // Fade out flash, apply transform
+      flash.style.opacity = String(Math.max(1 - (elapsed-PHASE2-120)/280, 0));
+      if(elapsed > PHASE2 + 140 && !document.body.classList.contains('deep-space')){
+        document.body.classList.add('deep-space');
+        // Recolour glow stars to gold
+      }
+      warpCtx.clearRect(0,0,warpCvs.width,warpCvs.height);
+      requestAnimationFrame(animWarp);
+    } else {
+      // All done
+      flash.style.opacity = '0';
+      warpCvs.style.opacity = '0';
+      badge.style.display = 'block';
+
+      // Turbo-charge the starfield after warp
+      stars.forEach(s=>{ s.speed *= 2.5; s.glow = Math.random()<.25; });
+    }
+  }
+
+  requestAnimationFrame(animWarp);
+}
+
 </script>
 </body>
 </html>
