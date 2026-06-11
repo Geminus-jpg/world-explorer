@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Home Planungsguide</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #141720;
+    --surface2: #1c2030;
+    --accent: #00d4aa;
+    --accent2: #f0a500;
+    --warn: #ff6b35;
+    --text: #e8eaf0;
+    --muted: #7a7f96;
+    --border: #252a3a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .hero {
+    padding: 60px 40px 40px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(135deg, #0d0f14 60%, #0f1a2e 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(0,212,170,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .hero-sub {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 580px;
+    font-weight: 300;
+  }
+
+  .hero-badges {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: 'Space Mono', monospace;
+    color: var(--muted);
+  }
+
+  .badge.green { border-color: var(--accent); color: var(--accent); }
+  .badge.orange { border-color: var(--accent2); color: var(--accent2); }
+
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+  /* ALERT BOX */
+  .alert {
+    margin: 32px 40px;
+    background: rgba(240,165,0,0.07);
+    border: 1px solid rgba(240,165,0,0.3);
+    border-left: 4px solid var(--accent2);
+    padding: 20px 24px;
+    border-radius: 0 8px 8px 0;
+  }
+  .alert-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--accent2);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .alert p { color: var(--text); font-size: 14px; line-height: 1.7; }
+  .alert ul { margin: 8px 0 0 16px; }
+  .alert li { font-size: 14px; margin-bottom: 4px; }
+  .alert li strong { color: var(--accent2); }
+
+  /* SECTION */
+  section {
+    padding: 40px 40px 10px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    width: 40px; height: 40px;
+    background: var(--surface2);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    flex: 1;
+  }
+
+  .section-cost {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  /* CARDS GRID */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--accent); }
+
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .card-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .card-subtitle {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .effort-dots {
+    display: flex;
+    gap: 3px;
+    margin-top: 4px;
+  }
+
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+  .dot.filled { background: var(--accent); }
+  .dot.warn { background: var(--warn); }
+
+  .cost-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(0,212,170,0.1);
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .cost-tag.mid { background: rgba(240,165,0,0.1); color: var(--accent2); }
+  .cost-tag.high { background: rgba(255,107,53,0.1); color: var(--warn); }
+
+  .card p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+
+  .card-products {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .diy-label {
+    font-size: 11px;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    margin-top: 8px;
+  }
+
+  /* ROHBAU TABLE */
+  .rohbau-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+
+  @media(max-width: 600px) {
+    .rohbau-grid { grid-template-columns: 1fr; }
+    section { padding: 30px 20px 10px; }
+    .alert { margin: 24px 20px; }
+    h1 { font-size: 2rem; }
+    .hero { padding: 40px 20px 30px; }
+  }
+
+  .rohbau-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .rohbau-item h4 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .rohbau-item ul {
+    margin-left: 16px;
+    list-style: none;
+  }
+  .rohbau-item ul li {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 3px;
+    position: relative;
+  }
+  .rohbau-item ul li::before {
+    content: '→';
+    position: absolute;
+    left: -16px;
+    color: var(--accent);
+    font-size: 12px;
+  }
+
+  /* PLATFORM */
+  .platform-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+  @media(max-width: 700px) { .platform-row { grid-template-columns: 1fr; } }
+
+  .platform-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .platform-card.recommended {
+    border-color: var(--accent);
+    position: relative;
+  }
+  .platform-card.recommended::before {
+    content: '★ EMPFEHLUNG';
+    position: absolute;
+    top: -11px; left: 16px;
+    background: var(--accent);
+    color: var(--bg);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .platform-card h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .platform-card .sub {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    margin-bottom: 12px;
+  }
+  .platform-card p { font-size: 13px; color: var(--muted); }
+  .pro { color: var(--accent); font-size: 12px; margin-top: 10px; }
+  .con { color: var(--warn); font-size: 12px; }
+
+  /* COST SUMMARY */
+  .cost-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+  }
+  .cost-table th {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .cost-table td {
+    padding: 12px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .cost-table tr:last-child td {
+    border-bottom: none;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 16px;
+  }
+  .cost-table td:last-child { text-align: right; font-family: 'Space Mono', monospace; }
+  .cost-table tr:hover td { background: var(--surface2); }
+
+  footer {
+    margin: 40px 40px 60px;
+    padding: 20px;
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+  footer strong { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-tag">Smart Home Planung · Kernsanierung</div>
+  <h1>Alles <span>smart</span>.<br>Von Grund auf.</h1>
+  <p class="hero-sub">Kompletter Planungsguide für eine voll automatisierte Wohnung — optimiert für Kernsanierung und Eigenleistung als Elektriker.</p>
+  <div class="hero-badges">
+    <span class="badge green">Als Elektriker DIY möglich</span>
+    <span class="badge orange">Kernsanierung = bestes Timing</span>
+    <span class="badge">Home Assistant Fokus</span>
+  </div>
+</div>
+
+<div class="alert">
+  <div class="alert-title">⚡ JETZT ENTSCHEIDEN — Rohbau-Fenster</div>
+  <p>Eine Kernsanierung ist die <strong>einmalige Gelegenheit</strong> für professionelle Infrastruktur. Was jetzt nicht verlegt wird, kostet später das 3–5-fache oder ist gar nicht mehr nachrüstbar. Entscheidungen priorisieren:</p>
+  <ul>
+    <li><strong>Protokoll:</strong> Funk (Zigbee/Z-Wave) vs. KNX-Bus (kabelgebunden)</li>
+    <li><strong>Leerrohre:</strong> überall verlegen, auch wo man noch nichts plant</li>
+    <li><strong>Netzwerk:</strong> CAT8 in jeden Raum + mehrere Dose</li>
+    <li><strong>Rollläden:</strong> Elektromotoren jetzt einbauen lassen, Kosten marginal</li>
+  </ul>
+</div>
+
+<!-- PLATTFORM -->
+<section>
+  <div class="section-header">
+    <div class="section-icon">🧠</div>
+    <h2>Protokoll & Zentrale — Die Grundentscheidung</h2>
+  </div>
+  <div class="platform-row">
+    <div class="platform-card recommended">
+      <h4>Home Assistant + Zigbee</h4>
+      <div class="sub">EMPFOHLEN · Lokal · Offen</div>
+      <p>Lokale Steuereinheit (Raspberry Pi 5 oder Mini-PC), läuft auch auf deinem QNAP via Docker. Zigbee via USB-Dongle. Keine Cloud-Abhängigkeit, massives Ökosystem, für Techniker ideal.</p>
+      <div class="pro">✓ Kostenlos, flexibel, riesige Community</div>
+      <div class="pro">✓ Integriert Zigbee, Z-Wave, WLAN, KNX</div>
+      <div class="con">✗ Einrichtungsaufwand höher</div>
+    </div>
+    <div class="platform-card">
+      <h4>KNX-Bus</h4>
+      <div class="sub">PROFI · Kabelgebunden</div>
+      <p>Industrie-Standard. Eigener Bus-Kabel neben Stromleitungen. Hochstabil, wartungsarm. Als EGS-Elektriker kannst du das selbst installieren und programmieren.</p>
+      <div class="pro">✓ Höchste Zuverlässigkeit</div>
+      <div class="pro">✓ Wertsteigernd bei Verkauf</div>
+      <div class="con">✗ Teuer: 3–5x mehr als Funk</div>
+    </div>
+    <div class="platform-card">
+      <h4>Hybrid-Ansatz</h4>
+      <div class="sub">FLEXIBEL · Mix</div>
+      <p>KNX für Licht & Rollläden (wo Kabel sowieso liegen), Zigbee/WLAN für alles andere. Home Assistant als Klammer. Bestes aus beiden Welten.</p>
+      <div class="pro">✓ Zukunftssicher & flexibel</div>
+      <div class="pro">✓ KNX nur wo es Sinn macht</div>
+      <div class="con">✗ Komplexere Planung nötig</div>
+    </div>
+  </div>
+</section>
+
+<!-- ROHBAU -->
+<section>
+  <div class="section-header">
+    <div class="section-icon">🏗️</div>
+    <h2>Rohbau-Phase — Was jetzt rein muss</h2>
+    <span class="section-cost">Materialkosten ~500–1.500 €</span>
+  </div>
+  <div class="rohbau-grid">
+    <div class="rohbau-item">
+      <h4>📡 Netzwerk (höchste Prio)</h4>
+      <ul>
+        <li>CAT8 in jeden Raum, min. 2 Dosen</li>
+        <li>CAT8 zu Deckenpositionen für WLAN-APs</li>
+        <li>Patchfeld + 19" Schrank/Panel im Technikraum</li>
+        <li>1× Dose für Patchfeld / Verteiler</li>
+        <li>TV-Positionen: 2x CAT8 + HDMI-Leerrohr</li>
+      </ul>
+    </div>
+    <div class="rohbau-item">
+      <h4>🪟 Rollläden / Jalousien</h4>
+      <ul>
+        <li>Elektromotor-Aufputz bei Rollladenkästen</li>
+        <li>5x1,5mm² Steuerleitung je Fenster</li>
+        <li>Zentraler Verteiler oder Direktverkabelung</li>
+        <li>Optional: KNX-Antriebe direkt einplanen</li>
+      </ul>
+    </div>
+    <div class="rohbau-item">
+      <h4>🔌 Strom / Verteiler</h4>
+      <ul>
+        <li>Separate Sicherungen für Smart-Verbraucher</li>
+        <li>Unterverteilung mit Reserveplätzen</li>
+        <li>Schalterdosen tiefer (68mm) für Smart-Module</li>
+        <li>Leerrohre hinter Schaltern für Bus-Kabel</li>
+        <li>Separated circuit für Server/NAS/Router</li>
+      </ul>
+    </div>
+    <div class="rohbau-item">
+      <h4>🚪 Türen / Sicherheit</h4>
+      <ul>
+        <li>5-Pol Kabel zur Eingangstür (Türklingel + Kamera)</li>
+        <li>Leerrohre zu Kamerapositionen (außen)</li>
+        <li>Kabel für Türsprechanlage / Video-Türklingel</li>
+        <li>Klingel-Trafo-Position planen</li>
+      </ul>
+    </div>
+    <div class="rohbau-item">
+      <h4>🌡️ Heizung / Klima</h4>
+      <ul>
+        <li>Fußbodenheizung: Aktoren-Verteiler einplanen</li>
+        <li>Thermostat-Positionen (Wanddosen 1,5m Höhe)</li>
+        <li>Kabel für Split-Klimaanlage vorziehen</li>
+        <li>Optional: Lüftungsanlage mit WRG vorbereiten</li>
+      </ul>
+    </div>
+    <div class="rohbau-item">
+      <h4>💡 Beleuchtung</h4>
+      <ul>
+        <li>Mehrkreisigkeit einplanen (Haupt + Akzent)</li>
+        <li>Decken-Slots für indirekte Beleuchtung</li>
+        <li>LED-Stripes Nischen: Steckdosen 12V vorbereiten</li>
+        <li>Wandfluter-Positionen festlegen</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- BELEUCHTUNG -->
+<section>
+  <div class="section-header">
+    <div class="section-icon">💡</div>
+    <h2>Beleuchtung & Lichtsteuerung</h2>
+    <span class="section-cost">400 – 1.200 €</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Smart Dimmer / Schalter</div>
+          <div class="card-subtitle">Pro Raum · Hinter bestehenden Schaltern</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div>
+            <span style="font-size:11px;color:var(--muted);margin-left:6px;">Aufwand: mittel</span>
+          </div>
+        </div>
+        <span class="cost-tag">20–50€/St</span>
+      </div>
+      <p>Zigbee-Dimmer hinter normalen Lichtschaltern. Bestehende Optik bleibt, volle Smartfunktion. Shelly Dimmer 2 oder Sonoff ZBMINIL2.</p>
+      <div class="card-products">
+        <span class="chip">Shelly Dimmer 2</span>
+        <span class="chip">Sonoff ZBMINI</span>
+        <span class="chip">Zigbee2MQTT</span>
+      </div>
+      <div class="diy-label">⚡ Als Elektriker: Trivial selbst einbaubar</div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Indirekte Beleuchtung / LED-Strips</div>
+          <div class="card-subtitle">Küche Unterbau · Bad · Wohnzimmer</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+            <span style="font-size:11px;color:var(--muted);margin-left:6px;">Aufwand: gering</span>
+          </div>
+        </div>
+        <span class="cost-tag">30–80€/Zone</span>
+      </div>
+      <p>RGBW LED-Strips mit Zigbee-Controller. Szenen, Sonnenaufgang-Simulation, Filmabend-Stimmung. Schöner Effekt mit minimalem Aufwand.</p>
+      <div class="card-products">
+        <span class="chip">Gledopto Zigbee</span>
+        <span class="chip">Kelvin RGBW</span>
+        <span class="chip">WLED</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Szenensteuerung & Automationen</div>
+          <div class="card-subtitle">Via Home Assistant</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div>
+            <span style="font-size:11px;color:var(--muted);margin-left:6px;">Aufwand: hoch</span>
+          </div>
+        </div>
+        <span class="cost-tag">0 € (Software)</span>
+      </div>
+      <p>Kino-Modus, Romantik-Szene, Aufwach-Routine. Kombiniert Licht + Rollläden + Musik. Komplett gratis via Home Assistant Automations.</p>
+      <div class="card-products">
+        <span class="chip">HA Automations</span>
+        <span class="chip">Node-RED</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SICHERHEIT -->
+<section>
+  <div class="section-header">
+    <div class="section-icon">🔒</div>
+    <h2>Sicherheit & Zutrittskontrolle</h2>
+    <span class="section-cost">600 – 1.500 €</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Bewegungsmelder (Zigbee)</div>
+          <div class="card-subtitle">Alle Räume + Flur + Außen</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+        <span class="cost-tag">15–30€/St</span>
+      </div>
+      <p>PIR + Lux-Sensor. Licht automatisch an/aus, Alarmfunktion, Anwesenheitserkennung. Aqara, IKEA TRADFRI, Philips Hue Motion.</p>
+      <div class="card-products">
+        <span class="chip">Aqara Motion P1</span>
+        <span class="chip">IKEA TRADFRI</span>
+      </div>
+      <div class="diy-label">✓ Muss — laut deinen Anforderungen</div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Smart Lock</div>
+          <div class="card-subtitle">Türschloss mit App + Auto-unlock</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+        <span class="cost-tag mid">200–280€</span>
+      </div>
+      <p>Nuki Pro 4 oder Tedee Pro. Auf bestehenden Zylinder aufgesetzt (keine Schlüsselbettänderung). Geofencing: Tür öffnet wenn du nach Hause kommst.</p>
+      <div class="card-products">
+        <span class="chip">Nuki Smart Lock 4 Pro</span>
+        <span class="chip">Tedee Go</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Video-Türklingel</div>
+          <div class="card-subtitle">Kabel vorlegen beim Rohbau!</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+        <span class="cost-tag">80–200€</span>
+      </div>
+      <p>PoE oder Trafo-betrieben. Klingel mit Kamera, Zwei-Wege-Audio, Bewegungserfassung, NAS-Aufzeichnung. Integriert in Home Assistant.</p>
+      <div class="card-products">
+        <span class="chip">Reolink Video Doorbell</span>
+        <span class="chip">Amcrest AD490</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">IP-Kameras</div>
+          <div class="card-subtitle">Außen + optional innen</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+        <span class="cost-tag">50–120€/St</span>
+      </div>
+      <p>PoE-Kameras direkt auf QNAP NAS (Surveillance Station). Reolink oder Hikvision. Kein Cloud-Abo, volle Kontrolle, günstig.</p>
+      <div class="card-products">
+        <span class="chip">Reolink RLC-810A</span>
+        <span class="chip">QNAP Surveillance</span>
+      </div>
+      <div class="diy-label">⚡ Perfekt für dein QNAP NAS</div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Tür- & Fenstersensoren</div>
+          <div class="card-subtitle">Einbrucherkennung + Automation</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+        <span class="cost-tag">8–15€/St</span>
+      </div>
+      <p>Zigbee-Kontaktsensoren. Alarm wenn Fenster auf + Heizung läuft, Licht an wenn Tür auf. Günstigste Smart-Home Komponente mit größtem Nutzen.</p>
+      <div class="card-products">
+        <span class="chip">Aqara Door/Window</span>
+        <span class="chip">SONOFF SNZB-04</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Rauch- & CO-Melder + Wassersensor</div>
+          <div class="card-subtitle">Pflicht + Smart-Integration</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+        <span class="cost-tag">25–50€/St</span>
+      </div>
+      <p>Smarte Rauchmelder senden Push-Nachricht ans Handy. Wassersensoren unter Spüle, Waschmaschine, Heizung. Vermeidet teure Wasserschäden.</p>
+      <div class="card-products">
+        <span class="chip">Heiman Zigbee Smoke</span>
+        <span class="chip">Aqara Water Sensor</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HEIZUNG -->
+<section>
+  <div class="section-header">
+    <div class="section-icon">🌡️</div>
+    <h2>Heizung & Klima</h2>
+    <span class="section-cost">300 – 2.000 €</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Smarte Heizkörper-Thermostate</div>
+          <div class="card-subtitle">Zigbee · Raum für Raum</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+        <span class="cost-tag">25–50€/St</span>
+      </div>
+      <p>Einfach auf bestehende Heizkörper-Ventile schrauben. Heizplan + Anwesenheitserkennung via Home Assistant. Danfoss Ally oder Tado kompatibel.</p>
+      <div class="card-products">
+        <span class="chip">Danfoss Ally</span>
+        <span class="chip">Sonoff TRVZB</span>
+        <span class="chip">Tado</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Fußbodenheizung Einzelraumregelung</div>
+          <div class="card-subtitle">Falls vorhanden · Rohbau planen</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div>
+          </div>
+        </div>
+        <span class="cost-tag mid">500–1.500€</span>
+      </div>
+      <p>Zigbee-Aktoren am Verteilerkasten. Jeder Heizkreis einzeln regelbar. Hocheffizient mit Präsenzsensoren kombiniert. Lohnt sich bei FBH sehr.</p>
+      <div class="card-products">
+        <span class="chip">Homematic IP</span>
+        <span class="chip">Devolo FBH</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Split-Klimaanlage</div>
+          <div class="card-subtitle">Heizen + Kühlen · Kabel jetzt vorziehen</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+        <span class="cost-tag high">800–2.000€</span>
+      </div>
+      <p>Mitsubishi/Daikin Inverterklimaanlage mit Smart-Modul. Steuerbar via Home Assistant. Kabel JETZT beim Rohbau vorziehen, Installation teuer wenn nicht.</p>
+      <div class="card-products">
+        <span class="chip">Mitsubishi MSZ</span>
+        <span class="chip">Daikin + WiFi Adapter</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NETZWERK -->
+<section>
+  <div class="section-header">
+    <div class="section-icon">📡</div>
+    <h2>Netzwerk-Infrastruktur</h2>
+    <span class="section-cost">600 – 1.500 €</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">UniFi Netzwerk</div>
+          <div class="card-subtitle">Router + Switch + WLAN-APs</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div>
+          </div>
+        </div>
+        <span class="cost-tag mid">600–1.200€</span>
+      </div>
+      <p>UniFi Dream Router + 2× U6 Pro APs (Deckeneinbau). Separates VLAN für Smart-Home-Geräte, isoliert vom Hauptnetz. Sehr stabiles, skalierbares System.</p>
+      <div class="card-products">
+        <span class="chip">UniFi Dream Router</span>
+        <span class="chip">U6 Pro AP</span>
+        <span class="chip">USW-Flex-Mini</span>
+      </div>
+      <div class="diy-label">⚡ Passt zu deinem NAS-Setup</div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Strukturierte Verkabelung</div>
+          <div class="card-subtitle">CAT8 + Patchfeld + 19" Panel</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+        <span class="cost-tag">200–400€</span>
+      </div>
+      <p>Patchpanel im Verteilerkasten, alle Räume geführt. Sauber beschriftet. Einmal richtig machen = jahrzehntelang keine Probleme.</p>
+      <div class="card-products">
+        <span class="chip">CAT8 Kabel</span>
+        <span class="chip">Digitus Patchfeld</span>
+        <span class="chip">Telegärtner Dosen</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Home Assistant Server</div>
+          <div class="card-subtitle">Mini-PC oder Docker auf QNAP</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div>
+          </div>
+        </div>
+        <span class="cost-tag">80–200€</span>
+      </div>
+      <p>Home Assistant OS auf Raspberry Pi 5 oder Mini-PC (Intel N100). Alternativ: HA Container auf deinem QNAP TS-231P2 via Docker — kein extra Hardware nötig.</p>
+      <div class="card-products">
+        <span class="chip">Raspberry Pi 5</span>
+        <span class="chip">QNAP Docker</span>
+        <span class="chip">Sonoff Zigbee 3.0 USB</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ENERGIE -->
+<section>
+  <div class="section-header">
+    <div class="section-icon">⚡</div>
+    <h2>Energie-Management</h2>
+    <span class="section-cost">150 – 500 €</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Energiemonitor am Zähler</div>
+          <div class="card-subtitle">Echtzeit-Stromverbrauch</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+        <span class="cost-tag">80–150€</span>
+      </div>
+      <p>Shelly 3EM oder Shelly Pro 3EM im Sicherungskasten. Misst jede Phase einzeln. Dashboard in Home Assistant. Als Elektriker trivial zu installieren.</p>
+      <div class="card-products">
+        <span class="chip">Shelly 3EM</span>
+        <span class="chip">Volkszähler</span>
+      </div>
+      <div class="diy-label">⚡ Kein Elektriker-Besuch nötig</div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Smarte Steckdosen</div>
+          <div class="card-subtitle">Verbrauchsmessung + Schaltung</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+        <span class="cost-tag">12–25€/St</span>
+      </div>
+      <p>Zigbee-Steckdosen mit Energiemessung. Fernabschaltung von Standby-Verbrauchern, Automation: Trockner-fertig Push-Nachricht wenn Verbrauch fällt.</p>
+      <div class="card-products">
+        <span class="chip">NOUS A1Z</span>
+        <span class="chip">Sonoff S26R2ZB</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Balkonkraftwerk-Integration</div>
+          <div class="card-subtitle">Optional · Südbalkon/Südterrasse</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+        <span class="cost-tag">400–800€</span>
+      </div>
+      <p>600–800W Balkonkraftwerk mit Hoymiles Mikro-Wechselrichter. OpenDTU für lokale Steuerung, vollständig in HA integrierbar. Amortisation ~2–3 Jahre.</p>
+      <div class="card-products">
+        <span class="chip">Hoymiles HMS-800</span>
+        <span class="chip">OpenDTU</span>
+        <span class="chip">Shelly Monitor</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KOMFORT -->
+<section>
+  <div class="section-header">
+    <div class="section-icon">🎵</div>
+    <h2>Komfort, Audio & Multimedia</h2>
+    <span class="section-cost">300 – 2.000 €</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Multiroom-Audio</div>
+          <div class="card-subtitle">Ganze Wohnung mit Musik</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+        <span class="cost-tag mid">200–800€</span>
+      </div>
+      <p>Snapcast (kostenlos, DIY) oder Sonos. Unterputz-Lautsprecher im Bad + Küche beim Rohbau einbauen. CAT8 zu AV-Positionen vorziehen.</p>
+      <div class="card-products">
+        <span class="chip">Snapcast + Pi</span>
+        <span class="chip">Sonos Era 100</span>
+        <span class="chip">Linkplay</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Sprachassistenten</div>
+          <div class="card-subtitle">Echo / Google Nest</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+        <span class="cost-tag">30–60€/St</span>
+      </div>
+      <p>"Alexa, Kinoabend." — Licht dimmt, Rollläden runter, TV an. Amazon Echo Dot 5. Gen läuft nativ mit Home Assistant via Nabu Casa oder lokaler Integration.</p>
+      <div class="card-products">
+        <span class="chip">Echo Dot 5. Gen</span>
+        <span class="chip">Google Nest Mini</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Smarte Displays / Tablets</div>
+          <div class="card-subtitle">Wandeinbau als Steuerzentrale</div>
+          <div class="effort-dots">
+            <div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+        <span class="cost-tag">80–200€</span>
+      </div>
+      <p>Altes Tablet wandmontiert mit Home Assistant Dashboard. Zeigt Wetter, Kameras, Verbrauch, Szenenknöpfe. Schöne Wandlösung mit Wandhalterung + Laderahmen.</p>
+      <div class="card-products">
+        <span class="chip">Fire HD 10</span>
+        <span class="chip">HA Dashboard</span>
+        <span class="chip">Lovelace UI</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KOSTEN ÜBERSICHT -->
+<section>
+  <div class="section-header">
+    <div class="section-icon">💰</div>
+    <h2>Gesamtkosten-Übersicht (nur Material, DIY)</h2>
+  </div>
+  <table class="cost-table">
+    <thead>
+      <tr>
+        <th>BEREICH</th>
+        <th>BUDGET (ZIGBEE)</th>
+        <th>MID-RANGE</th>
+        <th>PREMIUM (KNX+)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>🏗️ Rohbau-Infrastruktur (Kabel, Leerrohre)</td>
+        <td>500 €</td>
+        <td>800 €</td>
+        <td>1.500 €</td>
+      </tr>
+      <tr>
+        <td>📡 Netzwerk (Switch, APs, Patchfeld)</td>
+        <td>400 €</td>
+        <td>900 €</td>
+        <td>1.500 €</td>
+      </tr>
+      <tr>
+        <td>💡 Beleuchtung & Dimmer</td>
+        <td>300 €</td>
+        <td>600 €</td>
+        <td>1.500 €</td>
+      </tr>
+      <tr>
+        <td>🪟 Elektrische Rollläden (6 Fenster)</td>
+        <td>600 €</td>
+        <td>1.200 €</td>
+        <td>2.500 €</td>
+      </tr>
+      <tr>
+        <td>🔒 Sicherheit (Klingel, Schloss, Sensoren, Kameras)</td>
+        <td>500 €</td>
+        <td>900 €</td>
+        <td>1.500 €</td>
+      </tr>
+      <tr>
+        <td>🌡️ Heizung & Thermostate</td>
+        <td>300 €</td>
+        <td>700 €</td>
+        <td>1.500 €</td>
+      </tr>
+      <tr>
+        <td>⚡ Energie-Management</td>
+        <td>150 €</td>
+        <td>300 €</td>
+        <td>500 €</td>
+      </tr>
+      <tr>
+        <td>🧠 Home Assistant Server + Zigbee</td>
+        <td>120 €</td>
+        <td>200 €</td>
+        <td>500 €</td>
+      </tr>
+      <tr>
+        <td>🎵 Audio & Komfort</td>
+        <td>200 €</td>
+        <td>500 €</td>
+        <td>2.000 €</td>
+      </tr>
+      <tr>
+        <td><strong>GESAMT (Material, Eigenleistung)</strong></td>
+        <td><strong>~3.000 €</strong></td>
+        <td><strong>~6.000 €</strong></td>
+        <td><strong>~13.000 €</strong></td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:30px;">* Ohne Klimaanlage und Küchenstudio-Geräte. Lohnkosten-Ersparnis durch Eigenleistung: ca. 2.000–5.000 € gegenüber Fremdvergabe.</p>
+</section>
+
+<footer>
+  <strong>Empfohlener Stack für dich:</strong> Home Assistant auf QNAP Docker → Zigbee (Sonoff 3.0 USB Stick) → UniFi Netzwerk → Shelly für Energie → Reolink Kameras auf QNAP Surveillance Station. Mid-Range ca. 6.000 € Material, gut 40h Konfigurationszeit. Die Kernsanierung ist der perfekte Zeitpunkt — danach wird's 3× teurer oder unmöglich.
+</footer>
+
+</body>
+</html>
