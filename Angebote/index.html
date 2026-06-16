@@ -348,7 +348,7 @@
     try {
       // Deals + Händler parallel laden
       const [raw, haendler] = await Promise.all([
-        fetch(`${API}/angebote?limit=300`).then(r => r.json()),
+        fetch(`${API}/angebote?limit=1000`).then(r => r.json()),
         fetch(`${API}/haendler`).then(r => r.json()),
       ]);
 
