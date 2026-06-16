@@ -347,10 +347,23 @@
   async function load() {
     try {
       // Deals + Händler parallel laden
-      const [deals, haendler] = await Promise.all([
-        fetch(`${API}/angebote/deals?limit=100`).then(r => r.json()),
+      const [raw, haendler] = await Promise.all([
+        fetch(`${API}/angebote?limit=300`).then(r => r.json()),
         fetch(`${API}/haendler`).then(r => r.json()),
       ]);
+
+      // Rabatt berechnen falls nicht vorhanden, dann sortieren
+      const deals = raw
+        .map(d => {
+          const preis = parseFloat(d.preis || 0);
+          const norm  = parseFloat(d.normalpreis || 0);
+          if (!d.rabatt_prozent && norm > preis && preis > 0) {
+            d.rabatt_prozent = ((1 - preis / norm) * 100).toFixed(1);
+          }
+          return d;
+        })
+        .filter(d => parseFloat(d.rabatt_prozent || 0) > 0)
+        .sort((a, b) => parseFloat(b.rabatt_prozent) - parseFloat(a.rabatt_prozent));
 
       allDeals = deals;
 
