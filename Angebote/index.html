@@ -352,7 +352,8 @@
         fetch(`${API}/haendler`).then(r => r.json()),
       ]);
 
-      // Rabatt berechnen falls nicht vorhanden, dann sortieren
+      // Sicherheitscheck + Rabatt berechnen
+      if (!Array.isArray(raw)) throw new Error("Ungültige API-Antwort: " + JSON.stringify(raw).substring(0, 100));
       const deals = raw
         .map(d => {
           const preis = parseFloat(d.preis || 0);
