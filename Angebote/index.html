@@ -399,16 +399,21 @@
       document.getElementById("stat-top-name").textContent = topDeal?.name?.substring(0,20) || "";
       document.getElementById("stats-row").style.display = "flex";
 
-      // Händler-Filter aufbauen
+      // Händler-Filter aufbauen — nur Märkte MIT Deals anzeigen
+      const storesWithDeals = new Set(
+        rawDeals.filter(d => parseFloat(d.preis || 0) > 0).map(d => d.haendler)
+      );
       const filterContainer = document.getElementById("store-filters");
-      haendler.forEach(h => {
-        const btn = document.createElement("button");
-        btn.className = "filter-btn";
-        btn.textContent = h;
-        btn.dataset.store = h;
-        btn.onclick = () => filterStore(h);
-        filterContainer.appendChild(btn);
-      });
+      haendler
+        .filter(h => storesWithDeals.has(h))
+        .forEach(h => {
+          const btn = document.createElement("button");
+          btn.className = "filter-btn";
+          btn.textContent = h;
+          btn.dataset.store = h;
+          btn.onclick = () => filterStore(h);
+          filterContainer.appendChild(btn);
+        });
 
       renderDeals(deals);
 
