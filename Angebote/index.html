@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forkcast – Angebote der Woche</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #0f172a;
+      padding: 20px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left span {
+      color: #475569;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .header-left h1 {
+      color: #fff;
+      font-size: 22px;
+      font-weight: 800;
+      margin-top: 4px;
+    }
+
+    .kw-badge {
+      background: rgba(34,197,94,.15);
+      color: #22c55e;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 20px;
+    }
+
+    .filters {
+      background: #fff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 12px 24px;
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+    }
+
+    .filters-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 7px 16px;
+      border-radius: 20px;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .15s;
+    }
+
+    .filter-btn.active {
+      background: #0f172a;
+      color: #fff;
+      border-color: #0f172a;
+    }
+
+    .filter-btn:hover:not(.active) {
+      background: #f8fafc;
+      color: #0f172a;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      flex: 1;
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+
+    .stat-label { font-size: 11px; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+    .stat-value { font-size: 24px; font-weight: 800; color: #0f172a; margin-top: 4px; }
+    .stat-sub   { font-size: 12px; color: #64748b; margin-top: 2px; }
+
+    .deals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+
+    .deal-card {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+      transition: transform .15s, box-shadow .15s;
+    }
+
+    .deal-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,.1);
+    }
+
+    .deal-top {
+      padding: 16px 16px 12px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .deal-store {
+      font-size: 11px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 6px;
+    }
+
+    .deal-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+
+    .deal-unit {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .deal-bottom {
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .deal-price-block {}
+    .deal-price { font-size: 22px; font-weight: 800; color: #0f172a; }
+    .deal-original { font-size: 12px; color: #94a3b8; text-decoration: line-through; margin-top: 1px; }
+
+    .deal-badge {
+      background: #dcfce7;
+      color: #15803d;
+      font-size: 16px;
+      font-weight: 800;
+      padding: 8px 14px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .deal-badge-sub { font-size: 10px; font-weight: 600; color: #16a34a; margin-top: 2px; }
+
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: #64748b;
+    }
+
+    .loading-emoji { font-size: 48px; margin-bottom: 16px; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error {
+      text-align: center;
+      padding: 60px 20px;
+      color: #dc2626;
+    }
+
+    .gueltig {
+      font-size: 11px;
+      color: #94a3b8;
+      padding: 0 16px 12px;
+    }
+
+    a.back-link {
+      color: #22c55e;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    a.back-link:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) {
+      .stats-row { flex-direction: column; }
+      .deals-grid { grid-template-columns: 1fr 1fr; }
+      main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-left">
+      <span>🛒 Forkcast</span>
+      <h1>Angebote der Woche</h1>
+    </div>
+    <div>
+      <span class="kw-badge" id="kw-badge">KW –</span>
+    </div>
+  </div>
+</header>
+
+<div class="filters">
+  <div class="filters-inner" id="store-filters">
+    <button class="filter-btn active" onclick="filterStore('')">Alle Märkte</button>
+  </div>
+</div>
+
+<main>
+  <div class="stats-row" id="stats-row" style="display:none">
+    <div class="stat-card">
+      <div class="stat-label">Angebote</div>
+      <div class="stat-value" id="stat-count">–</div>
+      <div class="stat-sub">diese Woche</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Ø Ersparnis</div>
+      <div class="stat-value" id="stat-avg">–</div>
+      <div class="stat-sub">pro Produkt</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Top Rabatt</div>
+      <div class="stat-value" id="stat-top">–</div>
+      <div class="stat-sub" id="stat-top-name">–</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Rezepte</div>
+      <div class="stat-value">🍳</div>
+      <div class="stat-sub"><a class="back-link" href="/Forkcast/">→ DealKoch öffnen</a></div>
+    </div>
+  </div>
+
+  <div id="content">
+    <div class="loading">
+      <div class="loading-emoji">🛒</div>
+      <div>Angebote werden geladen…</div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const API = "https://forkcast-production-cb85.up.railway.app";
+  let allDeals = [];
+  let activeStore = "";
+
+  // KW berechnen
+  const d = new Date();
+  const dt = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const day = dt.getUTCDay() || 7;
+  dt.setUTCDate(dt.getUTCDate() + 4 - day);
+  const y = new Date(Date.UTC(dt.getUTCFullYear(), 0, 1));
+  const kw = Math.ceil((((dt - y) / 86400000) + 1) / 7);
+  document.getElementById("kw-badge").textContent = `KW ${kw}`;
+
+  function formatDate(str) {
+    if (!str) return "";
+    const d = new Date(str);
+    return d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" });
+  }
+
+  function renderDeals(deals) {
+    const grid = document.getElementById("content");
+    if (deals.length === 0) {
+      grid.innerHTML = '<div class="error">Keine Angebote gefunden.</div>';
+      return;
+    }
+
+    grid.innerHTML = `<div class="deals-grid">${deals.map(d => {
+      const preis = parseFloat(d.preis || 0).toFixed(2);
+      const norm  = parseFloat(d.normalpreis || 0).toFixed(2);
+      const rabatt = parseFloat(d.rabatt_prozent || 0).toFixed(0);
+      const saved = (parseFloat(d.normalpreis || 0) - parseFloat(d.preis || 0)).toFixed(2);
+      const gueltigBis = d.gueltig_bis ? `Gültig bis ${formatDate(d.gueltig_bis)}` : "";
+
+      return `
+        <div class="deal-card">
+          <div class="deal-top">
+            <div class="deal-store">${d.haendler || ""}</div>
+            <div class="deal-name">${d.name || ""}</div>
+            <div class="deal-unit">${d.einheit || ""}</div>
+          </div>
+          <div class="deal-bottom">
+            <div class="deal-price-block">
+              <div class="deal-price">${preis}€</div>
+              <div class="deal-original">statt ${norm}€</div>
+            </div>
+            <div class="deal-badge">
+              −${rabatt}%
+              <div class="deal-badge-sub">−${saved}€</div>
+            </div>
+          </div>
+          ${gueltigBis ? `<div class="gueltig">${gueltigBis}</div>` : ""}
+        </div>
+      `;
+    }).join("")}</div>`;
+  }
+
+  function filterStore(store) {
+    activeStore = store;
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.store === store);
+    });
+    const filtered = store ? allDeals.filter(d => d.haendler === store) : allDeals;
+    renderDeals(filtered);
+  }
+
+  async function load() {
+    try {
+      // Deals + Händler parallel laden
+      const [deals, haendler] = await Promise.all([
+        fetch(`${API}/angebote/deals?limit=100`).then(r => r.json()),
+        fetch(`${API}/haendler`).then(r => r.json()),
+      ]);
+
+      allDeals = deals;
+
+      // Stats
+      const totalSaved = deals.reduce((s, d) => s + (parseFloat(d.normalpreis||0) - parseFloat(d.preis||0)), 0);
+      const avgSaved   = deals.length ? (totalSaved / deals.length) : 0;
+      const topDeal    = deals.reduce((best, d) => parseFloat(d.rabatt_prozent||0) > parseFloat(best.rabatt_prozent||0) ? d : best, deals[0]);
+
+      document.getElementById("stat-count").textContent = deals.length;
+      document.getElementById("stat-avg").textContent   = `−${avgSaved.toFixed(2)}€`;
+      document.getElementById("stat-top").textContent   = `−${parseFloat(topDeal?.rabatt_prozent||0).toFixed(0)}%`;
+      document.getElementById("stat-top-name").textContent = topDeal?.name?.substring(0,20) || "";
+      document.getElementById("stats-row").style.display = "flex";
+
+      // Händler-Filter aufbauen
+      const filterContainer = document.getElementById("store-filters");
+      haendler.forEach(h => {
+        const btn = document.createElement("button");
+        btn.className = "filter-btn";
+        btn.textContent = h;
+        btn.dataset.store = h;
+        btn.onclick = () => filterStore(h);
+        filterContainer.appendChild(btn);
+      });
+
+      renderDeals(deals);
+
+    } catch (e) {
+      document.getElementById("content").innerHTML = `
+        <div class="error">
+          <div style="font-size:48px;margin-bottom:12px">⚠️</div>
+          <div>Backend nicht erreichbar</div>
+          <div style="font-size:13px;color:#64748b;margin-top:8px">${e.message}</div>
+        </div>`;
+    }
+  }
+
+  load();
+</script>
+
+</body>
+</html>
