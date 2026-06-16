@@ -1,0 +1,393 @@
+import { useState } from "react";
+
+// ── Farben ────────────────────────────────────────────────────
+const C = {
+  bg:      "#080f1a",
+  surface: "#0d1b2a",
+  card:    "#0f2236",
+  border:  "#1e3a5f",
+  text:    "#e2e8f0",
+  muted:   "#4a7fa5",
+  dim:     "#1e3a5f",
+  green:   "#22c55e",
+  purple:  "#a855f7",
+  orange:  "#f97316",
+  yellow:  "#f59e0b",
+  cyan:    "#06b6d4",
+  pink:    "#ec4899",
+  indigo:  "#6366f1",
+  gray:    "#64748b",
+};
+
+// ── Komponenten-Daten ─────────────────────────────────────────
+const TOOLS = [
+  {
+    id: "cursor",    emoji: "✏️",  name: "Cursor",           color: C.gray,
+    role: "Dein Code-Editor",
+    desc: "Hier schreibst du Code. Wie Word, aber für Programmieren. Du hast damit main.py, recipe_router.py usw. geschrieben.",
+    wo: "Lokal auf deinem PC",
+  },
+  {
+    id: "github",    emoji: "📁",  name: "GitHub",           color: C.indigo,
+    role: "Das Code-Lager",
+    desc: "Jede Datei die du hochlädst landet hier. GitHub merkt sich jede Änderung — du kannst immer zurück zu alten Versionen.",
+    wo: "github.com/Geminus-jpg",
+  },
+  {
+    id: "actions",   emoji: "⏰",  name: "GitHub Actions",   color: C.yellow,
+    role: "Der automatische Wecker",
+    desc: "Jeden Montag startet GitHub automatisch deine Scraper — ohne dass du irgendetwas tun musst. Definiert in .github/workflows/scraper.yml.",
+    wo: "Läuft automatisch in GitHub",
+  },
+  {
+    id: "marktguru", emoji: "🏪",  name: "Marktguru API",    color: C.cyan,
+    role: "Angebots-Quelle #1",
+    desc: "Ein externer Dienst der dir Angebote von REWE, Lidl, Edeka, Netto usw. als strukturierte Daten liefert. Dein scraper_marktguru.py ruft diesen ab.",
+    wo: "marktguru.de (extern)",
+  },
+  {
+    id: "aldi",      emoji: "🤖",  name: "Aldi Scraper",     color: C.cyan,
+    role: "Angebots-Quelle #2",
+    desc: "Ein Python-Script das automatisch die Aldi-Website besucht und Angebote herauskopiert — wie ein Roboter der eine Webseite liest.",
+    wo: "aldi-nord.de (scrapt extern)",
+  },
+  {
+    id: "supabase",  emoji: "🗄️",  name: "Supabase",         color: C.green,
+    role: "Die Datenbank",
+    desc: "Alle Angebote, Preishistorie, Nutzerprofile und gecachte Rezepte werden hier gespeichert. Wie eine riesige Excel-Tabelle in der Cloud.",
+    wo: "supabase.com (Cloud)",
+  },
+  {
+    id: "railway",   emoji: "🚂",  name: "Railway",          color: C.purple,
+    role: "Der Server",
+    desc: "Dein FastAPI-Backend läuft hier 24/7. Railway ist wie eine Mietwohnung für deinen Code — du zahlst Miete, der Server läuft immer.",
+    wo: "railway.app (Cloud-Server)",
+  },
+  {
+    id: "fastapi",   emoji: "⚡",  name: "FastAPI (Backend)", color: C.purple,
+    role: "Das Gehirn",
+    desc: "Dein Python-Code (main.py + recipe_router.py). Empfängt Anfragen, holt Daten aus Supabase, ruft Claude auf, schickt Antworten zurück.",
+    wo: "Läuft auf Railway",
+  },
+  {
+    id: "claude",    emoji: "🧠",  name: "Claude / Anthropic", color: C.orange,
+    role: "Die KI",
+    desc: "Generiert personalisierte Rezepte aus den aktuellen Angeboten + deinen Präferenzen. Kostet pro Anfrage ~1 Cent. Ergebnis wird gecacht.",
+    wo: "api.anthropic.com (extern)",
+  },
+  {
+    id: "website",   emoji: "🌐",  name: "wietrychowski.de", color: C.pink,
+    role: "Die Website (Frontend)",
+    desc: "Was der User sieht. /Forkcast/ ist die DealKoch-App, /Angebote/ die Deals-Übersicht. Liegt als statische Dateien auf GitHub Pages.",
+    wo: "GitHub Pages (world-explorer Repo)",
+  },
+];
+
+// ── Flow 1: Wöchentliche Daten ────────────────────────────────
+const FLOW_WEEKLY = [
+  { emoji: "⏰", tool: "GitHub Actions", color: C.yellow,  text: "Jeden Montag früh startet GitHub Actions automatisch" },
+  { emoji: "🤖", tool: "Scraper",        color: C.cyan,    text: "scraper_aldi.py besucht die Aldi-Website & liest Angebote aus" },
+  { emoji: "🏪", tool: "Marktguru API",  color: C.cyan,    text: "scraper_marktguru.py fragt die Marktguru-API für REWE, Lidl, Edeka usw. ab" },
+  { emoji: "🗄️", tool: "Supabase",       color: C.green,   text: "Alle neuen Angebote + Preise werden in die Datenbank gespeichert" },
+  { emoji: "✅", tool: "Fertig!",         color: C.green,   text: "Die Daten sind frisch — für die ganze Woche verfügbar" },
+];
+
+// ── Flow 2: User öffnet DealKoch ──────────────────────────────
+const FLOW_USER = [
+  { emoji: "👆", tool: "User",           color: C.pink,    text: "Du öffnest wietrychowski.de/Forkcast/ im Browser" },
+  { emoji: "🌐", tool: "Frontend",       color: C.pink,    text: "Die React-App lädt und schickt deine User-ID ans Backend" },
+  { emoji: "🚂", tool: "Railway / API",  color: C.purple,  text: "Das FastAPI-Backend empfängt die Anfrage", branch: null },
+  { emoji: "🗄️", tool: "Supabase",       color: C.green,   text: "Gibt es schon Rezepte für dich diese Woche?", isBranch: true },
+  { emoji: "⚡", tool: "Cache-Hit",      color: C.green,   text: "JA → Rezepte sofort aus Supabase zurückgeben (superschnell!)", isYes: true },
+  { emoji: "🗄️", tool: "Supabase",       color: C.green,   text: "NEIN → Aktuelle Angebote aus der Datenbank holen", isNo: true },
+  { emoji: "🧠", tool: "Claude AI",      color: C.orange,  text: "Claude bekommt Angebote + deine Präferenzen und generiert 6 Rezepte (~5 Sek.)" },
+  { emoji: "🗄️", tool: "Supabase",       color: C.green,   text: "Rezepte werden für nächste Woche gecacht (kein erneuter Claude-Aufruf)" },
+  { emoji: "🌐", tool: "Frontend",       color: C.pink,    text: "Rezepte werden im Browser angezeigt — fertig!" },
+];
+
+// ── Tool Card ─────────────────────────────────────────────────
+function ToolCard({ tool, active, onClick }) {
+  return (
+    <div onClick={onClick} style={{
+      background: active ? `${tool.color}18` : C.card,
+      border: `1.5px solid ${active ? tool.color : C.border}`,
+      borderRadius: 14, padding: "16px 18px", cursor: "pointer",
+      transition: "all .18s",
+    }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+        <span style={{ fontSize: 24 }}>{tool.emoji}</span>
+        <div>
+          <div style={{ fontWeight: 700, fontSize: 15, color: active ? tool.color : C.text }}>{tool.name}</div>
+          <div style={{ fontSize: 11, fontWeight: 600, color: tool.color, textTransform: "uppercase", letterSpacing: ".05em" }}>{tool.role}</div>
+        </div>
+      </div>
+      {active && (
+        <div style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.6, marginTop: 6, borderTop: `1px solid ${C.border}`, paddingTop: 10 }}>
+          <p style={{ marginBottom: 6 }}>{tool.desc}</p>
+          <span style={{ fontSize: 11, background: C.surface, padding: "3px 8px", borderRadius: 6, color: C.muted }}>📍 {tool.wo}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Flow Step ─────────────────────────────────────────────────
+function FlowStep({ step, index, total }) {
+  return (
+    <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0 }}>
+        <div style={{
+          width: 36, height: 36, borderRadius: "50%", flexShrink: 0,
+          background: `${step.color}22`, border: `2px solid ${step.color}`,
+          display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16,
+        }}>{step.emoji}</div>
+        {index < total - 1 && (
+          <div style={{ width: 2, height: 28, background: C.border, margin: "4px 0" }} />
+        )}
+      </div>
+      <div style={{
+        background: step.isYes ? `${C.green}12` : step.isNo ? `${C.orange}10` : C.card,
+        border: `1px solid ${step.isYes ? C.green : step.isNo ? C.orange : C.border}`,
+        borderRadius: 12, padding: "10px 14px", flex: 1, marginBottom: index < total - 1 ? 4 : 0,
+      }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: step.color, textTransform: "uppercase", letterSpacing: ".05em", marginBottom: 3 }}>
+          {step.tool}
+        </div>
+        <div style={{ fontSize: 14, color: C.text, lineHeight: 1.5 }}>{step.text}</div>
+      </div>
+    </div>
+  );
+}
+
+// ── Main App ──────────────────────────────────────────────────
+export default function App() {
+  const [activeTool, setActiveTool] = useState(null);
+  const [tab, setTab] = useState("was"); // was | weekly | user
+
+  return (
+    <div style={{ minHeight: "100vh", background: C.bg, fontFamily: "system-ui,-apple-system,sans-serif", color: C.text }}>
+
+      {/* Header */}
+      <div style={{ background: C.surface, borderBottom: `1px solid ${C.border}`, padding: "24px 24px 20px" }}>
+        <div style={{ maxWidth: 860, margin: "0 auto" }}>
+          <div style={{ fontSize: 12, color: C.muted, fontWeight: 600, textTransform: "uppercase", letterSpacing: ".08em", marginBottom: 6 }}>
+            🛒 Forkcast
+          </div>
+          <h1 style={{ fontSize: 28, fontWeight: 800, color: "#f0f6ff", marginBottom: 8 }}>
+            Wie funktioniert das alles?
+          </h1>
+          <p style={{ fontSize: 15, color: "#7ca8cc", lineHeight: 1.6, maxWidth: 580 }}>
+            Du hast ein komplettes System gebaut — von der Datensammlung bis zur KI-generierten Rezeptempfehlung. 
+            Hier eine Erklärung für alle die noch nie programmiert haben.
+          </p>
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div style={{ background: C.surface, borderBottom: `1px solid ${C.border}`, padding: "0 24px" }}>
+        <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", gap: 4 }}>
+          {[
+            { id: "was",    label: "🧩 Was ist was?" },
+            { id: "weekly", label: "📅 Wöchentlich" },
+            { id: "user",   label: "👆 Was passiert beim Öffnen?" },
+          ].map(t => (
+            <button key={t.id} onClick={() => setTab(t.id)} style={{
+              padding: "14px 18px", border: "none", background: "transparent", cursor: "pointer",
+              fontSize: 14, fontWeight: 600,
+              color: tab === t.id ? C.green : C.muted,
+              borderBottom: `2px solid ${tab === t.id ? C.green : "transparent"}`,
+              transition: "all .15s", whiteSpace: "nowrap",
+            }}>{t.label}</button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ maxWidth: 860, margin: "0 auto", padding: "28px 24px" }}>
+
+        {/* Tab 1: Was ist was */}
+        {tab === "was" && (
+          <div>
+            <p style={{ fontSize: 14, color: C.muted, marginBottom: 20 }}>
+              Klick auf ein Tool um mehr zu erfahren 👇
+            </p>
+
+            {/* Große System-Übersicht */}
+            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 20, padding: 24, marginBottom: 24 }}>
+              <div style={{ fontSize: 13, color: C.muted, fontWeight: 600, textTransform: "uppercase", letterSpacing: ".06em", marginBottom: 18 }}>
+                Das große Bild
+              </div>
+
+              {/* Visuelle Übersicht */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr auto 1fr", gap: 8, alignItems: "center", marginBottom: 16 }}>
+                {/* Spalte 1: Du */}
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ fontSize: 32, marginBottom: 6 }}>✏️</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: C.gray }}>Du & Cursor</div>
+                  <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>schreibst Code</div>
+                </div>
+                <div style={{ fontSize: 24, color: C.border, textAlign: "center" }}>→</div>
+
+                {/* Spalte 2: GitHub */}
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ fontSize: 32, marginBottom: 6 }}>📁</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: C.indigo }}>GitHub</div>
+                  <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>speichert Code</div>
+                </div>
+                <div style={{ fontSize: 24, color: C.border, textAlign: "center" }}>→</div>
+
+                {/* Spalte 3: Zwei Pfade */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  <div style={{ background: `${C.purple}15`, border: `1px solid ${C.purple}40`, borderRadius: 12, padding: "10px 14px", textAlign: "center" }}>
+                    <div style={{ fontSize: 20 }}>🚂</div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: C.purple }}>Railway</div>
+                    <div style={{ fontSize: 10, color: C.muted }}>startet Backend</div>
+                  </div>
+                  <div style={{ background: `${C.yellow}15`, border: `1px solid ${C.yellow}40`, borderRadius: 12, padding: "10px 14px", textAlign: "center" }}>
+                    <div style={{ fontSize: 20 }}>⏰</div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: C.yellow }}>Actions</div>
+                    <div style={{ fontSize: 10, color: C.muted }}>startet Scraper</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Zweite Reihe */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr auto 1fr", gap: 8, alignItems: "center" }}>
+                <div style={{ background: `${C.cyan}15`, border: `1px solid ${C.cyan}40`, borderRadius: 12, padding: "12px 14px", textAlign: "center" }}>
+                  <div style={{ fontSize: 24 }}>🏪🤖</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: C.cyan }}>Marktguru + Aldi</div>
+                  <div style={{ fontSize: 10, color: C.muted }}>Angebote holen</div>
+                </div>
+                <div style={{ fontSize: 24, color: C.border, textAlign: "center" }}>→</div>
+
+                <div style={{ background: `${C.green}15`, border: `1px solid ${C.green}40`, borderRadius: 12, padding: "12px 14px", textAlign: "center" }}>
+                  <div style={{ fontSize: 24 }}>🗄️</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: C.green }}>Supabase</div>
+                  <div style={{ fontSize: 10, color: C.muted }}>Datenbank für alles</div>
+                </div>
+                <div style={{ fontSize: 24, color: C.border, textAlign: "center" }}>→</div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  <div style={{ background: `${C.orange}15`, border: `1px solid ${C.orange}40`, borderRadius: 12, padding: "10px 14px", textAlign: "center" }}>
+                    <div style={{ fontSize: 20 }}>🧠</div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: C.orange }}>Claude KI</div>
+                    <div style={{ fontSize: 10, color: C.muted }}>Rezepte generieren</div>
+                  </div>
+                  <div style={{ background: `${C.pink}15`, border: `1px solid ${C.pink}40`, borderRadius: 12, padding: "10px 14px", textAlign: "center" }}>
+                    <div style={{ fontSize: 20 }}>🌐</div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: C.pink }}>Website</div>
+                    <div style={{ fontSize: 10, color: C.muted }}>User sieht alles</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Tool Karten */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              {TOOLS.map(tool => (
+                <ToolCard
+                  key={tool.id}
+                  tool={tool}
+                  active={activeTool === tool.id}
+                  onClick={() => setActiveTool(activeTool === tool.id ? null : tool.id)}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Tab 2: Wöchentlicher Flow */}
+        {tab === "weekly" && (
+          <div>
+            <div style={{ background: `${C.yellow}12`, border: `1px solid ${C.yellow}30`, borderRadius: 16, padding: "16px 20px", marginBottom: 24 }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: C.yellow, marginBottom: 4 }}>⏰ Läuft jeden Montag automatisch</div>
+              <div style={{ fontSize: 14, color: "#94a3b8", lineHeight: 1.6 }}>
+                Du musst nichts tun. GitHub Actions startet die Scraper vollautomatisch, holt frische Angebote und speichert sie in Supabase — bereit für die ganze Woche.
+              </div>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {FLOW_WEEKLY.map((step, i) => (
+                <FlowStep key={i} step={step} index={i} total={FLOW_WEEKLY.length} />
+              ))}
+            </div>
+
+            <div style={{ marginTop: 28, background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: "18px 20px" }}>
+              <div style={{ fontWeight: 700, color: C.text, marginBottom: 12 }}>📂 Was ist wo in GitHub?</div>
+              {[
+                { file: "scraper_aldi.py",          desc: "Liest Aldi-Angebote von der Website",               color: C.cyan },
+                { file: "scraper_marktguru.py",     desc: "Holt Angebote von der Marktguru-API",               color: C.cyan },
+                { file: ".github/workflows/scraper.yml", desc: "Der Wecker — definiert wann die Scraper laufen", color: C.yellow },
+                { file: "main.py",                  desc: "FastAPI-Backend — alle API-Endpoints",              color: C.purple },
+                { file: "recipe_router.py",         desc: "Rezept-Matching — KI, Cache, Store-Filter",         color: C.purple },
+                { file: "requirements.txt",         desc: "Liste aller Python-Pakete die Railway installiert", color: C.gray },
+              ].map(f => (
+                <div key={f.file} style={{ display: "flex", gap: 12, alignItems: "center", padding: "8px 0", borderBottom: `1px solid ${C.border}` }}>
+                  <code style={{ fontSize: 12, fontFamily: "monospace", color: f.color, background: `${f.color}15`, padding: "3px 8px", borderRadius: 6, whiteSpace: "nowrap" }}>
+                    {f.file}
+                  </code>
+                  <span style={{ fontSize: 13, color: "#94a3b8" }}>{f.desc}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Tab 3: User Flow */}
+        {tab === "user" && (
+          <div>
+            <div style={{ background: `${C.pink}12`, border: `1px solid ${C.pink}30`, borderRadius: 16, padding: "16px 20px", marginBottom: 24 }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: C.pink, marginBottom: 4 }}>👆 Was passiert in ~3 Sekunden?</div>
+              <div style={{ fontSize: 14, color: "#94a3b8", lineHeight: 1.6 }}>
+                Wenn du die DealKoch-App öffnest passieren im Hintergrund bis zu 8 Schritte — meistens aber nur 2, weil der Cache greift.
+              </div>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {FLOW_USER.map((step, i) => (
+                <FlowStep key={i} step={step} index={i} total={FLOW_USER.length} />
+              ))}
+            </div>
+
+            <div style={{ marginTop: 28, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              <div style={{ background: `${C.green}12`, border: `1px solid ${C.green}30`, borderRadius: 16, padding: "18px 20px" }}>
+                <div style={{ fontSize: 22, marginBottom: 8 }}>⚡</div>
+                <div style={{ fontWeight: 700, color: C.green, marginBottom: 6 }}>Cache-Hit (schnell)</div>
+                <div style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.6 }}>
+                  Hast du diese Woche schon Rezepte geladen? Dann kommen sie sofort aus Supabase — keine Claude-Kosten, in unter 1 Sekunde.
+                </div>
+              </div>
+              <div style={{ background: `${C.orange}12`, border: `1px solid ${C.orange}30`, borderRadius: 16, padding: "18px 20px" }}>
+                <div style={{ fontSize: 22, marginBottom: 8 }}>🧠</div>
+                <div style={{ fontWeight: 700, color: C.orange, marginBottom: 6 }}>Erstgenerierung (langsam)</div>
+                <div style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.6 }}>
+                  Erste Anfrage der Woche → Claude wird aufgerufen. Dauert ~5–10 Sekunden und kostet ~1 Cent. Danach immer Cache.
+                </div>
+              </div>
+            </div>
+
+            {/* Supabase Tabellen */}
+            <div style={{ marginTop: 14, background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: "18px 20px" }}>
+              <div style={{ fontWeight: 700, color: C.text, marginBottom: 12 }}>🗄️ Was liegt in Supabase?</div>
+              {[
+                { table: "angebote",             desc: "Alle Supermarkt-Angebote der aktuellen Woche",    rows: "~916",  color: C.green },
+                { table: "preishistorie",         desc: "Preisentwicklung pro Produkt über Zeit",          rows: "wächst", color: C.green },
+                { table: "user_preferences",      desc: "Dein Profil: Ziel, Abneigungen, Märkte",         rows: "1/User", color: C.cyan },
+                { table: "recipe_cache",          desc: "Gecachte Rezepte pro User pro Woche",            rows: "1/User/KW", color: C.yellow },
+                { table: "recipe_interactions",   desc: "Was du gekocht/bewertet hast (Tracking)",        rows: "wächst", color: C.muted },
+              ].map(t => (
+                <div key={t.table} style={{ display: "flex", gap: 12, alignItems: "center", padding: "8px 0", borderBottom: `1px solid ${C.border}` }}>
+                  <code style={{ fontSize: 12, fontFamily: "monospace", color: t.color, background: `${t.color}15`, padding: "3px 8px", borderRadius: 6, minWidth: 160 }}>
+                    {t.table}
+                  </code>
+                  <span style={{ fontSize: 13, color: "#94a3b8", flex: 1 }}>{t.desc}</span>
+                  <span style={{ fontSize: 11, color: C.muted, background: C.surface, padding: "2px 8px", borderRadius: 6 }}>{t.rows}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
+}
