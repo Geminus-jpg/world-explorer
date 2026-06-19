@@ -302,6 +302,61 @@
     return d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" });
   }
 
+  // ── Sparkline ──────────────────────────────────────────────
+  function drawSparkline(prices, width=140, height=44) {
+    if(!prices || prices.length < 2) return '<span style="color:#4a7fa5;font-size:12px">Nicht genug Daten</span>';
+    const min = Math.min(...prices), max = Math.max(...prices);
+    const range = max - min || 0.01;
+    const avg = prices.reduce((a,b)=>a+b,0)/prices.length;
+    const cur = prices[prices.length-1];
+    const isRealDeal = cur <= avg * 0.9; // Mindestens 10% unter Durchschnitt
+    const color = isRealDeal ? '#22c55e' : cur <= avg ? '#f59e0b' : '#ef4444';
+
+    const pts = prices.map((p,i)=>{
+      const x = (i/(prices.length-1))*(width-4)+2;
+      const y = height-2 - ((p-min)/range)*(height-4);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+
+    const cx = (width-2).toFixed(1);
+    const cy = (height-2-((cur-min)/range)*(height-4)).toFixed(1);
+
+    return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" style="display:block">
+      <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="${cx}" cy="${cy}" r="4" fill="${color}"/>
+    </svg>
+    <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:4px">
+      <span style="color:#4a7fa5">Tief: ${min.toFixed(2)}€</span>
+      <span style="color:${color};font-weight:700">${isRealDeal?'✓ Echter Deal':'~ Durchschnitt'}</span>
+      <span style="color:#4a7fa5">Hoch: ${max.toFixed(2)}€</span>
+    </div>`;
+  }
+
+  async function toggleHistory(cardEl, name, haendler) {
+    const existing = cardEl.querySelector('.price-history');
+    if(existing) { existing.remove(); return; }
+
+    const div = document.createElement('div');
+    div.className = 'price-history';
+    div.style.cssText = 'padding:12px 18px 14px;border-top:1px solid #1e3a5f';
+    div.innerHTML = '<div style="color:#4a7fa5;font-size:12px">⏳ Lade Verlauf…</div>';
+    cardEl.appendChild(div);
+
+    try {
+      const url = `${API}/preishistorie?name=${encodeURIComponent(name)}&haendler=${encodeURIComponent(haendler)}`;
+      const data = await fetch(url).then(r=>r.json());
+      const history = data.history || data;
+      if(!Array.isArray(history) || history.length < 2) {
+        div.innerHTML = '<div style="color:#4a7fa5;font-size:12px">📊 Noch nicht genug Verlaufsdaten (ab 2. Woche verfügbar)</div>';
+        return;
+      }
+      const prices = history.map(h=>parseFloat(h.preis||0)).filter(p=>p>0);
+      div.innerHTML = `<div style="font-size:12px;color:#7ca8cc;font-weight:600;margin-bottom:8px">📊 Preisverlauf (${prices.length} Wochen)</div>${drawSparkline(prices)}`;
+    } catch(e) {
+      div.innerHTML = '<div style="color:#f87171;font-size:12px">Verlauf nicht verfügbar</div>';
+    }
+  }
+
   function renderDeals(deals) {
     const grid = document.getElementById("content");
     if (deals.length === 0) {
@@ -309,7 +364,7 @@
       return;
     }
 
-    grid.innerHTML = `<div class="deals-grid">${deals.map(d => {
+    grid.innerHTML = `<div class="deals-grid">${deals.map((d,i) => {
       const preis = parseFloat(d.preis || 0).toFixed(2);
       const norm  = parseFloat(d.normalpreis || 0).toFixed(2);
       const rabatt = parseFloat(d.rabatt_prozent || 0).toFixed(0);
@@ -317,11 +372,11 @@
       const gueltigBis = d.gueltig_bis ? `Gültig bis ${formatDate(d.gueltig_bis)}` : "";
 
       return `
-        <div class="deal-card">
-          <div class="deal-top">
+        <div class="deal-card" id="card-${i}" style="cursor:pointer">
+          <div class="deal-top" onclick="toggleHistory(document.getElementById('card-${i}'), ${JSON.stringify(d.name||'')}, ${JSON.stringify(d.haendler||'')})">
             <div class="deal-store">${d.haendler || ""}</div>
             <div class="deal-name">${d.name || ""}</div>
-            <div class="deal-unit">${d.einheit || ""}</div>
+            <div class="deal-unit">${d.einheit || ""} <span style="color:#2d5a8a;font-size:11px">· 📊 Verlauf anzeigen</span></div>
           </div>
           <div class="deal-bottom">
             <div class="deal-price-block">
