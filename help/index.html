@@ -1,393 +1,271 @@
-import { useState } from "react";
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Forkcast — Roadmap</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,-apple-system,sans-serif;background:#0d1b2a;color:#e2e8f0;min-height:100vh}
 
-// ── Farben ────────────────────────────────────────────────────
+    /* Header */
+    header{background:#0a1628;border-bottom:1px solid #1e3a5f;padding:22px 24px 20px;position:sticky;top:0;z-index:10}
+    .header-inner{max-width:760px;margin:0 auto}
+    .header-label{font-size:12px;color:#4a7fa5;font-weight:600;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+    header h1{font-size:26px;font-weight:800;color:#f0f6ff;margin-bottom:8px}
+    header p{font-size:14px;color:#7ca8cc;line-height:1.6}
+    .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+
+    /* Tabs */
+    .tabs{background:#0a1628;border-bottom:1px solid #1e3a5f;padding:0 24px;overflow-x:auto}
+    .tabs-inner{max-width:760px;margin:0 auto;display:flex;gap:2px;min-width:max-content}
+    .tab-btn{padding:14px 16px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap;color:#7ca8cc;border-bottom:2px solid transparent;transition:all .15s;font-family:inherit}
+    .tab-btn.active{color:#22c55e;border-bottom-color:#22c55e}
+    .tab-count{font-size:11px;padding:1px 6px;border-radius:10;margin-left:4px;background:rgba(74,127,165,.2);color:#4a7fa5}
+    .tab-btn.active .tab-count{background:rgba(34,197,94,.2);color:#22c55e}
+
+    /* Main */
+    main{max-width:760px;margin:0 auto;padding:24px 24px 60px}
+
+    /* Alert banners */
+    .alert{border-radius:14px;padding:14px 18px;margin-bottom:20px}
+    .alert-title{font-weight:700;margin-bottom:4px}
+    .alert-sub{font-size:13px;color:#7ca8cc}
+
+    /* Cards */
+    .card{background:#0f2236;border:1px solid #1e3a5f;border-radius:14px;padding:16px 18px;margin-bottom:10px}
+    .bug-card.high{border-color:rgba(239,68,68,.5)}
+    .bug-title{font-size:15px;font-weight:700;color:#e2e8f0;flex:1;margin-right:12px}
+    .bug-body{font-size:13px;color:#7ca8cc;line-height:1.6;margin-top:8px}
+    .card-header{display:flex;align-items:center;gap:12px;cursor:pointer}
+    .card-emoji{font-size:28px;flex-shrink:0}
+    .card-info{flex:1}
+    .card-title{font-size:15px;font-weight:700;color:#e2e8f0;margin-bottom:6px}
+    .card-badges{display:flex;gap:6px;flex-wrap:wrap}
+    .card-arrow{color:#4a7fa5;font-size:18px;flex-shrink:0;transition:transform .2s}
+    .card.open .card-arrow{transform:rotate(180deg)}
+    .card-detail{font-size:14px;color:#7ca8cc;line-height:1.65;margin-top:12px;padding-top:12px;border-top:1px solid #1e3a5f;display:none}
+    .card.open .card-detail{display:block}
+
+    /* Badge */
+    .badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+
+    /* Bug header */
+    .bug-head{display:flex;justify-content:space-between;align-items:flex-start}
+
+    /* Recommendation */
+    .rec-card{background:#0f2236;border:1px solid #1e3a5f;border-radius:16px;padding:20px 22px;margin-top:28px}
+    .rec-title{font-weight:700;color:#e2e8f0;font-size:16px;margin-bottom:14px}
+    .rec-item{display:flex;gap:14px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #1e3a5f}
+    .rec-item:last-child{border-bottom:none}
+    .rec-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+    .rec-label{font-weight:700;font-size:14px}
+    .rec-desc{font-size:13px;color:#7ca8cc;margin-top:2px}
+
+    /* Tab content sections */
+    .tab-content{display:none}
+    .tab-content.active{display:block}
+
+    @media(max-width:600px){
+      main{padding:16px 16px 60px}
+      header{padding:16px 16px 14px}
+      header h1{font-size:22px}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-label">🛒 Forkcast</div>
+    <h1>Was könnte noch besser sein?</h1>
+    <p>Vollständige Analyse aller Komponenten — von der Datenpipeline bis zum Frontend.</p>
+    <div class="badge-row" id="status-badges"></div>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tabs-inner" id="tab-bar"></div>
+</div>
+
+<main>
+  <div id="tab-bugs" class="tab-content active"></div>
+  <div id="tab-sofort" class="tab-content"></div>
+  <div id="tab-mittel" class="tab-content"></div>
+  <div id="tab-groß" class="tab-content"></div>
+  <div id="tab-ki" class="tab-content"></div>
+
+  <div class="rec-card">
+    <div class="rec-title">💡 Empfehlung für die nächsten Schritte</div>
+    <div id="rec-list"></div>
+  </div>
+</main>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────
 const C = {
-  bg:      "#080f1a",
-  surface: "#0d1b2a",
-  card:    "#0f2236",
-  border:  "#1e3a5f",
-  text:    "#e2e8f0",
-  muted:   "#4a7fa5",
-  dim:     "#1e3a5f",
-  green:   "#22c55e",
-  purple:  "#a855f7",
-  orange:  "#f97316",
-  yellow:  "#f59e0b",
-  cyan:    "#06b6d4",
-  pink:    "#ec4899",
-  indigo:  "#6366f1",
-  gray:    "#64748b",
+  green:"#22c55e", yellow:"#f59e0b", red:"#ef4444",
+  purple:"#a855f7", orange:"#f97316", cyan:"#06b6d4", muted:"#4a7fa5"
 };
 
-// ── Komponenten-Daten ─────────────────────────────────────────
-const TOOLS = [
-  {
-    id: "cursor",    emoji: "✏️",  name: "Cursor",           color: C.gray,
-    role: "Dein Code-Editor",
-    desc: "Hier schreibst du Code. Wie Word, aber für Programmieren. Du hast damit main.py, recipe_router.py usw. geschrieben.",
-    wo: "Lokal auf deinem PC",
-  },
-  {
-    id: "github",    emoji: "📁",  name: "GitHub",           color: C.indigo,
-    role: "Das Code-Lager",
-    desc: "Jede Datei die du hochlädst landet hier. GitHub merkt sich jede Änderung — du kannst immer zurück zu alten Versionen.",
-    wo: "github.com/Geminus-jpg",
-  },
-  {
-    id: "actions",   emoji: "⏰",  name: "GitHub Actions",   color: C.yellow,
-    role: "Der automatische Wecker",
-    desc: "Jeden Montag startet GitHub automatisch deine Scraper — ohne dass du irgendetwas tun musst. Definiert in .github/workflows/scraper.yml.",
-    wo: "Läuft automatisch in GitHub",
-  },
-  {
-    id: "marktguru", emoji: "🏪",  name: "Marktguru API",    color: C.cyan,
-    role: "Angebots-Quelle #1",
-    desc: "Ein externer Dienst der dir Angebote von REWE, Lidl, Edeka, Netto usw. als strukturierte Daten liefert. Dein scraper_marktguru.py ruft diesen ab.",
-    wo: "marktguru.de (extern)",
-  },
-  {
-    id: "aldi",      emoji: "🤖",  name: "Aldi Scraper",     color: C.cyan,
-    role: "Angebots-Quelle #2",
-    desc: "Ein Python-Script das automatisch die Aldi-Website besucht und Angebote herauskopiert — wie ein Roboter der eine Webseite liest.",
-    wo: "aldi-nord.de (scrapt extern)",
-  },
-  {
-    id: "supabase",  emoji: "🗄️",  name: "Supabase",         color: C.green,
-    role: "Die Datenbank",
-    desc: "Alle Angebote, Preishistorie, Nutzerprofile und gecachte Rezepte werden hier gespeichert. Wie eine riesige Excel-Tabelle in der Cloud.",
-    wo: "supabase.com (Cloud)",
-  },
-  {
-    id: "railway",   emoji: "🚂",  name: "Railway",          color: C.purple,
-    role: "Der Server",
-    desc: "Dein FastAPI-Backend läuft hier 24/7. Railway ist wie eine Mietwohnung für deinen Code — du zahlst Miete, der Server läuft immer.",
-    wo: "railway.app (Cloud-Server)",
-  },
-  {
-    id: "fastapi",   emoji: "⚡",  name: "FastAPI (Backend)", color: C.purple,
-    role: "Das Gehirn",
-    desc: "Dein Python-Code (main.py + recipe_router.py). Empfängt Anfragen, holt Daten aus Supabase, ruft Claude auf, schickt Antworten zurück.",
-    wo: "Läuft auf Railway",
-  },
-  {
-    id: "claude",    emoji: "🧠",  name: "Claude / Anthropic", color: C.orange,
-    role: "Die KI",
-    desc: "Generiert personalisierte Rezepte aus den aktuellen Angeboten + deinen Präferenzen. Kostet pro Anfrage ~1 Cent. Ergebnis wird gecacht.",
-    wo: "api.anthropic.com (extern)",
-  },
-  {
-    id: "website",   emoji: "🌐",  name: "wietrychowski.de", color: C.pink,
-    role: "Die Website (Frontend)",
-    desc: "Was der User sieht. /Forkcast/ ist die DealKoch-App, /Angebote/ die Deals-Übersicht. Liegt als statische Dateien auf GitHub Pages.",
-    wo: "GitHub Pages (world-explorer Repo)",
-  },
+const BUGS = [
+  { title:"recipe_interactions nie beschrieben", detail:"Tabelle existiert, Backend-Endpoint existiert — aber Frontend ruft ihn nie auf. Kein 'Habe ich gekocht' Button vorhanden. ✅ Inzwischen behoben.", severity:"mittel" },
+  { title:"preishistorie nie angezeigt", detail:"Tabelle wird jede Woche befüllt, aber nirgendwo genutzt. Preisverlauf pro Produkt wäre wertvolle Info. ✅ Sparkline-Chart eingebaut.", severity:"niedrig" },
+  { title:"Combi/Netto/REWE ohne Preisdaten", detail:"Diese Märkte erscheinen in /haendler, haben aber keine preis/normalpreis Felder → Deals werden beim Rezept-Matching gefiltert.", severity:"hoch" },
+  { title:"estimatedCost/savedAmount ungenau", detail:"Claude schätzt Kosten — die echten Preise liegen in der DB. Schätzungen können um 20-40% abweichen.", severity:"mittel" },
+  { title:"/api/v1/recipes/stores nie genutzt", detail:"Eigener Endpoint für Märkte mit Deal-Anzahl existiert, Frontend nutzt aber /haendler stattdessen.", severity:"niedrig" },
+  { title:"top_disliked_ingredients View ungenutzt", detail:"SQL View wurde angelegt, wird aber nie abgefragt. Könnte für Analytics oder Prompt-Verbesserung genutzt werden.", severity:"niedrig" },
+  { title:"gueltig_bis nicht in DealKoch angezeigt", detail:"Ablaufdatum ist in der DB — wäre wichtig für den User ('gilt noch 2 Tage'). Daten sind vorhanden.", severity:"mittel" },
 ];
 
-// ── Flow 1: Wöchentliche Daten ────────────────────────────────
-const FLOW_WEEKLY = [
-  { emoji: "⏰", tool: "GitHub Actions", color: C.yellow,  text: "Jeden Montag früh startet GitHub Actions automatisch" },
-  { emoji: "🤖", tool: "Scraper",        color: C.cyan,    text: "scraper_aldi.py besucht die Aldi-Website & liest Angebote aus" },
-  { emoji: "🏪", tool: "Marktguru API",  color: C.cyan,    text: "scraper_marktguru.py fragt die Marktguru-API für REWE, Lidl, Edeka usw. ab" },
-  { emoji: "🗄️", tool: "Supabase",       color: C.green,   text: "Alle neuen Angebote + Preise werden in die Datenbank gespeichert" },
-  { emoji: "✅", tool: "Fertig!",         color: C.green,   text: "Die Daten sind frisch — für die ganze Woche verfügbar" },
+const FEATURES = {
+  sofort: [
+    { emoji:"📤", title:"Web Share API — Liste ans Handy", detail:"Ein 'Teilen'-Button in der Einkaufsliste öffnet nativ WhatsApp/Notizen/etc. auf dem Handy. ~1 Stunde Arbeit.", impact:"hoch", effort:"minimal" },
+    { emoji:"⭐", title:"'Habe ich gekocht' Button", detail:"Nach dem Kochen bewerten (1-5 Sterne). Schreibt in recipe_interactions. Grundlage für Lernalgorithmus. ✅ Inzwischen eingebaut.", impact:"hoch", effort:"klein" },
+    { emoji:"📅", title:"Ablaufdatum auf Deal-Karten", detail:"'Gilt bis 21.06.' direkt auf der Karte. Daten sind schon in der DB (gueltig_bis) — eine Zeile Code.", impact:"mittel", effort:"minimal" },
+    { emoji:"🔍", title:"Suche in Angebote-Seite", detail:"Backend hat /angebote/suche Endpoint bereits — UI fehlt. Suchleiste oben drüber bauen.", impact:"mittel", effort:"klein" },
+    { emoji:"↕️", title:"Rezepte filtern & sortieren", detail:"Nach Kochzeit, Kalorien, Ersparnis, Schwierigkeit sortieren. Slider für Max-Kalorien.", impact:"mittel", effort:"klein" },
+    { emoji:"🖨️", title:"Einkaufsliste drucken/exportieren", detail:"'Als Text kopieren' oder Print-CSS für Papiereinkauf — besonders nützlich wenn man kein Handy dabei hat.", impact:"mittel", effort:"minimal" },
+  ],
+  mittelfristig: [
+    { emoji:"📅", title:"7-Tage Wochenplan", detail:"Jeden Tag ein Rezept wählen, kombinierte Einkaufsliste für die ganze Woche — die eigentliche Killer-Feature von Forkcast.", impact:"sehr hoch", effort:"mittel" },
+    { emoji:"💰", title:"Echte Kostenberechnung", detail:"Nach Claude's Antwort: Zutaten gegen DB matchen → echte Preise eintragen statt Claude schätzen zu lassen. Genauer und günstiger.", impact:"hoch", effort:"mittel" },
+    { emoji:"📊", title:"Preishistorie-Chart", detail:"Auf der Angebote-Seite: Sparkline pro Produkt. ✅ Grundstruktur eingebaut. Braucht mehrere Wochen Daten für aussagekräftige Charts.", impact:"hoch", effort:"mittel" },
+    { emoji:"📱", title:"PWA — App auf dem Handy", detail:"manifest.json + Service Worker → DealKoch wird zur installierbaren App. Einkaufsliste offline nutzbar.", impact:"hoch", effort:"mittel" },
+    { emoji:"🧠", title:"Lernender Prompt", detail:"recipe_interactions auswerten: wenn User Suppen oft überspringt, kommen weniger Suppen. ✅ Grundstruktur eingebaut.", impact:"hoch", effort:"mittel" },
+    { emoji:"🔔", title:"Preisalarm", detail:"'Hähnchen kostet diese Woche −35% vs. Durchschnitt' — preishistorie Tabelle ist befüllt, Vergleichslogik fehlt noch.", impact:"mittel", effort:"mittel" },
+    { emoji:"📊", title:"Koch-Dashboard", detail:"Was wurde diese Woche/Monat gekocht? Kalorien-Tracking über Zeit. Basis: recipe_interactions Tabelle.", impact:"mittel", effort:"mittel" },
+  ],
+  groß: [
+    { emoji:"🔐", title:"Echter Login", detail:"Aktuell kann jeder auf 'Janis' Profil zugreifen wenn er den Namen kennt. Supabase Auth wäre die saubere Lösung für echte Mehrbenutzerfähigkeit.", impact:"sehr hoch", effort:"groß" },
+    { emoji:"🏪", title:"Combi/Netto/REWE Preise fixen", detail:"Marktguru liefert für diese Märkte keine Preisdaten. Eigene Scraper oder andere API-Quelle nötig — größter Datenlücke.", impact:"hoch", effort:"groß" },
+    { emoji:"🔄", title:"Scraper auch Donnerstags", detail:"Viele Supermarkt-Angebote starten donnerstags. Montag-only bedeutet 3 Tage verpasste Deals pro Woche.", impact:"mittel", effort:"klein" },
+    { emoji:"🌍", title:"Mehrere Postleitzahlen", detail:"Aktuell hardcoded auf 33818 (Leopoldshöhe). PLZ als Parameter würde andere Regionen unterstützen und Forkcast skalierbar machen.", impact:"hoch", effort:"mittel" },
+    { emoji:"🤝", title:"Familien-Modus", detail:"Mehrere Profile unter einem Account. 'Wir kaufen für 4 Personen, 2 mögen kein Fleisch' — geteilte Einkaufsliste.", impact:"mittel", effort:"groß" },
+  ],
+  ki: [
+    { emoji:"🌿", title:"Saisonale Anpassung", detail:"Sommer → Salate/Grill, Winter → Suppen/Aufläufe. Aktuelles Datum in den Prompt einfließen lassen — minimaler Aufwand.", impact:"mittel", effort:"minimal" },
+    { emoji:"⚖️", title:"Portionen-Scaler", detail:"Zutaten-Mengen im Rezept dynamisch anpassen (für 3 statt 2 Personen). Einfache Multiplikation im Frontend.", impact:"mittel", effort:"klein" },
+    { emoji:"🔗", title:"Reste-Rezepte", detail:"'Ich habe noch Hähnchen vom Dienstag — was kann ich heute abend machen?' — neuer Prompt-Modus mit Zutaten-Input.", impact:"hoch", effort:"mittel" },
+    { emoji:"📸", title:"Rezept-Bilder generieren", detail:"DALL-E oder Stable Diffusion für appetitliche Bilder. Kostet extra aber verbessert UX und Appetit stark.", impact:"mittel", effort:"mittel" },
+    { emoji:"🧮", title:"Nährwert-Validierung", detail:"Claude schätzt Makros — oft ungenau. Gegen Open Food Facts API abgleichen für verlässliche Nährwert-Angaben.", impact:"mittel", effort:"groß" },
+  ],
+};
+
+const TABS = [
+  { id:"bugs",  label:"🐛 Bekannte Lücken",   count:BUGS.length,                  alert:{ bg:"#ef444412", bo:"#ef444430", color:"#ef4444", title:"⚠️ Vorhandene Tabellen & Endpoints die nie genutzt werden", sub:"Diese Sachen wurden gebaut, laufen aber ins Leere. Kein Crash, aber verschwendetes Potenzial." }},
+  { id:"sofort",label:"⚡ Sofort umsetzbar",  count:FEATURES.sofort.length,       alert:{ bg:"#22c55e12", bo:"#22c55e30", color:"#22c55e", title:"⚡ Diese Features sind schnell umsetzbar", sub:"Kleiner Aufwand, direkt sichtbarer Mehrwert. Gute nächste Schritte." }},
+  { id:"mittel", label:"📅 Mittelfristig",     count:FEATURES.mittelfristig.length,alert:{ bg:"#f59e0b12", bo:"#f59e0b30", color:"#f59e0b", title:"📅 Mittelfristig — 1-2 Tage Arbeit je Feature", sub:"Der Wochenplan allein würde DealKoch von 'cool' zu 'wirklich nützlich' machen." }},
+  { id:"groß",   label:"🏗️ Größere Projekte",  count:FEATURES.groß.length,         alert:{ bg:"#f9731612", bo:"#f9731630", color:"#f97316", title:"🏗️ Größere Umbauarbeiten", sub:"Lohnt sich wenn das Projekt wächst oder andere Nutzer dazu kommen." }},
+  { id:"ki",     label:"🧠 KI-Verbesserungen", count:FEATURES.ki.length,           alert:{ bg:"#a855f712", bo:"#a855f730", color:"#a855f7", title:"🧠 KI smarter machen", sub:"Rezepte die persönlicher werden je mehr du die App nutzt." }},
 ];
 
-// ── Flow 2: User öffnet DealKoch ──────────────────────────────
-const FLOW_USER = [
-  { emoji: "👆", tool: "User",           color: C.pink,    text: "Du öffnest wietrychowski.de/Forkcast/ im Browser" },
-  { emoji: "🌐", tool: "Frontend",       color: C.pink,    text: "Die React-App lädt und schickt deine User-ID ans Backend" },
-  { emoji: "🚂", tool: "Railway / API",  color: C.purple,  text: "Das FastAPI-Backend empfängt die Anfrage", branch: null },
-  { emoji: "🗄️", tool: "Supabase",       color: C.green,   text: "Gibt es schon Rezepte für dich diese Woche?", isBranch: true },
-  { emoji: "⚡", tool: "Cache-Hit",      color: C.green,   text: "JA → Rezepte sofort aus Supabase zurückgeben (superschnell!)", isYes: true },
-  { emoji: "🗄️", tool: "Supabase",       color: C.green,   text: "NEIN → Aktuelle Angebote aus der Datenbank holen", isNo: true },
-  { emoji: "🧠", tool: "Claude AI",      color: C.orange,  text: "Claude bekommt Angebote + deine Präferenzen und generiert 6 Rezepte (~5 Sek.)" },
-  { emoji: "🗄️", tool: "Supabase",       color: C.green,   text: "Rezepte werden für nächste Woche gecacht (kein erneuter Claude-Aufruf)" },
-  { emoji: "🌐", tool: "Frontend",       color: C.pink,    text: "Rezepte werden im Browser angezeigt — fertig!" },
+const IMPACT_C = { "sehr hoch":C.green, "hoch":C.cyan, "mittel":C.yellow, "niedrig":C.muted };
+const EFFORT_C = { "minimal":C.green, "klein":C.cyan, "mittel":C.yellow, "groß":C.orange };
+const SEV_C    = { "hoch":C.red, "mittel":C.yellow, "niedrig":C.muted };
+
+const STATUS = [
+  "✅ Marktguru + Aldi","✅ Supabase DB","✅ GitHub Actions",
+  "✅ FastAPI / Railway","✅ Claude Haiku","✅ DealKoch App",
+  "✅ Angebote-Seite","✅ Einkaufsliste","✅ Interaktionen","✅ Preishistorie",
 ];
 
-// ── Tool Card ─────────────────────────────────────────────────
-function ToolCard({ tool, active, onClick }) {
-  return (
-    <div onClick={onClick} style={{
-      background: active ? `${tool.color}18` : C.card,
-      border: `1.5px solid ${active ? tool.color : C.border}`,
-      borderRadius: 14, padding: "16px 18px", cursor: "pointer",
-      transition: "all .18s",
-    }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-        <span style={{ fontSize: 24 }}>{tool.emoji}</span>
-        <div>
-          <div style={{ fontWeight: 700, fontSize: 15, color: active ? tool.color : C.text }}>{tool.name}</div>
-          <div style={{ fontSize: 11, fontWeight: 600, color: tool.color, textTransform: "uppercase", letterSpacing: ".05em" }}>{tool.role}</div>
-        </div>
-      </div>
-      {active && (
-        <div style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.6, marginTop: 6, borderTop: `1px solid ${C.border}`, paddingTop: 10 }}>
-          <p style={{ marginBottom: 6 }}>{tool.desc}</p>
-          <span style={{ fontSize: 11, background: C.surface, padding: "3px 8px", borderRadius: 6, color: C.muted }}>📍 {tool.wo}</span>
-        </div>
-      )}
-    </div>
-  );
+// ── Render helpers ────────────────────────────────────────────
+function badge(label, color) {
+  return `<span class="badge" style="background:${color}20;color:${color};border:1px solid ${color}40">${label}</span>`;
 }
 
-// ── Flow Step ─────────────────────────────────────────────────
-function FlowStep({ step, index, total }) {
-  return (
-    <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0 }}>
-        <div style={{
-          width: 36, height: 36, borderRadius: "50%", flexShrink: 0,
-          background: `${step.color}22`, border: `2px solid ${step.color}`,
-          display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16,
-        }}>{step.emoji}</div>
-        {index < total - 1 && (
-          <div style={{ width: 2, height: 28, background: C.border, margin: "4px 0" }} />
-        )}
+function renderBugs() {
+  return BUGS.map(b => `
+    <div class="card bug-card ${b.severity==='hoch'?'high':''}">
+      <div class="bug-head">
+        <span class="bug-title">${b.title}</span>
+        ${badge('Priorität: '+b.severity, SEV_C[b.severity])}
       </div>
-      <div style={{
-        background: step.isYes ? `${C.green}12` : step.isNo ? `${C.orange}10` : C.card,
-        border: `1px solid ${step.isYes ? C.green : step.isNo ? C.orange : C.border}`,
-        borderRadius: 12, padding: "10px 14px", flex: 1, marginBottom: index < total - 1 ? 4 : 0,
-      }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: step.color, textTransform: "uppercase", letterSpacing: ".05em", marginBottom: 3 }}>
-          {step.tool}
-        </div>
-        <div style={{ fontSize: 14, color: C.text, lineHeight: 1.5 }}>{step.text}</div>
-      </div>
-    </div>
-  );
+      <p class="bug-body">${b.detail}</p>
+    </div>`).join('');
 }
 
-// ── Main App ──────────────────────────────────────────────────
-export default function App() {
-  const [activeTool, setActiveTool] = useState(null);
-  const [tab, setTab] = useState("was"); // was | weekly | user
-
-  return (
-    <div style={{ minHeight: "100vh", background: C.bg, fontFamily: "system-ui,-apple-system,sans-serif", color: C.text }}>
-
-      {/* Header */}
-      <div style={{ background: C.surface, borderBottom: `1px solid ${C.border}`, padding: "24px 24px 20px" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto" }}>
-          <div style={{ fontSize: 12, color: C.muted, fontWeight: 600, textTransform: "uppercase", letterSpacing: ".08em", marginBottom: 6 }}>
-            🛒 Forkcast
+function renderFeatures(list) {
+  return list.map((f,i) => `
+    <div class="card" id="fc-${currentTab}-${i}" onclick="toggleCard('fc-${currentTab}-${i}')">
+      <div class="card-header">
+        <span class="card-emoji">${f.emoji}</span>
+        <div class="card-info">
+          <div class="card-title">${f.title}</div>
+          <div class="card-badges">
+            ${badge('Impact: '+f.impact, IMPACT_C[f.impact])}
+            ${badge('Aufwand: '+f.effort, EFFORT_C[f.effort])}
           </div>
-          <h1 style={{ fontSize: 28, fontWeight: 800, color: "#f0f6ff", marginBottom: 8 }}>
-            Wie funktioniert das alles?
-          </h1>
-          <p style={{ fontSize: 15, color: "#7ca8cc", lineHeight: 1.6, maxWidth: 580 }}>
-            Du hast ein komplettes System gebaut — von der Datensammlung bis zur KI-generierten Rezeptempfehlung. 
-            Hier eine Erklärung für alle die noch nie programmiert haben.
-          </p>
         </div>
+        <span class="card-arrow">▼</span>
       </div>
-
-      {/* Tabs */}
-      <div style={{ background: C.surface, borderBottom: `1px solid ${C.border}`, padding: "0 24px" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", gap: 4 }}>
-          {[
-            { id: "was",    label: "🧩 Was ist was?" },
-            { id: "weekly", label: "📅 Wöchentlich" },
-            { id: "user",   label: "👆 Was passiert beim Öffnen?" },
-          ].map(t => (
-            <button key={t.id} onClick={() => setTab(t.id)} style={{
-              padding: "14px 18px", border: "none", background: "transparent", cursor: "pointer",
-              fontSize: 14, fontWeight: 600,
-              color: tab === t.id ? C.green : C.muted,
-              borderBottom: `2px solid ${tab === t.id ? C.green : "transparent"}`,
-              transition: "all .15s", whiteSpace: "nowrap",
-            }}>{t.label}</button>
-          ))}
-        </div>
-      </div>
-
-      <div style={{ maxWidth: 860, margin: "0 auto", padding: "28px 24px" }}>
-
-        {/* Tab 1: Was ist was */}
-        {tab === "was" && (
-          <div>
-            <p style={{ fontSize: 14, color: C.muted, marginBottom: 20 }}>
-              Klick auf ein Tool um mehr zu erfahren 👇
-            </p>
-
-            {/* Große System-Übersicht */}
-            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 20, padding: 24, marginBottom: 24 }}>
-              <div style={{ fontSize: 13, color: C.muted, fontWeight: 600, textTransform: "uppercase", letterSpacing: ".06em", marginBottom: 18 }}>
-                Das große Bild
-              </div>
-
-              {/* Visuelle Übersicht */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr auto 1fr", gap: 8, alignItems: "center", marginBottom: 16 }}>
-                {/* Spalte 1: Du */}
-                <div style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: 32, marginBottom: 6 }}>✏️</div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: C.gray }}>Du & Cursor</div>
-                  <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>schreibst Code</div>
-                </div>
-                <div style={{ fontSize: 24, color: C.border, textAlign: "center" }}>→</div>
-
-                {/* Spalte 2: GitHub */}
-                <div style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: 32, marginBottom: 6 }}>📁</div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: C.indigo }}>GitHub</div>
-                  <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>speichert Code</div>
-                </div>
-                <div style={{ fontSize: 24, color: C.border, textAlign: "center" }}>→</div>
-
-                {/* Spalte 3: Zwei Pfade */}
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  <div style={{ background: `${C.purple}15`, border: `1px solid ${C.purple}40`, borderRadius: 12, padding: "10px 14px", textAlign: "center" }}>
-                    <div style={{ fontSize: 20 }}>🚂</div>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: C.purple }}>Railway</div>
-                    <div style={{ fontSize: 10, color: C.muted }}>startet Backend</div>
-                  </div>
-                  <div style={{ background: `${C.yellow}15`, border: `1px solid ${C.yellow}40`, borderRadius: 12, padding: "10px 14px", textAlign: "center" }}>
-                    <div style={{ fontSize: 20 }}>⏰</div>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: C.yellow }}>Actions</div>
-                    <div style={{ fontSize: 10, color: C.muted }}>startet Scraper</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Zweite Reihe */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr auto 1fr", gap: 8, alignItems: "center" }}>
-                <div style={{ background: `${C.cyan}15`, border: `1px solid ${C.cyan}40`, borderRadius: 12, padding: "12px 14px", textAlign: "center" }}>
-                  <div style={{ fontSize: 24 }}>🏪🤖</div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: C.cyan }}>Marktguru + Aldi</div>
-                  <div style={{ fontSize: 10, color: C.muted }}>Angebote holen</div>
-                </div>
-                <div style={{ fontSize: 24, color: C.border, textAlign: "center" }}>→</div>
-
-                <div style={{ background: `${C.green}15`, border: `1px solid ${C.green}40`, borderRadius: 12, padding: "12px 14px", textAlign: "center" }}>
-                  <div style={{ fontSize: 24 }}>🗄️</div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: C.green }}>Supabase</div>
-                  <div style={{ fontSize: 10, color: C.muted }}>Datenbank für alles</div>
-                </div>
-                <div style={{ fontSize: 24, color: C.border, textAlign: "center" }}>→</div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  <div style={{ background: `${C.orange}15`, border: `1px solid ${C.orange}40`, borderRadius: 12, padding: "10px 14px", textAlign: "center" }}>
-                    <div style={{ fontSize: 20 }}>🧠</div>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: C.orange }}>Claude KI</div>
-                    <div style={{ fontSize: 10, color: C.muted }}>Rezepte generieren</div>
-                  </div>
-                  <div style={{ background: `${C.pink}15`, border: `1px solid ${C.pink}40`, borderRadius: 12, padding: "10px 14px", textAlign: "center" }}>
-                    <div style={{ fontSize: 20 }}>🌐</div>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: C.pink }}>Website</div>
-                    <div style={{ fontSize: 10, color: C.muted }}>User sieht alles</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Tool Karten */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              {TOOLS.map(tool => (
-                <ToolCard
-                  key={tool.id}
-                  tool={tool}
-                  active={activeTool === tool.id}
-                  onClick={() => setActiveTool(activeTool === tool.id ? null : tool.id)}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Tab 2: Wöchentlicher Flow */}
-        {tab === "weekly" && (
-          <div>
-            <div style={{ background: `${C.yellow}12`, border: `1px solid ${C.yellow}30`, borderRadius: 16, padding: "16px 20px", marginBottom: 24 }}>
-              <div style={{ fontSize: 16, fontWeight: 700, color: C.yellow, marginBottom: 4 }}>⏰ Läuft jeden Montag automatisch</div>
-              <div style={{ fontSize: 14, color: "#94a3b8", lineHeight: 1.6 }}>
-                Du musst nichts tun. GitHub Actions startet die Scraper vollautomatisch, holt frische Angebote und speichert sie in Supabase — bereit für die ganze Woche.
-              </div>
-            </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {FLOW_WEEKLY.map((step, i) => (
-                <FlowStep key={i} step={step} index={i} total={FLOW_WEEKLY.length} />
-              ))}
-            </div>
-
-            <div style={{ marginTop: 28, background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: "18px 20px" }}>
-              <div style={{ fontWeight: 700, color: C.text, marginBottom: 12 }}>📂 Was ist wo in GitHub?</div>
-              {[
-                { file: "scraper_aldi.py",          desc: "Liest Aldi-Angebote von der Website",               color: C.cyan },
-                { file: "scraper_marktguru.py",     desc: "Holt Angebote von der Marktguru-API",               color: C.cyan },
-                { file: ".github/workflows/scraper.yml", desc: "Der Wecker — definiert wann die Scraper laufen", color: C.yellow },
-                { file: "main.py",                  desc: "FastAPI-Backend — alle API-Endpoints",              color: C.purple },
-                { file: "recipe_router.py",         desc: "Rezept-Matching — KI, Cache, Store-Filter",         color: C.purple },
-                { file: "requirements.txt",         desc: "Liste aller Python-Pakete die Railway installiert", color: C.gray },
-              ].map(f => (
-                <div key={f.file} style={{ display: "flex", gap: 12, alignItems: "center", padding: "8px 0", borderBottom: `1px solid ${C.border}` }}>
-                  <code style={{ fontSize: 12, fontFamily: "monospace", color: f.color, background: `${f.color}15`, padding: "3px 8px", borderRadius: 6, whiteSpace: "nowrap" }}>
-                    {f.file}
-                  </code>
-                  <span style={{ fontSize: 13, color: "#94a3b8" }}>{f.desc}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Tab 3: User Flow */}
-        {tab === "user" && (
-          <div>
-            <div style={{ background: `${C.pink}12`, border: `1px solid ${C.pink}30`, borderRadius: 16, padding: "16px 20px", marginBottom: 24 }}>
-              <div style={{ fontSize: 16, fontWeight: 700, color: C.pink, marginBottom: 4 }}>👆 Was passiert in ~3 Sekunden?</div>
-              <div style={{ fontSize: 14, color: "#94a3b8", lineHeight: 1.6 }}>
-                Wenn du die DealKoch-App öffnest passieren im Hintergrund bis zu 8 Schritte — meistens aber nur 2, weil der Cache greift.
-              </div>
-            </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {FLOW_USER.map((step, i) => (
-                <FlowStep key={i} step={step} index={i} total={FLOW_USER.length} />
-              ))}
-            </div>
-
-            <div style={{ marginTop: 28, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-              <div style={{ background: `${C.green}12`, border: `1px solid ${C.green}30`, borderRadius: 16, padding: "18px 20px" }}>
-                <div style={{ fontSize: 22, marginBottom: 8 }}>⚡</div>
-                <div style={{ fontWeight: 700, color: C.green, marginBottom: 6 }}>Cache-Hit (schnell)</div>
-                <div style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.6 }}>
-                  Hast du diese Woche schon Rezepte geladen? Dann kommen sie sofort aus Supabase — keine Claude-Kosten, in unter 1 Sekunde.
-                </div>
-              </div>
-              <div style={{ background: `${C.orange}12`, border: `1px solid ${C.orange}30`, borderRadius: 16, padding: "18px 20px" }}>
-                <div style={{ fontSize: 22, marginBottom: 8 }}>🧠</div>
-                <div style={{ fontWeight: 700, color: C.orange, marginBottom: 6 }}>Erstgenerierung (langsam)</div>
-                <div style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.6 }}>
-                  Erste Anfrage der Woche → Claude wird aufgerufen. Dauert ~5–10 Sekunden und kostet ~1 Cent. Danach immer Cache.
-                </div>
-              </div>
-            </div>
-
-            {/* Supabase Tabellen */}
-            <div style={{ marginTop: 14, background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: "18px 20px" }}>
-              <div style={{ fontWeight: 700, color: C.text, marginBottom: 12 }}>🗄️ Was liegt in Supabase?</div>
-              {[
-                { table: "angebote",             desc: "Alle Supermarkt-Angebote der aktuellen Woche",    rows: "~916",  color: C.green },
-                { table: "preishistorie",         desc: "Preisentwicklung pro Produkt über Zeit",          rows: "wächst", color: C.green },
-                { table: "user_preferences",      desc: "Dein Profil: Ziel, Abneigungen, Märkte",         rows: "1/User", color: C.cyan },
-                { table: "recipe_cache",          desc: "Gecachte Rezepte pro User pro Woche",            rows: "1/User/KW", color: C.yellow },
-                { table: "recipe_interactions",   desc: "Was du gekocht/bewertet hast (Tracking)",        rows: "wächst", color: C.muted },
-              ].map(t => (
-                <div key={t.table} style={{ display: "flex", gap: 12, alignItems: "center", padding: "8px 0", borderBottom: `1px solid ${C.border}` }}>
-                  <code style={{ fontSize: 12, fontFamily: "monospace", color: t.color, background: `${t.color}15`, padding: "3px 8px", borderRadius: 6, minWidth: 160 }}>
-                    {t.table}
-                  </code>
-                  <span style={{ fontSize: 13, color: "#94a3b8", flex: 1 }}>{t.desc}</span>
-                  <span style={{ fontSize: 11, color: C.muted, background: C.surface, padding: "2px 8px", borderRadius: 6 }}>{t.rows}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-      </div>
-    </div>
-  );
+      <div class="card-detail">${f.detail}</div>
+    </div>`).join('');
 }
+
+function renderAlert(a) {
+  return `<div class="alert" style="background:${a.bg};border:1px solid ${a.bo}">
+    <div class="alert-title" style="color:${a.color}">${a.title}</div>
+    <div class="alert-sub">${a.sub}</div>
+  </div>`;
+}
+
+function toggleCard(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+// ── Tab logic ─────────────────────────────────────────────────
+let currentTab = 'bugs';
+
+function switchTab(id) {
+  currentTab = id;
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  document.querySelector(`.tab-btn[data-id="${id}"]`).classList.add('active');
+  renderTab(id);
+}
+
+function renderTab(id) {
+  const el = document.getElementById('tab-'+id);
+  const t = TABS.find(t=>t.id===id);
+  let html = renderAlert(t.alert);
+  if(id === 'bugs') html += renderBugs();
+  else html += renderFeatures(FEATURES[id] || []);
+  el.innerHTML = html;
+}
+
+// ── Init ──────────────────────────────────────────────────────
+// Status badges
+document.getElementById('status-badges').innerHTML = STATUS.map(s =>
+  `<span class="badge" style="background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3)">${s}</span>`
+).join('');
+
+// Tab bar
+document.getElementById('tab-bar').innerHTML = TABS.map(t => `
+  <button class="tab-btn ${t.id==='bugs'?'active':''}" data-id="${t.id}" onclick="switchTab('${t.id}')">
+    ${t.label} <span class="tab-count">${t.count}</span>
+  </button>`).join('');
+
+// Recommendations
+document.getElementById('rec-list').innerHTML = [
+  { n:"1", t:"📤 Web Share", d:"Button für Einkaufsliste → Handy-Problem sofort gelöst", c:C.green },
+  { n:"2", t:"⭐ Koch-Button", d:"'Habe ich gekocht' aktiviert die recipe_interactions Tabelle ✅ Eingebaut", c:C.green },
+  { n:"3", t:"📅 Ablaufdatum", d:"gueltig_bis aus DB anzeigen — eine Zeile Code", c:C.green },
+  { n:"4", t:"📅 Wochenplan", d:"Das eigentliche Ziel: 7 Tage planen, eine Einkaufsliste für alles", c:C.cyan },
+  { n:"5", t:"💰 Echte Kosten", d:"Preise aus DB statt Claude-Schätzung — genauer und günstiger", c:C.cyan },
+].map(r => `
+  <div class="rec-item">
+    <div class="rec-num" style="background:${r.c}">${r.n}</div>
+    <div>
+      <div class="rec-label" style="color:${r.c}">${r.t}</div>
+      <div class="rec-desc">${r.d}</div>
+    </div>
+  </div>`).join('');
+
+// Render initial tab
+renderTab('bugs');
+</script>
+</body>
+</html>
