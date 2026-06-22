@@ -8,264 +8,350 @@
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:system-ui,-apple-system,sans-serif;background:#0d1b2a;color:#e2e8f0;min-height:100vh}
 
-    /* Header */
-    header{background:#0a1628;border-bottom:1px solid #1e3a5f;padding:22px 24px 20px;position:sticky;top:0;z-index:10}
-    .header-inner{max-width:760px;margin:0 auto}
-    .header-label{font-size:12px;color:#4a7fa5;font-weight:600;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
-    header h1{font-size:26px;font-weight:800;color:#f0f6ff;margin-bottom:8px}
-    header p{font-size:14px;color:#7ca8cc;line-height:1.6}
-    .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+    header{background:#0a1628;border-bottom:1px solid #1e3a5f;padding:20px 24px 18px;position:sticky;top:0;z-index:10}
+    .hi{max-width:800px;margin:0 auto}
+    .hl{font-size:11px;color:#4a7fa5;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+    header h1{font-size:24px;font-weight:800;color:#f0f6ff;margin-bottom:4px}
+    header p{font-size:13px;color:#7ca8cc}
+    .op{margin-top:14px}
+    .op-top{display:flex;justify-content:space-between;font-size:12px;color:#7ca8cc;margin-bottom:5px}
+    .pb{height:7px;background:#1e3a5f;border-radius:4px;overflow:hidden}
+    .pf{height:100%;background:linear-gradient(90deg,#22c55e,#06b6d4);border-radius:4px;transition:width .4s}
 
-    /* Tabs */
     .tabs{background:#0a1628;border-bottom:1px solid #1e3a5f;padding:0 24px;overflow-x:auto}
-    .tabs-inner{max-width:760px;margin:0 auto;display:flex;gap:2px;min-width:max-content}
-    .tab-btn{padding:14px 16px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap;color:#7ca8cc;border-bottom:2px solid transparent;transition:all .15s;font-family:inherit}
-    .tab-btn.active{color:#22c55e;border-bottom-color:#22c55e}
-    .tab-count{font-size:11px;padding:1px 6px;border-radius:10;margin-left:4px;background:rgba(74,127,165,.2);color:#4a7fa5}
-    .tab-btn.active .tab-count{background:rgba(34,197,94,.2);color:#22c55e}
+    .tabs-inner{max-width:800px;margin:0 auto;display:flex;gap:2px;min-width:max-content}
+    .tb{padding:11px 13px;border:none;background:transparent;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;color:#7ca8cc;border-bottom:2px solid transparent;transition:all .15s;font-family:inherit}
+    .tb.active{color:#22c55e;border-bottom-color:#22c55e}
+    .tc{font-size:10px;padding:1px 5px;border-radius:8px;margin-left:3px;background:rgba(74,127,165,.2);color:#4a7fa5}
+    .tb.active .tc{background:rgba(34,197,94,.2);color:#22c55e}
 
-    /* Main */
-    main{max-width:760px;margin:0 auto;padding:24px 24px 60px}
-
-    /* Alert banners */
-    .alert{border-radius:14px;padding:14px 18px;margin-bottom:20px}
-    .alert-title{font-weight:700;margin-bottom:4px}
-    .alert-sub{font-size:13px;color:#7ca8cc}
-
-    /* Cards */
-    .card{background:#0f2236;border:1px solid #1e3a5f;border-radius:14px;padding:16px 18px;margin-bottom:10px}
-    .bug-card.high{border-color:rgba(239,68,68,.5)}
-    .bug-title{font-size:15px;font-weight:700;color:#e2e8f0;flex:1;margin-right:12px}
-    .bug-body{font-size:13px;color:#7ca8cc;line-height:1.6;margin-top:8px}
-    .card-header{display:flex;align-items:center;gap:12px;cursor:pointer}
-    .card-emoji{font-size:28px;flex-shrink:0}
-    .card-info{flex:1}
-    .card-title{font-size:15px;font-weight:700;color:#e2e8f0;margin-bottom:6px}
-    .card-badges{display:flex;gap:6px;flex-wrap:wrap}
-    .card-arrow{color:#4a7fa5;font-size:18px;flex-shrink:0;transition:transform .2s}
-    .card.open .card-arrow{transform:rotate(180deg)}
-    .card-detail{font-size:14px;color:#7ca8cc;line-height:1.65;margin-top:12px;padding-top:12px;border-top:1px solid #1e3a5f;display:none}
-    .card.open .card-detail{display:block}
-
-    /* Badge */
-    .badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
-
-    /* Bug header */
-    .bug-head{display:flex;justify-content:space-between;align-items:flex-start}
-
-    /* Recommendation */
-    .rec-card{background:#0f2236;border:1px solid #1e3a5f;border-radius:16px;padding:20px 22px;margin-top:28px}
-    .rec-title{font-weight:700;color:#e2e8f0;font-size:16px;margin-bottom:14px}
-    .rec-item{display:flex;gap:14px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #1e3a5f}
-    .rec-item:last-child{border-bottom:none}
-    .rec-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
-    .rec-label{font-weight:700;font-size:14px}
-    .rec-desc{font-size:13px;color:#7ca8cc;margin-top:2px}
-
-    /* Tab content sections */
+    main{max-width:800px;margin:0 auto;padding:22px 24px 60px}
     .tab-content{display:none}
     .tab-content.active{display:block}
 
+    .phase-box{background:#0f2236;border:1px solid #1e3a5f;border-radius:14px;padding:16px 18px;margin-bottom:18px}
+    .phase-title{font-size:17px;font-weight:800;margin-bottom:3px}
+    .phase-meta{font-size:12px;color:#4a7fa5;font-weight:600;margin-bottom:8px}
+    .phase-desc{font-size:13px;color:#7ca8cc;margin-bottom:12px}
+    .phase-pb{height:5px;background:#1e3a5f;border-radius:3px;overflow:hidden}
+    .phase-pf{height:100%;border-radius:3px;transition:width .4s}
+    .phase-pl{font-size:11px;color:#4a7fa5;margin-top:5px}
+
+    .card{background:#0f2236;border:1px solid #1e3a5f;border-radius:12px;padding:13px 15px;margin-bottom:8px;transition:border-color .2s,background .2s}
+    .card.ck{border-color:rgba(34,197,94,.45);background:#0d2218}
+    .card-head{display:flex;align-items:flex-start;gap:11px;cursor:pointer;user-select:none}
+    .chk{width:20px;height:20px;border:2px solid #2a4a6a;border-radius:5px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;margin-top:1px;background:transparent;font-size:0}
+    .chk.on{background:#22c55e;border-color:#22c55e;font-size:12px;color:#fff;font-weight:700}
+    .card-emoji{font-size:21px;flex-shrink:0;margin-top:0px}
+    .card-body{flex:1;min-width:0}
+    .card-title{font-size:14px;font-weight:700;color:#e2e8f0;margin-bottom:5px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+    .card-badges{display:flex;gap:5px;flex-wrap:wrap}
+    .arrow{color:#4a7fa5;font-size:15px;flex-shrink:0;transition:transform .2s;margin-top:2px}
+    .card.open .arrow{transform:rotate(180deg)}
+    .detail{font-size:13px;color:#7ca8cc;line-height:1.65;margin-top:11px;padding-top:11px;border-top:1px solid #1e3a5f;display:none}
+    .card.open .detail{display:block}
+
+    .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}
+
+    .sec{font-size:11px;font-weight:700;color:#4a7fa5;text-transform:uppercase;letter-spacing:.08em;margin:18px 0 9px 2px}
+
+    .done-wrap{background:#0f2236;border:1px solid #1e3a5f;border-radius:12px;overflow:hidden;margin-bottom:12px}
+    .done-item{display:flex;align-items:flex-start;gap:11px;padding:11px 15px;border-bottom:1px solid #1e3a5f}
+    .done-item:last-child{border-bottom:none}
+    .done-tick{width:19px;height:19px;border-radius:50%;background:#22c55e18;border:1px solid #22c55e50;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:10px;color:#22c55e;font-weight:800}
+    .done-t{font-size:14px;font-weight:700;color:#8aa8c0;margin-bottom:2px}
+    .done-d{font-size:12px;color:#4a7fa5;line-height:1.5}
+
+    .info-box{border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:13px}
+
     @media(max-width:600px){
-      main{padding:16px 16px 60px}
-      header{padding:16px 16px 14px}
-      header h1{font-size:22px}
+      main{padding:16px 14px 60px}
+      header{padding:14px 14px 12px}
+      .tabs{padding:0 14px}
+      header h1{font-size:20px}
     }
   </style>
 </head>
 <body>
-
 <header>
-  <div class="header-inner">
-    <div class="header-label">🛒 Forkcast</div>
-    <h1>Was könnte noch besser sein?</h1>
-    <p>Vollständige Analyse aller Komponenten — von der Datenpipeline bis zum Frontend.</p>
-    <div class="badge-row" id="status-badges"></div>
+  <div class="hi">
+    <div class="hl">🛒 Forkcast / DealKoch</div>
+    <h1>Projekt-Roadmap</h1>
+    <p>Zeitachse aller Features — systematisch abarbeitbar von Phase 1 bis 5.</p>
+    <div class="op">
+      <div class="op-top"><span>Gesamtfortschritt</span><span id="ot">–</span></div>
+      <div class="pb"><div class="pf" id="of" style="width:0%"></div></div>
+    </div>
   </div>
 </header>
 
-<div class="tabs">
-  <div class="tabs-inner" id="tab-bar"></div>
-</div>
+<div class="tabs"><div class="tabs-inner" id="tab-bar"></div></div>
 
 <main>
-  <div id="tab-bugs" class="tab-content active"></div>
-  <div id="tab-sofort" class="tab-content"></div>
-  <div id="tab-mittel" class="tab-content"></div>
-  <div id="tab-groß" class="tab-content"></div>
-  <div id="tab-ki" class="tab-content"></div>
-
-  <div class="rec-card">
-    <div class="rec-title">💡 Empfehlung für die nächsten Schritte</div>
-    <div id="rec-list"></div>
-  </div>
+  <div id="tab-done" class="tab-content active"></div>
+  <div id="tab-p1" class="tab-content"></div>
+  <div id="tab-p2" class="tab-content"></div>
+  <div id="tab-p3" class="tab-content"></div>
+  <div id="tab-p4" class="tab-content"></div>
+  <div id="tab-p5" class="tab-content"></div>
 </main>
 
 <script>
-// ── Data ──────────────────────────────────────────────────────
-const C = {
-  green:"#22c55e", yellow:"#f59e0b", red:"#ef4444",
-  purple:"#a855f7", orange:"#f97316", cyan:"#06b6d4", muted:"#4a7fa5"
-};
+// ── Palette ───────────────────────────────────────────────────
+const C={green:"#22c55e",cyan:"#06b6d4",yellow:"#f59e0b",orange:"#f97316",purple:"#a855f7",muted:"#4a7fa5"};
 
-const BUGS = [
-  { title:"recipe_interactions nie beschrieben", detail:"Tabelle existiert, Backend-Endpoint existiert — aber Frontend ruft ihn nie auf. Kein 'Habe ich gekocht' Button vorhanden. ✅ Inzwischen behoben.", severity:"mittel" },
-  { title:"preishistorie nie angezeigt", detail:"Tabelle wird jede Woche befüllt, aber nirgendwo genutzt. Preisverlauf pro Produkt wäre wertvolle Info. ✅ Sparkline-Chart eingebaut.", severity:"niedrig" },
-  { title:"Combi/Netto/REWE ohne Preisdaten", detail:"Diese Märkte erscheinen in /haendler, haben aber keine preis/normalpreis Felder → Deals werden beim Rezept-Matching gefiltert.", severity:"hoch" },
-  { title:"estimatedCost/savedAmount ungenau", detail:"Claude schätzt Kosten — die echten Preise liegen in der DB. Schätzungen können um 20-40% abweichen.", severity:"mittel" },
-  { title:"/api/v1/recipes/stores nie genutzt", detail:"Eigener Endpoint für Märkte mit Deal-Anzahl existiert, Frontend nutzt aber /haendler stattdessen.", severity:"niedrig" },
-  { title:"top_disliked_ingredients View ungenutzt", detail:"SQL View wurde angelegt, wird aber nie abgefragt. Könnte für Analytics oder Prompt-Verbesserung genutzt werden.", severity:"niedrig" },
-  { title:"gueltig_bis nicht in DealKoch angezeigt", detail:"Ablaufdatum ist in der DB — wäre wichtig für den User ('gilt noch 2 Tage'). Daten sind vorhanden.", severity:"mittel" },
+// ── Completed ─────────────────────────────────────────────────
+const DONE=[
+  // Infrastruktur
+  {e:"🛒",t:"Marktguru + Aldi Scraper",d:"Marktguru API für REWE/Lidl/EDEKA/Netto/Combi. Playwright-Aldi separat (Aldi Nord nicht in Marktguru PLZ 33818). Food-Filter aktiv."},
+  {e:"🗄️",t:"Supabase Datenbank",d:"angebote, preishistorie, recipe_interactions. UNIQUE-Constraints, normalpreis-Migration, SQL View top_disliked_ingredients."},
+  {e:"⚙️",t:"GitHub Actions (wöchentlicher Cron)",d:"Automatisches Scraping jeden Montag. preishistorie ist append-only — wird nie geleert."},
+  {e:"🚀",t:"FastAPI + Railway Deployment",d:"Endpoints: /angebote, /haendler, /kategorien, /preishistorie, /recipes/generate + weitere."},
+  {e:"🤖",t:"Claude Haiku Integration",d:"~480 Input + ~3.000 Output Tokens (~€0,015/Aufruf). Output dominiert Kosten (75%). get_balanced_deals() max 5/Kategorie."},
+  // Frontend
+  {e:"🍴",t:"DealKoch App — Grundgerüst",d:"Rezept-Grid, Detail-Modal, Einkaufsliste, Header-Stats. localStorage-Persistenz per Kalenderwoche."},
+  {e:"🏷️",t:"Angebote-Seite",d:"Deal-Karten nach Kategorie gefiltert. Sparkline-Button on-demand."},
+  {e:"🛍️",t:"Einkaufsliste mit Markt-Badges",d:"store-Feld direkt im Claude-Zutaten-Schema. Zeigt '📍 ALDI Nord · 1.69€' Badge pro On-Sale-Zutat."},
+  // Interaktionen
+  {e:"⭐",t:"recipe_interactions: Kochen + Bewerten",d:"Koch-Button → Stern-Rating (1–5) → Re-Rating möglich → 'Ohne Bewertung' Skip. Kein Doppel-Speicher-Bug. Action: 'cooked', rating: nullable int4."},
+  {e:"🧠",t:"LERNKONTEXT im Prompt",d:"Letzte 20 Interaktionen: bereits gekocht, gut/schlecht bewertet → Abwechslung + Präferenzen im Prompt. Graceful fallback wenn keine Daten."},
+  {e:"👁️",t:"Gekochte Rezepte — visueller Status",d:"cookedMap in localStorage (fk_cooked_{userId}_kw{KW}). Gekochte Karten: 50% Opacity, grauer Rand, ans Ende der Grid, ✓ Badge. Reset bei neuer KW automatisch."},
+  // Daten
+  {e:"📊",t:"Sparkline Charts (Preishistorie)",d:"Color-coded: grün=echter Deal (≤Ø×0,9), gelb=Durchschnitt, rot=überdurchschnittlich. On-demand-Load. Preishistorie-Endpoint gibt min/max/avg/is_real_deal zurück."},
+  {e:"📈",t:"Header Stats — live Ersparnis",d:"Deals-Anzahl + Gesamtersparnis aus ausgewählten Rezepten aktualisiert sich live. Separater /angebote/deals-Request entfernt."},
+  // KI & Prompt
+  {e:"🚫",t:"EXCLUDED_CATEGORIES Filter",d:"Snacks/Eis/Chips/Kaffee/Softdrinks → kein 'Schokoladen-Bowl als Hauptgericht'. Filterung vor Claude-Aufruf."},
+  {e:"⚡",t:"Prompt-Qualität + Token-Optimierung",d:"~48% weniger Input-Tokens. 8 Rezepttypen, max 2× gleiche Hauptzutat, appetitliche Namen. Kompaktes Deal-Format: 'BARILLA Penne | 1.69€ −26% @ ALDI'."},
+  {e:"🏪",t:"store-Feld im Zutaten-Schema",d:"Claude gibt Markt direkt mit im Ingredient-Objekt. Zuverlässiger als nachträgliche deals-Array-Suche (die jetzt leer ist)."},
+  // Polish
+  {e:"🖼️",t:"Favicons + Logos (beide Seiten)",d:"Forkcast: grüne Gabel + %-Badge (SVG). Angebote: Preisschild-Silhouette (Base64 Data-URI). data-* statt JSON.stringify — kein Escaping-Bug mehr."},
+  {e:"💾",t:"normalpreis in preishistorie (beide Scraper)",d:"Beide Scraper speichern jetzt normalpreis. SQL-Migration ausgeführt. Grundlage für Fake-Deal-Erkennung — aussagekräftig ab ~KW 34 2026."},
 ];
 
-const FEATURES = {
-  sofort: [
-    { emoji:"📤", title:"Web Share API — Liste ans Handy", detail:"Ein 'Teilen'-Button in der Einkaufsliste öffnet nativ WhatsApp/Notizen/etc. auf dem Handy. ~1 Stunde Arbeit.", impact:"hoch", effort:"minimal" },
-    { emoji:"⭐", title:"'Habe ich gekocht' Button", detail:"Nach dem Kochen bewerten (1-5 Sterne). Schreibt in recipe_interactions. Grundlage für Lernalgorithmus. ✅ Inzwischen eingebaut.", impact:"hoch", effort:"klein" },
-    { emoji:"📅", title:"Ablaufdatum auf Deal-Karten", detail:"'Gilt bis 21.06.' direkt auf der Karte. Daten sind schon in der DB (gueltig_bis) — eine Zeile Code.", impact:"mittel", effort:"minimal" },
-    { emoji:"🔍", title:"Suche in Angebote-Seite", detail:"Backend hat /angebote/suche Endpoint bereits — UI fehlt. Suchleiste oben drüber bauen.", impact:"mittel", effort:"klein" },
-    { emoji:"↕️", title:"Rezepte filtern & sortieren", detail:"Nach Kochzeit, Kalorien, Ersparnis, Schwierigkeit sortieren. Slider für Max-Kalorien.", impact:"mittel", effort:"klein" },
-    { emoji:"🖨️", title:"Einkaufsliste drucken/exportieren", detail:"'Als Text kopieren' oder Print-CSS für Papiereinkauf — besonders nützlich wenn man kein Handy dabei hat.", impact:"mittel", effort:"minimal" },
-  ],
-  mittelfristig: [
-    { emoji:"📅", title:"7-Tage Wochenplan", detail:"Jeden Tag ein Rezept wählen, kombinierte Einkaufsliste für die ganze Woche — die eigentliche Killer-Feature von Forkcast.", impact:"sehr hoch", effort:"mittel" },
-    { emoji:"💰", title:"Echte Kostenberechnung", detail:"Nach Claude's Antwort: Zutaten gegen DB matchen → echte Preise eintragen statt Claude schätzen zu lassen. Genauer und günstiger.", impact:"hoch", effort:"mittel" },
-    { emoji:"📊", title:"Preishistorie-Chart", detail:"Auf der Angebote-Seite: Sparkline pro Produkt. ✅ Grundstruktur eingebaut. Braucht mehrere Wochen Daten für aussagekräftige Charts.", impact:"hoch", effort:"mittel" },
-    { emoji:"📱", title:"PWA — App auf dem Handy", detail:"manifest.json + Service Worker → DealKoch wird zur installierbaren App. Einkaufsliste offline nutzbar.", impact:"hoch", effort:"mittel" },
-    { emoji:"🧠", title:"Lernender Prompt", detail:"recipe_interactions auswerten: wenn User Suppen oft überspringt, kommen weniger Suppen. ✅ Grundstruktur eingebaut.", impact:"hoch", effort:"mittel" },
-    { emoji:"🔔", title:"Preisalarm", detail:"'Hähnchen kostet diese Woche −35% vs. Durchschnitt' — preishistorie Tabelle ist befüllt, Vergleichslogik fehlt noch.", impact:"mittel", effort:"mittel" },
-    { emoji:"📊", title:"Koch-Dashboard", detail:"Was wurde diese Woche/Monat gekocht? Kalorien-Tracking über Zeit. Basis: recipe_interactions Tabelle.", impact:"mittel", effort:"mittel" },
-  ],
-  groß: [
-    { emoji:"🔐", title:"Echter Login", detail:"Aktuell kann jeder auf 'Janis' Profil zugreifen wenn er den Namen kennt. Supabase Auth wäre die saubere Lösung für echte Mehrbenutzerfähigkeit.", impact:"sehr hoch", effort:"groß" },
-    { emoji:"🏪", title:"Combi/Netto/REWE Preise fixen", detail:"Marktguru liefert für diese Märkte keine Preisdaten. Eigene Scraper oder andere API-Quelle nötig — größter Datenlücke.", impact:"hoch", effort:"groß" },
-    { emoji:"🔄", title:"Scraper auch Donnerstags", detail:"Viele Supermarkt-Angebote starten donnerstags. Montag-only bedeutet 3 Tage verpasste Deals pro Woche.", impact:"mittel", effort:"klein" },
-    { emoji:"🌍", title:"Mehrere Postleitzahlen", detail:"Aktuell hardcoded auf 33818 (Leopoldshöhe). PLZ als Parameter würde andere Regionen unterstützen und Forkcast skalierbar machen.", impact:"hoch", effort:"mittel" },
-    { emoji:"🤝", title:"Familien-Modus", detail:"Mehrere Profile unter einem Account. 'Wir kaufen für 4 Personen, 2 mögen kein Fleisch' — geteilte Einkaufsliste.", impact:"mittel", effort:"groß" },
-  ],
-  ki: [
-    { emoji:"🌿", title:"Saisonale Anpassung", detail:"Sommer → Salate/Grill, Winter → Suppen/Aufläufe. Aktuelles Datum in den Prompt einfließen lassen — minimaler Aufwand.", impact:"mittel", effort:"minimal" },
-    { emoji:"⚖️", title:"Portionen-Scaler", detail:"Zutaten-Mengen im Rezept dynamisch anpassen (für 3 statt 2 Personen). Einfache Multiplikation im Frontend.", impact:"mittel", effort:"klein" },
-    { emoji:"🔗", title:"Reste-Rezepte", detail:"'Ich habe noch Hähnchen vom Dienstag — was kann ich heute abend machen?' — neuer Prompt-Modus mit Zutaten-Input.", impact:"hoch", effort:"mittel" },
-    { emoji:"📸", title:"Rezept-Bilder generieren", detail:"DALL-E oder Stable Diffusion für appetitliche Bilder. Kostet extra aber verbessert UX und Appetit stark.", impact:"mittel", effort:"mittel" },
-    { emoji:"🧮", title:"Nährwert-Validierung", detail:"Claude schätzt Makros — oft ungenau. Gegen Open Food Facts API abgleichen für verlässliche Nährwert-Angaben.", impact:"mittel", effort:"groß" },
-  ],
-};
-
-const TABS = [
-  { id:"bugs",  label:"🐛 Bekannte Lücken",   count:BUGS.length,                  alert:{ bg:"#ef444412", bo:"#ef444430", color:"#ef4444", title:"⚠️ Vorhandene Tabellen & Endpoints die nie genutzt werden", sub:"Diese Sachen wurden gebaut, laufen aber ins Leere. Kein Crash, aber verschwendetes Potenzial." }},
-  { id:"sofort",label:"⚡ Sofort umsetzbar",  count:FEATURES.sofort.length,       alert:{ bg:"#22c55e12", bo:"#22c55e30", color:"#22c55e", title:"⚡ Diese Features sind schnell umsetzbar", sub:"Kleiner Aufwand, direkt sichtbarer Mehrwert. Gute nächste Schritte." }},
-  { id:"mittel", label:"📅 Mittelfristig",     count:FEATURES.mittelfristig.length,alert:{ bg:"#f59e0b12", bo:"#f59e0b30", color:"#f59e0b", title:"📅 Mittelfristig — 1-2 Tage Arbeit je Feature", sub:"Der Wochenplan allein würde DealKoch von 'cool' zu 'wirklich nützlich' machen." }},
-  { id:"groß",   label:"🏗️ Größere Projekte",  count:FEATURES.groß.length,         alert:{ bg:"#f9731612", bo:"#f9731630", color:"#f97316", title:"🏗️ Größere Umbauarbeiten", sub:"Lohnt sich wenn das Projekt wächst oder andere Nutzer dazu kommen." }},
-  { id:"ki",     label:"🧠 KI-Verbesserungen", count:FEATURES.ki.length,           alert:{ bg:"#a855f712", bo:"#a855f730", color:"#a855f7", title:"🧠 KI smarter machen", sub:"Rezepte die persönlicher werden je mehr du die App nutzt." }},
+const DONE_GROUPS=[
+  {label:"🏗️ Infrastruktur & Datenpipeline",idx:[0,1,2,3,4]},
+  {label:"🎨 Frontend & UI",idx:[5,6,7]},
+  {label:"⭐ Interaktionen & Personalisierung",idx:[8,9,10]},
+  {label:"📊 Daten & Analytik",idx:[11,12]},
+  {label:"🤖 KI & Prompt",idx:[13,14,15]},
+  {label:"✨ Polish & Bugfixes",idx:[16,17]},
 ];
 
-const IMPACT_C = { "sehr hoch":C.green, "hoch":C.cyan, "mittel":C.yellow, "niedrig":C.muted };
-const EFFORT_C = { "minimal":C.green, "klein":C.cyan, "mittel":C.yellow, "groß":C.orange };
-const SEV_C    = { "hoch":C.red, "mittel":C.yellow, "niedrig":C.muted };
-
-const STATUS = [
-  "✅ Marktguru + Aldi","✅ Supabase DB","✅ GitHub Actions",
-  "✅ FastAPI / Railway","✅ Claude Haiku","✅ DealKoch App",
-  "✅ Angebote-Seite","✅ Einkaufsliste","✅ Interaktionen","✅ Preishistorie",
+// ── Open Phases ───────────────────────────────────────────────
+const PHASES=[
+  {
+    id:"p1",label:"⚡ Phase 1",sub:"Quick Wins",color:C.green,
+    timeline:"Diese Woche",
+    desc:"Jedes Item: wenige Stunden. Keine neue Infrastruktur nötig — sofort sichtbarer Mehrwert.",
+    items:[
+      {e:"💰",t:"normalpreis zurück ins Deal-Format + Rechenanweisung",effort:"1–2 h",neu:false,
+       d:"Deal-Format wieder auf '1.69€ (N:2.29€) @ ALDI' erweitern — war bei Token-Optimierung entfernt worden. Dazu Prompt-Ergänzung: 'Berechne Kosten EXAKT: verwendete_Menge ÷ Packungsgröße × Preis'. Behebt den ±20–40% Schätzfehler bei estimatedCost/savedAmount. Wichtigster Bugfix."},
+      {e:"📅",t:"Ablaufdatum (gueltig_bis) auf Deal-Karten",effort:"< 1 h",neu:false,
+       d:"'Gilt noch 2 Tage' auf DealKoch-Rezeptkarten + Angebote-Seite. Daten sind in DB (gueltig_bis-Spalte), nur die Anzeige fehlt. Eine Zeile Code pro Karte."},
+      {e:"💶",t:"Preis pro Mahlzeit Filter",effort:"30 min",neu:true,
+       d:"Range-Slider in DealKoch: 'max. X€ pro Person'. Filtert Rezepte direkt nach estimatedCost. Sehr intuitiv für Budgetbewusste. estimatedCost ist bereits im Recipe-Objekt — nur UI-Slider fehlt."},
+      {e:"🌿",t:"Saisonale Anpassung im Prompt",effort:"30 min",neu:false,
+       d:"Aktuelles Datum (Monat) in Prompt → Sommer = Salate/Grill, Winter = Suppen/Aufläufe/Eintöpfe. Minimaler Aufwand, spürbar bessere Rezeptauswahl je Jahreszeit."},
+      {e:"📤",t:"Web Share API (Einkaufsliste ans Handy)",effort:"1 h",neu:false,
+       d:"'Teilen'-Button in Einkaufsliste → nativer iOS/Android Share-Dialog → WhatsApp, Notizen, etc. navigator.share() mit Clipboard-Fallback. Löst das Handy-Problem ohne App."},
+      {e:"🔍",t:"Suche in Angebote-Seite",effort:"1 h",neu:false,
+       d:"Backend hat /angebote/suche Endpoint bereits — nur UI fehlt. Suchleiste oben, live-Filter oder Fetch on-demand bei Eingabe."},
+      {e:"🖨️",t:"Einkaufsliste drucken / als Text kopieren",effort:"1 h",neu:false,
+       d:"'Als Text kopieren' Button + Print-CSS für Papiereinkauf. Besonders nützlich ohne Handy. Sehr schnell umsetzbar."},
+    ]
+  },
+  {
+    id:"p2",label:"📅 Phase 2",sub:"Kurzfristig",color:C.cyan,
+    timeline:"Nächste 1–2 Wochen",
+    desc:"Deutliche Erweiterungen auf vorhandener Infrastruktur. Je ein halber bis ein Tag Aufwand.",
+    items:[
+      {e:"📊",t:"Wöchentliche + kumulative Ersparnis-Statistik",effort:"½ Tag",neu:true,
+       d:"'Diese Woche gespart: 12,40€' + 'Seit Nutzungsstart: 87€ gespart'. savedAmount aus gekochten KW-Rezepten aufaddieren, kumulativ über alle gespeicherten localStorage-KWs. Das ist der stärkste Beweis für den App-Nutzen — unbedingt früh angehen."},
+      {e:"🗃️",t:"normalpreise-Tabelle in Supabase",effort:"1 Tag",neu:false,
+       d:"Neue Tabelle: name, preis, einheit, preis_pro_g, kategorie, updated_at. ~30–50 häufige Grundzutaten (Zwiebeln, Öl, Butter, Eier, Mehl...). Als 'GRUNDZUTATEN (aktuelle Marktpreise):' Block an Claude. Erwartete Kostengenauigkeit: ~95%. Wichtigstes offenes Technical-Todo aus Chat 2."},
+      {e:"↕️",t:"Rezepte filtern & sortieren",effort:"½ Tag",neu:false,
+       d:"Nach Kochzeit, Kalorien, Ersparnis, Schwierigkeit sortieren. Slider für Max-Kalorien. Alle Felder schon im Rezept-Objekt von Claude vorhanden — nur UI fehlt."},
+      {e:"⚖️",t:"Portionen-Scaler",effort:"½ Tag",neu:false,
+       d:"'+/−' für Personenanzahl im Detail-Modal. Skaliert alle Zutatenmengen automatisch (×N/2 für 2 Personen → N Personen). Einfache Multiplikation im Frontend."},
+      {e:"🗓️",t:"Scraper auch Donnerstags",effort:"1 h",neu:false,
+       d:"Viele Supermarkt-Angebote starten donnerstags — Montag-only bedeutet 3 Tage verpasste Deals. GitHub Actions cron: zweiten Lauf Do 06:00 UTC hinzufügen. Minimal Aufwand, deutlich bessere Deal-Abdeckung."},
+      {e:"📉",t:"top_disliked_ingredients View nutzen",effort:"½ Tag",neu:false,
+       d:"SQL View ist in Supabase angelegt, wird aber nie abgefragt. In LERNKONTEXT als 'häufig übersprungene Zutaten: [X,Y]' einfließen lassen, oder auf Profilseite anzeigen."},
+    ]
+  },
+  {
+    id:"p3",label:"🗓️ Phase 3",sub:"Mittelfristig",color:C.yellow,
+    timeline:"Dieser Monat",
+    desc:"Größere Features die die App von 'nützlich' zu 'unverzichtbar' machen. Je 1–3 Tage.",
+    items:[
+      {e:"📚",t:"Verlauf vorheriger Wochen",effort:"1–2 Tage",neu:true,
+       d:"Rückblick-Seite mit KW-Kacheln (KW 24, KW 23, ...). Je Kachel: welche Rezepte wurden geplant/gekocht, Kosten der Woche, Ersparnis. localStorage speichert KW-Daten dauerhaft. Multi-Device später: Migration auf Supabase."},
+      {e:"📓",t:"'Mein Kochbuch': Alle Bewertungen + Notizfeld",effort:"1–2 Tage",neu:true,
+       d:"Alle gekochten Rezepte aller Zeiten in einer Liste — mit Bewertung, Datum, KW. Freitextfeld für persönliche Notizen: 'mehr Salz', 'Familie liebt es', 'Zwiebeln weglassen', 'hab ich mit Hähnchen statt Rind gemacht'. Macht die App sehr sticky. Speicherung in recipe_interactions oder localStorage."},
+      {e:"❤️",t:"Favoriten-Rezepte",effort:"1 Tag",neu:true,
+       d:"Dauerhafter Favoriten-Button unabhängig von der Kalenderwoche. Basis für späteren Preisalarm: 'Rezept X — Zutaten jetzt günstiger als üblich'. localStorage-Set oder separate Supabase-Tabelle. Ohne KW-Reset."},
+      {e:"📋",t:"Koch-Dashboard",effort:"1–2 Tage",neu:false,
+       d:"Was wurde diese Woche / diesen Monat gekocht? Wie viele verschiedene Rezepttypen? Kalorien-Trend. recipe_interactions Tabelle ist jetzt gut befüllt — braucht nur eine UI-Seite die darüber aggregiert."},
+      {e:"📅",t:"7-Tage Wochenplan  ⭐ Killer-Feature",effort:"3–5 Tage",neu:false,
+       d:"Das eigentliche Ziel von Forkcast: täglich ein Rezept wählen, eine kombinierte Einkaufsliste für die ganze Woche. Einmal einkaufen, 7 Tage geplant. Braucht: Wochenkalender-UI, Einkaufslisten-Merge (Mengen addieren), KW-Persistenz in Supabase."},
+      {e:"📱",t:"PWA (Progressive Web App)",effort:"1 Tag",neu:false,
+       d:"manifest.json + Service Worker → DealKoch als installierbares App-Icon auf dem Handy. Einkaufsliste offline nutzbar. Gut machbar mit Vite PWA Plugin. Voraussetzung für spätere Push-Notifications."},
+    ]
+  },
+  {
+    id:"p4",label:"🏗️ Phase 4",sub:"Größere Projekte",color:C.orange,
+    timeline:"Nächste 1–2 Monate",
+    desc:"Neue Infrastruktur oder aufwändige Implementierung nötig. Je mehrere Tage bis eine Woche.",
+    items:[
+      {e:"🏋️",t:"Makro-Regler als Prompt-Signal",effort:"1 Tag",neu:true,
+       d:"Weiche Präferenz-Slider: 'mind. X g Protein', 'max. Y g Fett' pro Mahlzeit. Als Formulierung im Prompt ('bevorzuge proteinreiche Rezepte') — KEIN harter Filter (Claude-Schätzungen ±30% zu ungenau). Harte Filter erst wenn Nährwert-Datenbasis verlässlich ist (Phase 5)."},
+      {e:"🔔",t:"Preisalarm (Favoriten-Rezepte + Zutaten)",effort:"2–3 Tage",neu:false,
+       d:"'Rezept X — Zutaten jetzt 20% günstiger als üblich' per Push/E-Mail. Braucht: PWA (Phase 3) für Push, Vergleichslogik gegen preishistorie-Durchschnitt, Favoriten-Feature (Phase 3). Setzt mehrere Abhängigkeiten voraus."},
+      {e:"🥘",t:"Reste-Rezepte Modus",effort:"1–2 Tage",neu:false,
+       d:"'Ich habe noch Hähnchen vom Dienstag — was koche ich heute?' Neuer Prompt-Modus mit User-Zutaten-Input, kombiniert eigene Vorräte mit aktuellen Deals. Neues UI-Element + separater Prompt-Zweig."},
+      {e:"🔐",t:"Echter Login (Supabase Auth)",effort:"2–3 Tage",neu:false,
+       d:"Aktuell: Jeder kann auf 'Janis' Profil zugreifen wenn er den Namen kennt. Supabase Auth: E-Mail/Passwort oder Magic Link. Voraussetzung für echten Multi-User-Betrieb."},
+      {e:"🏪",t:"Combi / Netto / REWE Preisdaten fixen",effort:"1 Woche+",neu:false,
+       d:"Marktguru liefert für PLZ 33818 keine Preisdaten für diese Märkte. Erscheinen in /haendler aber werden aus Rezept-Matching herausgefiltert. Eigene Playwright-Scraper oder alternative API-Quelle nötig."},
+      {e:"🌍",t:"Mehrere Postleitzahlen",effort:"1 Tag",neu:false,
+       d:"PLZ 33818 (Leopoldshöhe) aktuell hardcoded. PLZ als Parameter → andere Regionen unterstützen, Skalierbarkeit, potenziell andere Nutzer. Marktguru API unterstützt PLZ-Parameter."},
+    ]
+  },
+  {
+    id:"p5",label:"🔮 Phase 5",sub:"Zukunft",color:C.purple,
+    timeline:"Langfristig",
+    desc:"Nice-to-have oder Items die weitere Datenbasis / externe Abhängigkeiten benötigen.",
+    items:[
+      {e:"🧮",t:"Harte Makro-Filter",effort:"langfristig",neu:true,
+       d:"Erst wenn verlässliche Nährwert-Daten vorhanden (Open Food Facts API oder eigene DB). Claude-Schätzungen zu ungenau (±30%) für harte Grenzen. Als weiche Prompt-Signale ab Phase 4 möglich."},
+      {e:"🥦",t:"Nährwert-Validierung (Open Food Facts API)",effort:"2–3 Tage",neu:false,
+       d:"Claude schätzt Makros — oft ungenau. Gegen Open Food Facts API abgleichen für verlässliche Nährwert-Angaben. Voraussetzung für harte Makro-Filter und verlässliches Kalorien-Tracking."},
+      {e:"🕵️",t:"Fake-Deal-Erkennung",effort:"1 Tag (wenn Daten da)",neu:false,
+       d:"Erkennt wenn normalpreis immer gleich bleibt, der Preis aber nie wirklich höher war ('Dauerrabatt-Trick'). normalpreis wird seit KW 24 2026 gespeichert → aussagekräftige Analyse ab ~KW 32–34."},
+      {e:"🚀",t:"Prompt Caching (Anthropic API)",effort:"½ Tag",neu:false,
+       d:"Statische Prompt-Teile (Regeln, Schema, PANTRY_STAPLES) über Anthropic Prompt Caching API cachen. Könnte Input-Token-Kosten um weitere 60–70% senken. Einfach zu implementieren."},
+      {e:"👨‍👩‍👧",t:"Familien-Modus",effort:"1 Woche+",neu:false,
+       d:"Mehrere Profile unter einem Account. '4 Personen, 2 mögen kein Fleisch'. Geteilte Einkaufsliste. Setzt echten Login (Phase 4) voraus."},
+      {e:"📸",t:"Rezept-Bilder (DALL-E / Stable Diffusion)",effort:"1–2 Tage",neu:false,
+       d:"Appetitliche Bilder pro Rezept verbessern UX stark. ~€0,04/Bild mit DALL-E 3. Sinnvoll mit Caching: selber Rezeptname = gleiches Bild, einmal generieren."},
+    ]
+  },
 ];
 
-// ── Render helpers ────────────────────────────────────────────
-function badge(label, color) {
-  return `<span class="badge" style="background:${color}20;color:${color};border:1px solid ${color}40">${label}</span>`;
-}
+// ── LocalStorage ──────────────────────────────────────────────
+const LS='fk_roadmap_v1';
+function getState(){try{return JSON.parse(localStorage.getItem(LS)||'{}')}catch{return{}}}
+function toggleItem(id){const s=getState();s[id]?delete s[id]:s[id]=true;localStorage.setItem(LS,JSON.stringify(s));return!!s[id]}
+function isDone(id){return!!getState()[id]}
 
-function renderBugs() {
-  return BUGS.map(b => `
-    <div class="card bug-card ${b.severity==='hoch'?'high':''}">
-      <div class="bug-head">
-        <span class="bug-title">${b.title}</span>
-        ${badge('Priorität: '+b.severity, SEV_C[b.severity])}
-      </div>
-      <p class="bug-body">${b.detail}</p>
-    </div>`).join('');
-}
+// ── Badge helper ──────────────────────────────────────────────
+function badge(txt,col){return`<span class="badge" style="background:${col}20;color:${col};border:1px solid ${col}40">${txt}</span>`}
 
-function renderFeatures(list) {
-  return list.map((f,i) => `
-    <div class="card" id="fc-${currentTab}-${i}" onclick="toggleCard('fc-${currentTab}-${i}')">
-      <div class="card-header">
-        <span class="card-emoji">${f.emoji}</span>
-        <div class="card-info">
-          <div class="card-title">${f.title}</div>
-          <div class="card-badges">
-            ${badge('Impact: '+f.impact, IMPACT_C[f.impact])}
-            ${badge('Aufwand: '+f.effort, EFFORT_C[f.effort])}
-          </div>
-        </div>
-        <span class="card-arrow">▼</span>
-      </div>
-      <div class="card-detail">${f.detail}</div>
-    </div>`).join('');
-}
-
-function renderAlert(a) {
-  return `<div class="alert" style="background:${a.bg};border:1px solid ${a.bo}">
-    <div class="alert-title" style="color:${a.color}">${a.title}</div>
-    <div class="alert-sub">${a.sub}</div>
+// ── Render done ───────────────────────────────────────────────
+function renderDone(){
+  let html=`<div class="info-box" style="background:#22c55e0d;border:1px solid #22c55e28">
+    <span style="color:#22c55e;font-weight:700">✅ ${DONE.length} Features erfolgreich umgesetzt</span>
+    <span style="color:#4a7fa5;margin-left:8px">— Solide Basis für alle weiteren Phasen.</span>
   </div>`;
+  DONE_GROUPS.forEach(g=>{
+    html+=`<div class="sec">${g.label}</div><div class="done-wrap">`;
+    g.idx.forEach(i=>{
+      const it=DONE[i];
+      html+=`<div class="done-item"><div class="done-tick">✓</div><div style="flex:1"><div class="done-t">${it.e} ${it.t}</div><div class="done-d">${it.d}</div></div></div>`;
+    });
+    html+=`</div>`;
+  });
+  return html;
 }
 
-function toggleCard(id) {
-  document.getElementById(id).classList.toggle('open');
+// ── Render phase ──────────────────────────────────────────────
+function renderPhase(ph){
+  const chk=ph.items.filter((_,i)=>isDone(ph.id+'_'+i)).length;
+  const tot=ph.items.length;
+  const pct=Math.round(chk/tot*100);
+  let html=`<div class="phase-box">
+    <div class="phase-title" style="color:${ph.color}">${ph.label} — ${ph.sub}</div>
+    <div class="phase-meta">⏱ ${ph.timeline}</div>
+    <div class="phase-desc">${ph.desc}</div>
+    <div class="phase-pb"><div class="phase-pf" id="ppf_${ph.id}" style="width:${pct}%;background:${ph.color}"></div></div>
+    <div class="phase-pl" id="ppl_${ph.id}">${chk} / ${tot} erledigt (${pct}%)</div>
+  </div>`;
+  ph.items.forEach((it,i)=>{
+    const id=ph.id+'_'+i;
+    const done=isDone(id);
+    html+=`<div class="card ${done?'ck':''}" id="card_${id}">
+      <div class="card-head" onclick="cardClick(event,'${id}')">
+        <div class="chk ${done?'on':''}" id="chk_${id}" onclick="checkClick(event,'${id}')">✓</div>
+        <span class="card-emoji">${it.e}</span>
+        <div class="card-body">
+          <div class="card-title">${it.t}${it.neu?badge('✨ Neu',C.purple):''}
+          </div>
+          <div class="card-badges">${badge('⏱ '+it.effort,ph.color)}</div>
+        </div>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="detail">${it.d}</div>
+    </div>`;
+  });
+  return html;
+}
+
+// ── Handlers ──────────────────────────────────────────────────
+function checkClick(ev,id){
+  ev.stopPropagation();
+  const now=toggleItem(id);
+  document.getElementById('chk_'+id).classList.toggle('on',now);
+  document.getElementById('card_'+id).classList.toggle('ck',now);
+  refreshPhase(id.split('_')[0]);
+  refreshOverall();
+}
+function cardClick(ev,id){
+  if(ev.target.classList.contains('chk')||ev.target.closest('.chk'))return;
+  document.getElementById('card_'+id).classList.toggle('open');
+}
+function refreshPhase(pid){
+  const ph=PHASES.find(p=>p.id===pid);if(!ph)return;
+  const chk=ph.items.filter((_,i)=>isDone(pid+'_'+i)).length;
+  const tot=ph.items.length;const pct=Math.round(chk/tot*100);
+  const pf=document.getElementById('ppf_'+pid);
+  const pl=document.getElementById('ppl_'+pid);
+  if(pf)pf.style.width=pct+'%';
+  if(pl)pl.textContent=`${chk} / ${tot} erledigt (${pct}%)`;
+}
+function refreshOverall(){
+  const totOpen=PHASES.reduce((s,p)=>s+p.items.length,0);
+  const chkOpen=PHASES.reduce((s,p)=>s+p.items.filter((_,i)=>isDone(p.id+'_'+i)).length,0);
+  const total=DONE.length+totOpen;
+  const done=DONE.length+chkOpen;
+  document.getElementById('ot').textContent=`${done} / ${total} erledigt`;
+  document.getElementById('of').style.width=Math.round(done/total*100)+'%';
 }
 
 // ── Tab logic ─────────────────────────────────────────────────
-let currentTab = 'bugs';
+let curTab='done';
+const TABS=[
+  {id:'done',label:'✅ Erledigt',count:DONE.length},
+  ...PHASES.map(p=>({id:p.id,label:p.label+' '+p.sub,count:p.items.length}))
+];
 
-function switchTab(id) {
-  currentTab = id;
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+function switchTab(id){
+  curTab=id;
+  document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.tb').forEach(e=>e.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
-  document.querySelector(`.tab-btn[data-id="${id}"]`).classList.add('active');
-  renderTab(id);
-}
-
-function renderTab(id) {
-  const el = document.getElementById('tab-'+id);
-  const t = TABS.find(t=>t.id===id);
-  let html = renderAlert(t.alert);
-  if(id === 'bugs') html += renderBugs();
-  else html += renderFeatures(FEATURES[id] || []);
-  el.innerHTML = html;
+  document.querySelector(`.tb[data-id="${id}"]`).classList.add('active');
+  const el=document.getElementById('tab-'+id);
+  if(!el.innerHTML){el.innerHTML=id==='done'?renderDone():renderPhase(PHASES.find(p=>p.id===id))}
 }
 
 // ── Init ──────────────────────────────────────────────────────
-// Status badges
-document.getElementById('status-badges').innerHTML = STATUS.map(s =>
-  `<span class="badge" style="background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3)">${s}</span>`
-).join('');
-
-// Tab bar
-document.getElementById('tab-bar').innerHTML = TABS.map(t => `
-  <button class="tab-btn ${t.id==='bugs'?'active':''}" data-id="${t.id}" onclick="switchTab('${t.id}')">
-    ${t.label} <span class="tab-count">${t.count}</span>
+document.getElementById('tab-bar').innerHTML=TABS.map(t=>
+  `<button class="tb ${t.id==='done'?'active':''}" data-id="${t.id}" onclick="switchTab('${t.id}')">
+    ${t.label}<span class="tc">${t.count}</span>
   </button>`).join('');
 
-// Recommendations
-document.getElementById('rec-list').innerHTML = [
-  { n:"1", t:"📤 Web Share", d:"Button für Einkaufsliste → Handy-Problem sofort gelöst", c:C.green },
-  { n:"2", t:"⭐ Koch-Button", d:"'Habe ich gekocht' aktiviert die recipe_interactions Tabelle ✅ Eingebaut", c:C.green },
-  { n:"3", t:"📅 Ablaufdatum", d:"gueltig_bis aus DB anzeigen — eine Zeile Code", c:C.green },
-  { n:"4", t:"📅 Wochenplan", d:"Das eigentliche Ziel: 7 Tage planen, eine Einkaufsliste für alles", c:C.cyan },
-  { n:"5", t:"💰 Echte Kosten", d:"Preise aus DB statt Claude-Schätzung — genauer und günstiger", c:C.cyan },
-].map(r => `
-  <div class="rec-item">
-    <div class="rec-num" style="background:${r.c}">${r.n}</div>
-    <div>
-      <div class="rec-label" style="color:${r.c}">${r.t}</div>
-      <div class="rec-desc">${r.d}</div>
-    </div>
-  </div>`).join('');
-
-// Render initial tab
-renderTab('bugs');
+document.getElementById('tab-done').innerHTML=renderDone();
+refreshOverall();
 </script>
 </body>
 </html>
