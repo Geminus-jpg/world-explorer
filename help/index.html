@@ -126,6 +126,12 @@ const DONE=[
   // Polish
   {e:"🖼️",t:"Favicons + Logos (beide Seiten)",d:"Forkcast: grüne Gabel + %-Badge (SVG). Angebote: Preisschild-Silhouette (Base64 Data-URI). data-* statt JSON.stringify — kein Escaping-Bug mehr."},
   {e:"💾",t:"normalpreis in preishistorie (beide Scraper)",d:"Beide Scraper speichern jetzt normalpreis. SQL-Migration ausgeführt. Grundlage für Fake-Deal-Erkennung — aussagekräftig ab ~KW 34 2026."},
+   //Zusätzlich
+  {e:"💰",t:"normalpreis zurück ins Deal-Format + Rechenanweisung",effort:"1–2 h",neu:false},
+  {e:"📅",t:"Ablaufdatum (gueltig_bis) auf Deal-Karten",effort:"< 1 h",neu:false},
+  {e:"💶",t:"Preis pro Mahlzeit Filter",effort:"30 min",neu:true},
+  {e:"🌿",t:"Saisonale Anpassung im Prompt",effort:"30 min",neu:false},
+     
 ];
 
 const DONE_GROUPS=[
@@ -135,31 +141,11 @@ const DONE_GROUPS=[
   {label:"📊 Daten & Analytik",idx:[11,12]},
   {label:"🤖 KI & Prompt",idx:[13,14,15]},
   {label:"✨ Polish & Bugfixes",idx:[16,17]},
+  {label:"Zusätzlich",idx:[18,19,20,21]},
 ];
 
 // ── Open Phases ───────────────────────────────────────────────
 const PHASES=[
-  {
-    id:"p1",label:"⚡ Phase 1",sub:"Quick Wins",color:C.green,
-    timeline:"Diese Woche",
-    desc:"Jedes Item: wenige Stunden. Keine neue Infrastruktur nötig — sofort sichtbarer Mehrwert.",
-    items:[
-      {e:"💰",t:"normalpreis zurück ins Deal-Format + Rechenanweisung",effort:"1–2 h",neu:false,
-       d:"Deal-Format wieder auf '1.69€ (N:2.29€) @ ALDI' erweitern — war bei Token-Optimierung entfernt worden. Dazu Prompt-Ergänzung: 'Berechne Kosten EXAKT: verwendete_Menge ÷ Packungsgröße × Preis'. Behebt den ±20–40% Schätzfehler bei estimatedCost/savedAmount. Wichtigster Bugfix."},
-      {e:"📅",t:"Ablaufdatum (gueltig_bis) auf Deal-Karten",effort:"< 1 h",neu:false,
-       d:"'Gilt noch 2 Tage' auf DealKoch-Rezeptkarten + Angebote-Seite. Daten sind in DB (gueltig_bis-Spalte), nur die Anzeige fehlt. Eine Zeile Code pro Karte."},
-      {e:"💶",t:"Preis pro Mahlzeit Filter",effort:"30 min",neu:true,
-       d:"Range-Slider in DealKoch: 'max. X€ pro Person'. Filtert Rezepte direkt nach estimatedCost. Sehr intuitiv für Budgetbewusste. estimatedCost ist bereits im Recipe-Objekt — nur UI-Slider fehlt."},
-      {e:"🌿",t:"Saisonale Anpassung im Prompt",effort:"30 min",neu:false,
-       d:"Aktuelles Datum (Monat) in Prompt → Sommer = Salate/Grill, Winter = Suppen/Aufläufe/Eintöpfe. Minimaler Aufwand, spürbar bessere Rezeptauswahl je Jahreszeit."},
-      {e:"📤",t:"Web Share API (Einkaufsliste ans Handy)",effort:"1 h",neu:false,
-       d:"'Teilen'-Button in Einkaufsliste → nativer iOS/Android Share-Dialog → WhatsApp, Notizen, etc. navigator.share() mit Clipboard-Fallback. Löst das Handy-Problem ohne App."},
-      {e:"🔍",t:"Suche in Angebote-Seite",effort:"1 h",neu:false,
-       d:"Backend hat /angebote/suche Endpoint bereits — nur UI fehlt. Suchleiste oben, live-Filter oder Fetch on-demand bei Eingabe."},
-      {e:"🖨️",t:"Einkaufsliste drucken / als Text kopieren",effort:"1 h",neu:false,
-       d:"'Als Text kopieren' Button + Print-CSS für Papiereinkauf. Besonders nützlich ohne Handy. Sehr schnell umsetzbar."},
-    ]
-  },
   {
     id:"p2",label:"📅 Phase 2",sub:"Kurzfristig",color:C.cyan,
     timeline:"Nächste 1–2 Wochen",
