@@ -397,11 +397,14 @@
     }
 
     grid.innerHTML = `<div class="deals-grid">${deals.map((d,i) => {
-      const preis    = parseFloat(d.preis || 0).toFixed(2);
-      const norm     = parseFloat(d.normalpreis || 0).toFixed(2);
-      const rabatt   = parseFloat(d.rabatt_prozent || 0).toFixed(0);
-      const saved    = (parseFloat(d.normalpreis || 0) - parseFloat(d.preis || 0)).toFixed(2);
-      const expiry   = daysUntil(d.gueltig_bis);
+      const preisNum    = parseFloat(d.preis || 0);
+      const normNum     = parseFloat(d.normalpreis || 0);
+      const hasDiscount = normNum > preisNum && preisNum > 0;
+      const preis       = preisNum.toFixed(2);
+      const norm        = normNum.toFixed(2);
+      const rabatt      = hasDiscount ? parseFloat(d.rabatt_prozent || ((1 - preisNum / normNum) * 100)).toFixed(0) : null;
+      const saved       = hasDiscount ? (normNum - preisNum).toFixed(2) : null;
+      const expiry      = daysUntil(d.gueltig_bis);
 
       // Sicher escapen für data-Attribute
       const safeName     = (d.name    || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -417,12 +420,13 @@
           <div class="deal-bottom">
             <div class="deal-price-block">
               <div class="deal-price">${preis}€</div>
-              <div class="deal-original">statt ${norm}€</div>
+              ${hasDiscount ? `<div class="deal-original">statt ${norm}€</div>` : ""}
             </div>
+            ${hasDiscount ? `
             <div class="deal-badge">
               −${rabatt}%
               <div class="deal-badge-sub">−${saved}€</div>
-            </div>
+            </div>` : ""}
           </div>
           ${expiry ? `<div class="gueltig" style="color:${expiry.color}">${expiry.text}</div>` : ""}
           <button class="history-btn" onclick="toggleHistory(document.getElementById('card-${i}'))">
@@ -452,6 +456,7 @@
         }
         return d;
       })
+      .filter(d => parseFloat(d.rabatt_prozent || 0) > 0)
       .sort((a, b) => parseFloat(b.rabatt_prozent || 0) - parseFloat(a.rabatt_prozent || 0));
     renderDeals(storeDeals);
   }
