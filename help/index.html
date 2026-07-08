@@ -126,12 +126,24 @@ const DONE=[
   // Polish
   {e:"🖼️",t:"Favicons + Logos (beide Seiten)",d:"Forkcast: grüne Gabel + %-Badge (SVG). Angebote: Preisschild-Silhouette (Base64 Data-URI). data-* statt JSON.stringify — kein Escaping-Bug mehr."},
   {e:"💾",t:"normalpreis in preishistorie (beide Scraper)",d:"Beide Scraper speichern jetzt normalpreis. SQL-Migration ausgeführt. Grundlage für Fake-Deal-Erkennung — aussagekräftig ab ~KW 34 2026."},
-   //Zusätzlich
+   //Phase 1
   {e:"💰",t:"normalpreis zurück ins Deal-Format + Rechenanweisung",effort:"1–2 h",neu:false},
   {e:"📅",t:"Ablaufdatum (gueltig_bis) auf Deal-Karten",effort:"< 1 h",neu:false},
   {e:"💶",t:"Preis pro Mahlzeit Filter",effort:"30 min",neu:true},
   {e:"🌿",t:"Saisonale Anpassung im Prompt",effort:"30 min",neu:false},
-     
+  //Phase 2
+  {e:"📊",t:"Wöchentliche + kumulative Ersparnis-Statistik",effort:"½ Tag",neu:true,
+  {e:"🗃️",t:"normalpreise-Tabelle in Supabase",effort:"1 Tag",neu:false,
+  {e:"↕️",t:"Rezepte filtern & sortieren",effort:"½ Tag",neu:false, 
+  {e:"⚖️",t:"Portionen-Scaler",effort:"½ Tag",neu:false,
+  {e:"🗓️",t:"Scraper auch Donnerstags",effort:"1 h",neu:false,
+   //Phase 3
+  {e:"📚",t:"Verlauf vorheriger Wochen",effort:"1–2 Tage",neu:true,
+  {e:"📓",t:"'Mein Kochbuch': Alle Bewertungen + Notizfeld",effort:"1–2 Tage",neu:true,
+  {e:"❤️",t:"Favoriten-Rezepte",effort:"1 Tag",neu:true,
+  {e:"📋",t:"Koch-Dashboard",effort:"1–2 Tage",neu:false,
+  {e:"📱",t:"PWA (Progressive Web App)",effort:"1 Tag",neu:false,
+      
 ];
 
 const DONE_GROUPS=[
@@ -141,54 +153,21 @@ const DONE_GROUPS=[
   {label:"📊 Daten & Analytik",idx:[11,12]},
   {label:"🤖 KI & Prompt",idx:[13,14,15]},
   {label:"✨ Polish & Bugfixes",idx:[16,17]},
-  {label:"Zusätzlich",idx:[18,19,20,21]},
+  {label:"Phase 1",idx:[18,19,20,21]},
+  {label:"Phase 2",idx:[22,23,24,25,26]},
+  {label:"Phase 3",idx:[27,28,29,30,31]},
 ];
 
 // ── Open Phases ───────────────────────────────────────────────
 const PHASES=[
-  {
-    id:"p2",label:"📅 Phase 2",sub:"Kurzfristig",color:C.cyan,
-    timeline:"Nächste 1–2 Wochen",
-    desc:"Deutliche Erweiterungen auf vorhandener Infrastruktur. Je ein halber bis ein Tag Aufwand.",
-    items:[
-      {e:"📊",t:"Wöchentliche + kumulative Ersparnis-Statistik",effort:"½ Tag",neu:true,
-       d:"'Diese Woche gespart: 12,40€' + 'Seit Nutzungsstart: 87€ gespart'. savedAmount aus gekochten KW-Rezepten aufaddieren, kumulativ über alle gespeicherten localStorage-KWs. Das ist der stärkste Beweis für den App-Nutzen — unbedingt früh angehen."},
-      {e:"🗃️",t:"normalpreise-Tabelle in Supabase",effort:"1 Tag",neu:false,
-       d:"Neue Tabelle: name, preis, einheit, preis_pro_g, kategorie, updated_at. ~30–50 häufige Grundzutaten (Zwiebeln, Öl, Butter, Eier, Mehl...). Als 'GRUNDZUTATEN (aktuelle Marktpreise):' Block an Claude. Erwartete Kostengenauigkeit: ~95%. Wichtigstes offenes Technical-Todo aus Chat 2."},
-      {e:"↕️",t:"Rezepte filtern & sortieren",effort:"½ Tag",neu:false,
-       d:"Nach Kochzeit, Kalorien, Ersparnis, Schwierigkeit sortieren. Slider für Max-Kalorien. Alle Felder schon im Rezept-Objekt von Claude vorhanden — nur UI fehlt."},
-      {e:"⚖️",t:"Portionen-Scaler",effort:"½ Tag",neu:false,
-       d:"'+/−' für Personenanzahl im Detail-Modal. Skaliert alle Zutatenmengen automatisch (×N/2 für 2 Personen → N Personen). Einfache Multiplikation im Frontend."},
-      {e:"🗓️",t:"Scraper auch Donnerstags",effort:"1 h",neu:false,
-       d:"Viele Supermarkt-Angebote starten donnerstags — Montag-only bedeutet 3 Tage verpasste Deals. GitHub Actions cron: zweiten Lauf Do 06:00 UTC hinzufügen. Minimal Aufwand, deutlich bessere Deal-Abdeckung."},
-      {e:"📉",t:"top_disliked_ingredients View nutzen",effort:"½ Tag",neu:false,
-       d:"SQL View ist in Supabase angelegt, wird aber nie abgefragt. In LERNKONTEXT als 'häufig übersprungene Zutaten: [X,Y]' einfließen lassen, oder auf Profilseite anzeigen."},
-    ]
-  },
-  {
-    id:"p3",label:"🗓️ Phase 3",sub:"Mittelfristig",color:C.yellow,
-    timeline:"Dieser Monat",
-    desc:"Größere Features die die App von 'nützlich' zu 'unverzichtbar' machen. Je 1–3 Tage.",
-    items:[
-      {e:"📚",t:"Verlauf vorheriger Wochen",effort:"1–2 Tage",neu:true,
-       d:"Rückblick-Seite mit KW-Kacheln (KW 24, KW 23, ...). Je Kachel: welche Rezepte wurden geplant/gekocht, Kosten der Woche, Ersparnis. localStorage speichert KW-Daten dauerhaft. Multi-Device später: Migration auf Supabase."},
-      {e:"📓",t:"'Mein Kochbuch': Alle Bewertungen + Notizfeld",effort:"1–2 Tage",neu:true,
-       d:"Alle gekochten Rezepte aller Zeiten in einer Liste — mit Bewertung, Datum, KW. Freitextfeld für persönliche Notizen: 'mehr Salz', 'Familie liebt es', 'Zwiebeln weglassen', 'hab ich mit Hähnchen statt Rind gemacht'. Macht die App sehr sticky. Speicherung in recipe_interactions oder localStorage."},
-      {e:"❤️",t:"Favoriten-Rezepte",effort:"1 Tag",neu:true,
-       d:"Dauerhafter Favoriten-Button unabhängig von der Kalenderwoche. Basis für späteren Preisalarm: 'Rezept X — Zutaten jetzt günstiger als üblich'. localStorage-Set oder separate Supabase-Tabelle. Ohne KW-Reset."},
-      {e:"📋",t:"Koch-Dashboard",effort:"1–2 Tage",neu:false,
-       d:"Was wurde diese Woche / diesen Monat gekocht? Wie viele verschiedene Rezepttypen? Kalorien-Trend. recipe_interactions Tabelle ist jetzt gut befüllt — braucht nur eine UI-Seite die darüber aggregiert."},
-      {e:"📅",t:"7-Tage Wochenplan  ⭐ Killer-Feature",effort:"3–5 Tage",neu:false,
-       d:"Das eigentliche Ziel von Forkcast: täglich ein Rezept wählen, eine kombinierte Einkaufsliste für die ganze Woche. Einmal einkaufen, 7 Tage geplant. Braucht: Wochenkalender-UI, Einkaufslisten-Merge (Mengen addieren), KW-Persistenz in Supabase."},
-      {e:"📱",t:"PWA (Progressive Web App)",effort:"1 Tag",neu:false,
-       d:"manifest.json + Service Worker → DealKoch als installierbares App-Icon auf dem Handy. Einkaufsliste offline nutzbar. Gut machbar mit Vite PWA Plugin. Voraussetzung für spätere Push-Notifications."},
-    ]
-  },
+  
   {
     id:"p4",label:"🏗️ Phase 4",sub:"Größere Projekte",color:C.orange,
     timeline:"Nächste 1–2 Monate",
     desc:"Neue Infrastruktur oder aufwändige Implementierung nötig. Je mehrere Tage bis eine Woche.",
     items:[
+      {e:"📅",t:"7-Tage Wochenplan  ⭐ Killer-Feature",effort:"3–5 Tage",neu:false,
+       d:"Das eigentliche Ziel von Forkcast: täglich ein Rezept wählen, eine kombinierte Einkaufsliste für die ganze Woche. Einmal einkaufen, 7 Tage geplant. Braucht: Wochenkalender-UI, Einkaufslisten-Merge (Mengen addieren), KW-Persistenz in Supabase."},
       {e:"🏋️",t:"Makro-Regler als Prompt-Signal",effort:"1 Tag",neu:true,
        d:"Weiche Präferenz-Slider: 'mind. X g Protein', 'max. Y g Fett' pro Mahlzeit. Als Formulierung im Prompt ('bevorzuge proteinreiche Rezepte') — KEIN harter Filter (Claude-Schätzungen ±30% zu ungenau). Harte Filter erst wenn Nährwert-Datenbasis verlässlich ist (Phase 5)."},
       {e:"🔔",t:"Preisalarm (Favoriten-Rezepte + Zutaten)",effort:"2–3 Tage",neu:false,
