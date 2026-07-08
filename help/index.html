@@ -132,18 +132,17 @@ const DONE=[
   {e:"💶",t:"Preis pro Mahlzeit Filter",effort:"30 min",neu:true},
   {e:"🌿",t:"Saisonale Anpassung im Prompt",effort:"30 min",neu:false},
   //Phase 2
-  {e:"📊",t:"Wöchentliche + kumulative Ersparnis-Statistik",effort:"½ Tag",neu:true,
-  {e:"🗃️",t:"normalpreise-Tabelle in Supabase",effort:"1 Tag",neu:false,
-  {e:"↕️",t:"Rezepte filtern & sortieren",effort:"½ Tag",neu:false, 
-  {e:"⚖️",t:"Portionen-Scaler",effort:"½ Tag",neu:false,
-  {e:"🗓️",t:"Scraper auch Donnerstags",effort:"1 h",neu:false,
-   //Phase 3
-  {e:"📚",t:"Verlauf vorheriger Wochen",effort:"1–2 Tage",neu:true,
-  {e:"📓",t:"'Mein Kochbuch': Alle Bewertungen + Notizfeld",effort:"1–2 Tage",neu:true,
-  {e:"❤️",t:"Favoriten-Rezepte",effort:"1 Tag",neu:true,
-  {e:"📋",t:"Koch-Dashboard",effort:"1–2 Tage",neu:false,
-  {e:"📱",t:"PWA (Progressive Web App)",effort:"1 Tag",neu:false,
-      
+  {e:"📊",t:"Wöchentliche + kumulative Ersparnis-Statistik",effort:"½ Tag",neu:true},
+  {e:"🗃️",t:"normalpreise-Tabelle in Supabase",effort:"1 Tag",neu:false},
+  {e:"↕️",t:"Rezepte filtern & sortieren",effort:"½ Tag",neu:false},
+  {e:"⚖️",t:"Portionen-Scaler",effort:"½ Tag",neu:false},
+  {e:"🗓️",t:"Scraper auch Donnerstags",effort:"1 h",neu:false},
+  //Phase 3
+  {e:"📚",t:"Verlauf vorheriger Wochen",effort:"1–2 Tage",neu:true},
+  {e:"📓",t:"'Mein Kochbuch': Alle Bewertungen + Notizfeld",effort:"1–2 Tage",neu:true},
+  {e:"❤️",t:"Favoriten-Rezepte",effort:"1 Tag",neu:true},
+  {e:"📋",t:"Koch-Dashboard",effort:"1–2 Tage",neu:false},
+  {e:"📱",t:"PWA (Progressive Web App)",effort:"1 Tag",neu:false},
 ];
 
 const DONE_GROUPS=[
@@ -222,7 +221,7 @@ function renderDone(){
     html+=`<div class="sec">${g.label}</div><div class="done-wrap">`;
     g.idx.forEach(i=>{
       const it=DONE[i];
-      html+=`<div class="done-item"><div class="done-tick">✓</div><div style="flex:1"><div class="done-t">${it.e} ${it.t}</div><div class="done-d">${it.d}</div></div></div>`;
+      html+=`<div class="done-item"><div class="done-tick">✓</div><div style="flex:1"><div class="done-t">${it.e} ${it.t}</div>${it.d?`<div class="done-d">${it.d}</div>`:''}</div></div>`;
     });
     html+=`</div>`;
   });
