@@ -190,6 +190,19 @@
 
     .deal-badge-sub { font-size: 12px; font-weight: 600; color: #16a34a; margin-top: 3px; }
 
+    .deal-badge-hist {
+      background: rgba(245,158,11,.15);
+      color: #f59e0b;
+      border: 1px solid rgba(245,158,11,.3);
+      font-size: 18px;
+      font-weight: 800;
+      padding: 10px 16px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .deal-badge-hist-sub { font-size: 12px; font-weight: 600; color: #d97706; margin-top: 3px; }
+
     .loading {
       text-align: center;
       padding: 80px 20px;
@@ -331,6 +344,45 @@
     return null;
   }
 
+  // ── Deal-Helper: offizieller Rabatt ODER historischer Deal ──
+  // (Option 2: main.py liefert pro Artikel zusätzlich
+  //  preis_historisch_avg / ist_historischer_deal, siehe Backend)
+  function hasOfficialDiscount(d) {
+    const preis = parseFloat(d.preis || 0);
+    const norm  = parseFloat(d.normalpreis || 0);
+    return norm > preis && preis > 0;
+  }
+
+  function isHistDeal(d) {
+    return !hasOfficialDiscount(d)
+      && parseFloat(d.preis || 0) > 0
+      && d.ist_historischer_deal === true
+      && parseFloat(d.preis_historisch_avg || 0) > 0;
+  }
+
+  function effSaved(d) {
+    const preis = parseFloat(d.preis || 0);
+    if (hasOfficialDiscount(d)) return parseFloat(d.normalpreis || 0) - preis;
+    if (isHistDeal(d))          return parseFloat(d.preis_historisch_avg || 0) - preis;
+    return 0;
+  }
+
+  function effRabatt(d) {
+    const preis = parseFloat(d.preis || 0);
+    if (hasOfficialDiscount(d)) {
+      const norm = parseFloat(d.normalpreis || 0);
+      return d.rabatt_prozent ? parseFloat(d.rabatt_prozent) : ((1 - preis / norm) * 100);
+    }
+    if (isHistDeal(d)) {
+      return (1 - preis / parseFloat(d.preis_historisch_avg)) * 100;
+    }
+    return 0;
+  }
+
+  function istIrgendeinDeal(d) {
+    return hasOfficialDiscount(d) || isHistDeal(d);
+  }
+
   // ── Sparkline ──────────────────────────────────────────────
   function drawSparkline(prices, width=140, height=44) {
     if(!prices || prices.length < 2) return '<span style="color:#4a7fa5;font-size:12px">Nicht genug Daten</span>';
@@ -399,11 +451,18 @@
     grid.innerHTML = `<div class="deals-grid">${deals.map((d,i) => {
       const preisNum    = parseFloat(d.preis || 0);
       const normNum     = parseFloat(d.normalpreis || 0);
-      const hasDiscount = normNum > preisNum && preisNum > 0;
+      const hasDiscount = hasOfficialDiscount(d);
       const preis       = preisNum.toFixed(2);
       const norm        = normNum.toFixed(2);
       const rabatt      = hasDiscount ? parseFloat(d.rabatt_prozent || ((1 - preisNum / normNum) * 100)).toFixed(0) : null;
       const saved       = hasDiscount ? (normNum - preisNum).toFixed(2) : null;
+
+      // Historischer Deal (Option 2) — nur wenn kein offizieller Rabatt vorliegt
+      const histDeal    = isHistDeal(d);
+      const histAvgNum  = parseFloat(d.preis_historisch_avg || 0);
+      const histAvg     = histDeal ? histAvgNum.toFixed(2) : null;
+      const histSaved   = histDeal ? (histAvgNum - preisNum).toFixed(2) : null;
+
       const expiry      = daysUntil(d.gueltig_bis);
 
       // Sicher escapen für data-Attribute
@@ -421,11 +480,17 @@
             <div class="deal-price-block">
               <div class="deal-price">${preis}€</div>
               ${hasDiscount ? `<div class="deal-original">statt ${norm}€</div>` : ""}
+              ${histDeal ? `<div class="deal-original">Ø sonst ${histAvg}€</div>` : ""}
             </div>
             ${hasDiscount ? `
             <div class="deal-badge">
               −${rabatt}%
               <div class="deal-badge-sub">−${saved}€</div>
+            </div>` : ""}
+            ${histDeal ? `
+            <div class="deal-badge-hist">
+              📉 Günstig
+              <div class="deal-badge-hist-sub">−${histSaved}€</div>
             </div>` : ""}
           </div>
           ${expiry ? `<div class="gueltig" style="color:${expiry.color}">${expiry.text}</div>` : ""}
@@ -456,8 +521,8 @@
         }
         return d;
       })
-      .filter(d => parseFloat(d.rabatt_prozent || 0) > 0)
-      .sort((a, b) => parseFloat(b.rabatt_prozent || 0) - parseFloat(a.rabatt_prozent || 0));
+      .filter(d => istIrgendeinDeal(d))
+      .sort((a, b) => effRabatt(b) - effRabatt(a));
     renderDeals(storeDeals);
   }
 
@@ -479,18 +544,18 @@
           }
           return d;
         })
-        .filter(d => parseFloat(d.rabatt_prozent || 0) > 0)
-        .sort((a, b) => parseFloat(b.rabatt_prozent) - parseFloat(a.rabatt_prozent));
+        .filter(d => istIrgendeinDeal(d))
+        .sort((a, b) => effRabatt(b) - effRabatt(a));
 
       allDeals = deals;
 
-      const totalSaved = deals.reduce((s, d) => s + (parseFloat(d.normalpreis||0) - parseFloat(d.preis||0)), 0);
+      const totalSaved = deals.reduce((s, d) => s + effSaved(d), 0);
       const avgSaved   = deals.length ? (totalSaved / deals.length) : 0;
-      const topDeal    = deals.reduce((best, d) => parseFloat(d.rabatt_prozent||0) > parseFloat(best.rabatt_prozent||0) ? d : best, deals[0]);
+      const topDeal    = deals.reduce((best, d) => effRabatt(d) > effRabatt(best) ? d : best, deals[0]);
 
       document.getElementById("stat-count").textContent = deals.length;
       document.getElementById("stat-avg").textContent   = `−${avgSaved.toFixed(2)}€`;
-      document.getElementById("stat-top").textContent   = `−${parseFloat(topDeal?.rabatt_prozent||0).toFixed(0)}%`;
+      document.getElementById("stat-top").textContent   = `−${effRabatt(topDeal).toFixed(0)}%`;
       document.getElementById("stat-top-name").textContent = topDeal?.name?.substring(0,20) || "";
       document.getElementById("stats-row").style.display = "flex";
 
