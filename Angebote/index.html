@@ -316,10 +316,41 @@
 </main>
 
 <script>
-  const API = "https://forkcast-production-cb85.up.railway.app";
+  // ── Datenquelle: Supabase direkt (kein Backend mehr nötig) ──────────
+  // Der Publishable Key ist für den Browser gedacht und öffentlich.
+  // Row Level Security erlaubt damit nur LESEN von angebote/preishistorie
+  // (inkl. View angebote_mit_historie) — alle anderen Tabellen sind gesperrt.
+  const SUPABASE_URL = "https://gycshdraqunwllkaoqfs.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_0U4zDLDqyOkkckye2P0Xvg_bI7jI6dx";
+
   let allDeals = [];
   let rawDeals = [];
+  let renderedDeals = [];
   let activeStore = "";
+
+  async function sb(path) {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, { headers: { apikey: SUPABASE_KEY } });
+    if (!r.ok) throw new Error(`Supabase ${r.status}: ${(await r.text()).substring(0, 120)}`);
+    return r.json();
+  }
+
+  // PostgREST liefert höchstens 1000 Zeilen pro Anfrage (still gekappt) →
+  // seitenweise holen, bis eine Seite nicht mehr voll ist.
+  async function sbAll(path, pageSize = 1000) {
+    const out = [];
+    for (let offset = 0; ; offset += pageSize) {
+      const rows = await sb(`${path}&limit=${pageSize}&offset=${offset}`);
+      out.push(...rows);
+      if (rows.length < pageSize) return out;
+    }
+  }
+
+  function esc(s) {
+    return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  // Lokales Datum als YYYY-MM-DD (toISOString wäre UTC → nachts falscher Tag)
+  function isoLokal(date) { return date.toLocaleDateString("sv-SE"); }
 
   // KW berechnen
   const d = new Date();
@@ -330,7 +361,7 @@
   const kw = Math.ceil((((dt - y) / 86400000) + 1) / 7);
   document.getElementById("kw-badge").textContent = `KW ${kw}`;
 
-  // ── NEU: Countdown statt Datum ─────────────────────────────
+  // ── Countdown statt Datum ───────────────────────────────────
   function daysUntil(str) {
     if (!str) return null;
     const today = new Date(); today.setHours(0,0,0,0);
@@ -345,8 +376,8 @@
   }
 
   // ── Deal-Helper: offizieller Rabatt ODER historischer Deal ──
-  // (Option 2: main.py liefert pro Artikel zusätzlich
-  //  preis_historisch_avg / ist_historischer_deal, siehe Backend)
+  // ist_historischer_deal / preis_historisch_avg kommen fertig aus der
+  // View angebote_mit_historie (Grundpreis-Vergleich, siehe sql/ im Repo).
   function hasOfficialDiscount(d) {
     const preis = parseFloat(d.preis || 0);
     const norm  = parseFloat(d.normalpreis || 0);
@@ -413,9 +444,47 @@
     </div>`;
   }
 
-  async function toggleHistory(cardEl) {
-    const name     = cardEl.dataset.name;
-    const haendler = cardEl.dataset.haendler;
+  // Montag der Kalenderwoche als Schlüssel (erfasst_am ist UTC ohne Zeitzone)
+  function wochenStart(ts) {
+    const t = new Date(ts.replace(" ", "T") + (ts.endsWith("Z") ? "" : "Z"));
+    const wd = (t.getUTCDay() + 6) % 7;
+    t.setUTCDate(t.getUTCDate() - wd);
+    return t.toISOString().substring(0, 10);
+  }
+
+  // Ein Punkt pro FRÜHERER Woche + aktueller Preis als letzter Punkt.
+  // Wie in der View: hat das Angebot einen Grundpreis, wird der historische
+  // Grundpreis auf die aktuelle Packung umgerechnet (Dose vs. Kasten).
+  function wochenPreise(history, d) {
+    const gp     = parseFloat(d.grundpreis_wert || 0);
+    const gpEinh = d.grundpreis_einheit_wert;
+    const preis  = parseFloat(d.preis || 0);
+    const nutzeGp = gp > 0 && d.vergleichsbasis !== "preis"
+      && history.filter(h => h.grundpreis > 0 && h.grundpreis_einheit === gpEinh).length >= 2;
+    const aktWoche = wochenStart(new Date().toISOString());
+
+    const proWoche = {};
+    for (const h of history) {
+      const w = wochenStart(h.erfasst_am);
+      if (w >= aktWoche) continue;
+      let wert;
+      if (nutzeGp) {
+        if (!(h.grundpreis > 0) || h.grundpreis_einheit !== gpEinh) continue;
+        wert = h.grundpreis * preis / gp;
+      } else {
+        wert = parseFloat(h.preis || 0);
+        if (!(wert > 0)) continue;
+      }
+      proWoche[w] = Math.min(proWoche[w] ?? Infinity, wert);
+    }
+    const werte = Object.keys(proWoche).sort().map(w => proWoche[w]);
+    werte.push(preis);
+    return werte;
+  }
+
+  async function toggleHistory(idx) {
+    const cardEl = document.getElementById(`card-${idx}`);
+    const deal   = renderedDeals[idx];
 
     const existing = cardEl.querySelector('.price-history');
     if(existing) { existing.remove(); return; }
@@ -427,21 +496,29 @@
     cardEl.appendChild(div);
 
     try {
-      const url = `${API}/preishistorie?name=${encodeURIComponent(name)}&haendler=${encodeURIComponent(haendler)}`;
-      const data = await fetch(url).then(r=>r.json());
-      const history = data.history || data;
-      if(!Array.isArray(history) || history.length < 2) {
-        div.innerHTML = '<div style="color:#4a7fa5;font-size:12px">📊 Noch nicht genug Verlaufsdaten (ab 2. Woche verfügbar)</div>';
+      // Gleiche Namenslogik wie die View: angebote.name ist "Name - Beschreibung",
+      // preishistorie.name nur "Name".
+      const basis = (deal.name || "").split(" - ")[0];
+      const seit  = isoLokal(new Date(Date.now() - 182 * 86400000));
+      const history = await sb(
+        `preishistorie?select=preis,grundpreis,grundpreis_einheit,erfasst_am` +
+        `&haendler=eq.${encodeURIComponent(deal.haendler)}` +
+        `&name=eq.${encodeURIComponent(basis)}` +
+        `&erfasst_am=gte.${seit}&order=erfasst_am.asc&limit=1000`
+      );
+      const prices = wochenPreise(history, deal);
+      if (prices.length < 3) {
+        div.innerHTML = '<div style="color:#4a7fa5;font-size:12px">📊 Noch nicht genug Verlaufsdaten (ab 2 früheren Aktionswochen verfügbar)</div>';
         return;
       }
-      const prices = history.map(h=>parseFloat(h.preis||0)).filter(p=>p>0);
-      div.innerHTML = `<div style="font-size:12px;color:#7ca8cc;font-weight:600;margin-bottom:8px">📊 Preisverlauf (${prices.length} Wochen)</div>${drawSparkline(prices)}`;
+      div.innerHTML = `<div style="font-size:12px;color:#7ca8cc;font-weight:600;margin-bottom:8px">📊 Preisverlauf (${prices.length - 1} frühere Wochen + jetzt)</div>${drawSparkline(prices)}`;
     } catch(e) {
       div.innerHTML = '<div style="color:#f87171;font-size:12px">Verlauf nicht verfügbar</div>';
     }
   }
 
   function renderDeals(deals) {
+    renderedDeals = deals;
     const grid = document.getElementById("content");
     if (deals.length === 0) {
       grid.innerHTML = '<div class="error">Keine Angebote gefunden.</div>';
@@ -457,7 +534,7 @@
       const rabatt      = hasDiscount ? parseFloat(d.rabatt_prozent || ((1 - preisNum / normNum) * 100)).toFixed(0) : null;
       const saved       = hasDiscount ? (normNum - preisNum).toFixed(2) : null;
 
-      // Historischer Deal (Option 2) — nur wenn kein offizieller Rabatt vorliegt
+      // Historischer Deal — nur wenn kein offizieller Rabatt vorliegt
       const histDeal    = isHistDeal(d);
       const histAvgNum  = parseFloat(d.preis_historisch_avg || 0);
       const histAvg     = histDeal ? histAvgNum.toFixed(2) : null;
@@ -465,16 +542,12 @@
 
       const expiry      = daysUntil(d.gueltig_bis);
 
-      // Sicher escapen für data-Attribute
-      const safeName     = (d.name    || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-      const safeHaendler = (d.haendler|| '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-
       return `
-        <div class="deal-card" id="card-${i}" data-name="${safeName}" data-haendler="${safeHaendler}">
+        <div class="deal-card" id="card-${i}">
           <div class="deal-top">
-            <div class="deal-store">${d.haendler || ""}</div>
-            <div class="deal-name">${d.name || ""}</div>
-            <div class="deal-unit">${d.einheit || ""}</div>
+            <div class="deal-store">${esc(d.haendler)}</div>
+            <div class="deal-name">${esc(d.name)}</div>
+            <div class="deal-unit">${esc(d.einheit)}</div>
           </div>
           <div class="deal-bottom">
             <div class="deal-price-block">
@@ -494,7 +567,7 @@
             </div>` : ""}
           </div>
           ${expiry ? `<div class="gueltig" style="color:${expiry.color}">${expiry.text}</div>` : ""}
-          <button class="history-btn" onclick="toggleHistory(document.getElementById('card-${i}'))">
+          <button class="history-btn" onclick="toggleHistory(${i})">
             📊 Preisverlauf anzeigen
           </button>
         </div>
@@ -505,35 +578,31 @@
   function filterStore(store) {
     activeStore = store;
     document.querySelectorAll(".filter-btn").forEach(btn => {
-      btn.classList.toggle("active", btn.dataset.store === store);
+      btn.classList.toggle("active", (btn.dataset.store || "") === store);
     });
     if (!store) {
       renderDeals(allDeals);
       return;
     }
-    const storeDeals = rawDeals
-      .filter(d => d.haendler === store && parseFloat(d.preis || 0) > 0)
-      .map(d => {
-        const preis = parseFloat(d.preis || 0);
-        const norm  = parseFloat(d.normalpreis || 0);
-        if (!d.rabatt_prozent && norm > preis && preis > 0) {
-          d.rabatt_prozent = ((1 - preis / norm) * 100).toFixed(1);
-        }
-        return d;
-      })
-      .filter(d => istIrgendeinDeal(d))
-      .sort((a, b) => effRabatt(b) - effRabatt(a));
-    renderDeals(storeDeals);
+    renderDeals(allDeals.filter(d => d.haendler === store));
   }
 
   async function load() {
     try {
-      const [raw, haendler] = await Promise.all([
-        fetch(`${API}/angebote?limit=1000`).then(r => r.json()),
-        fetch(`${API}/haendler`).then(r => r.json()),
+      const heute = isoLokal(new Date());
+      // Nur aktuell gültige Angebote, die entweder einen Streichpreis haben
+      // oder laut View ein historischer Deal sind (Filter läuft in Postgres).
+      const [raw, haendlerRows] = await Promise.all([
+        sbAll(
+          `angebote_mit_historie?select=*` +
+          `&gueltig_ab=lte.${heute}&gueltig_bis=gte.${heute}` +
+          `&or=(ist_historischer_deal.is.true,normalpreis.not.is.null)` +
+          `&order=gueltig_ab.desc,id.asc`
+        ),
+        sb(`haendler_aktuell?select=haendler`),
       ]);
+      const haendler = haendlerRows.map(r => r.haendler).filter(Boolean).sort((a, b) => a.localeCompare(b, "de"));
 
-      if (!Array.isArray(raw)) throw new Error("Ungültige API-Antwort: " + JSON.stringify(raw).substring(0, 100));
       rawDeals = raw;
       const deals = raw
         .map(d => {
@@ -555,13 +624,11 @@
 
       document.getElementById("stat-count").textContent = deals.length;
       document.getElementById("stat-avg").textContent   = `−${avgSaved.toFixed(2)}€`;
-      document.getElementById("stat-top").textContent   = `−${effRabatt(topDeal).toFixed(0)}%`;
+      document.getElementById("stat-top").textContent   = topDeal ? `−${effRabatt(topDeal).toFixed(0)}%` : "–";
       document.getElementById("stat-top-name").textContent = topDeal?.name?.substring(0,20) || "";
       document.getElementById("stats-row").style.display = "flex";
 
-      const storesWithDeals = new Set(
-        rawDeals.filter(d => parseFloat(d.preis || 0) > 0).map(d => d.haendler)
-      );
+      const storesWithDeals = new Set(deals.map(d => d.haendler));
       const filterContainer = document.getElementById("store-filters");
       haendler
         .filter(h => storesWithDeals.has(h))
@@ -580,8 +647,8 @@
       document.getElementById("content").innerHTML = `
         <div class="error">
           <div style="font-size:48px;margin-bottom:12px">⚠️</div>
-          <div>Backend nicht erreichbar</div>
-          <div style="font-size:13px;color:#64748b;margin-top:8px">${e.message}</div>
+          <div>Angebote konnten nicht geladen werden</div>
+          <div style="font-size:13px;color:#64748b;margin-top:8px">${esc(e.message)}</div>
         </div>`;
     }
   }
