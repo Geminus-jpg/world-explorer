@@ -143,7 +143,7 @@ const DONE=[
   {e:"📱",t:"PWA (Progressive Web App)",effort:"1 Tag",neu:false},
   //Phase 4
   {e:"📅",t:"7-Tage Wochenplan",d:"Wochenkalender, kombinierte Einkaufsliste, Speicherung in Supabase (week_plans)."},
-  {e:"🎨",t:"Redesign mit Design-System",d:"Light- und Dark-Theme, Bottom-Tab-Navigation. Offen bleibt nur der Mobile-Check in der Test-Reife."},
+  {e:"🎨",t:"Redesign mit Design-System",d:"Light- und Dark-Theme, Bottom-Tab-Navigation."},
   {e:"🏪",t:"Combi, Netto und REWE liefern Preise",d:"Die Daten kommen über Marktguru, eigene Scraper sind nicht nötig."},
   //Datenqualität 10–11/2026
   {e:"🔒",t:"RLS auf allen Tabellen",d:"Frontend liest nur angebote und preishistorie, Scraper und Backend nutzen den service_role-Key."},
@@ -155,6 +155,14 @@ const DONE=[
   {e:"🥕",t:"Obst und Gemüse in den Rezepten",d:"Der Filter auf den Platzhalter thisisnobrand hatte alles ohne Marke entfernt."},
   {e:"📱",t:"Normalpreise und App-Preise",d:"Normalpreis aus dem Prospekttext, Lidl Plus und andere Kundenkarten als eigene Spalten, Hinweis auf /Angebote/."},
   {e:"🧹",t:"Aufräumen im Scraper",d:"Großhandel und Online-Ware fliegen raus, veraltete Prospektzeilen werden gelöscht, Startdatum in deutscher Zeit."},
+  //Test-Reife 11/2026
+  {e:"🌍",t:"Mehrere Postleitzahlen",d:"Pro Angebot eine PLZ-Liste, PLZ im Profil und auf /Angebote/. Neue PLZ aus Profilen werden automatisch mitgenommen."},
+  {e:"🔑",t:"Persönliche Tester-Codes und Kostenbremse",d:"Code pro Tester, einzeln sperrbar, höchstens 3 Geräte. 5 Rezeptläufe pro Tester und Tag, 50 insgesamt."},
+  {e:"🛡️",t:"Robuste Fehler- & Leerzustände",d:"Festes Rezept-Schema, Wiederholung, Zeitlimits und klare Texte statt 'Failed to fetch'."},
+  {e:"🐛",t:"Feedback-Button für Tester",d:"Fehler, Wünsche und Lob landen in der Tabelle feedback. Auswertung mit tester_codes.py feedback."},
+  {e:"⏳",t:"Lade-Sprüche",d:"20 Sprüche, alle 2,5 Sekunden ein neuer, solange die Rezepte entstehen."},
+  {e:"⏰",t:"Frische-Hinweis",d:"Feld frische pro Rezept, Hinweis 'Bald kochen' und Sortierung nach oben. Der Wochenplan kann das später für frühe Tage nutzen."},
+  {e:"✂️",t:"Portionsgrößen-Fix Teil 2",d:"Rechenbeispiel im Prompt plus Prüfung nach der Erzeugung. Auffällige Mengen landen im Feedback. Eine Python-Lösung kommt nur, wenn die Tests sie nötig machen."},
 ];
 
 const DONE_GROUPS=[
@@ -169,31 +177,18 @@ const DONE_GROUPS=[
   {label:"Phase 3",idx:[27,28,29,30,31]},
   {label:"Phase 4",idx:[32,33,34]},
   {label:"🧹 Datenqualität (Oktober/November 2026)",idx:[35,36,37,38,39,40,41,42,43]},
+  {label:"🧪 Test-Reife (November 2026)",idx:[44,45,46,47,48,49,50]},
 ];
 
 // ── Open Phases ───────────────────────────────────────────────
 const PHASES=[
   {
     id:"pt",label:"🧪 Test-Reife",sub:"Vor dem Freundestest",color:C.green,
-    timeline:"Reihenfolge von oben nach unten, rund 4 Arbeitstage",
+    timeline:"Reihenfolge von oben nach unten, rund 1 Arbeitstag",
     desc:"Alles, was vor dem Test mit 3–5 Freunden stehen muss. Danach geht es erst mit Phase 4 weiter.",
     items:[
-      {k:"p4_6",e:"🌍",t:"Mehrere Postleitzahlen",effort:"1–1,5 Tage",neu:false,
-       d:"Pro Angebot eine PLZ-Liste, PLZ im Profil und auf /Angebote/. Tester-PLZ: 33818, 33813, 32791, 32107, 33758, 32130, 32361, 32289. 32289 und 32361 haben keinen REWE. Neue PLZ aus Profilen werden automatisch mitgenommen, haben aber erst nach dem nächsten Abruf Daten."},
-      {k:"pt_codes",e:"🔑",t:"Persönliche Tester-Codes und Kostenbremse",effort:"½ Tag",neu:true,
-       d:"Ersetzt für den Test den echten Login. Jeder Tester bekommt einen eigenen Code, den ich einzeln sperren kann, damit er nicht weitergegeben wird. Dazu ein Tageslimit für Rezept-Generierungen, sonst kann jeder über den Anthropic-Key Kosten erzeugen."},
-      {k:"p4_12",e:"🛡️",t:"Robuste Fehler- & Leerzustände",effort:"½ Tag",neu:false,
-       d:"Wiederholung bei kaputtem JSON von Haiku, Zeitlimits, verständliche Texte statt 'Backend nicht erreichbar' bei jedem Fehler. Profil speichern darf nicht still scheitern."},
-      {k:"p4_11",e:"🐛",t:"Feedback-Mechanismus für Tester",effort:"2 h",neu:false,
-       d:"Button in der App, der Bug-Reports und Wünsche in eine Supabase-Tabelle schreibt, mit Nutzer, Ansicht und Zeitpunkt. So geht nichts in WhatsApp unter und die Auswertung ist einfach."},
-      {k:"p4_10",e:"⏳",t:"Loading-Screen mit rotierenden Sprüchen",effort:"1–2 h",neu:false,
-       d:"Rotierende Sprüche alle 2 Sekunden während des Claude-Aufrufs, z. B. 'Überredet Haiku, keine 25-kg-Gebinde vorzuschlagen…'. Reiner Frontend-State, ersetzt das bisherige 'Rezepte werden geladen…'."},
-      {k:"p4_8",e:"⏰",t:"Frische-Hinweis für schnell verderbliche Zutaten",effort:"2–3 h",neu:false,
-       d:"Neues Feld frische (kurz/lang) pro Rezept. Das Frontend zeigt '⏰ Bald kochen' und sortiert kurz haltbare Rezepte nach oben. Der Wochenplan kann das später für frühe Tage nutzen."},
-      {k:"p4_7",e:"✂️",t:"Portionsgrößen-Fix Teil 2: Große Packungen aufteilen",effort:"½ Tag",neu:false,
-       d:"Klein starten: Prompt-Zeile mit einem konkreten Beispiel plus Prüfung nach der Generierung, ob die Gewichtssumme pro dealItem die Packungsgröße übersteigt. Erst wenn das nicht reicht, kommt eine Python-Lösung."},
       {k:"pt_mobile",e:"📱",t:"Mobile-Check",effort:"1 h",neu:true,
-       d:"Die wichtigsten Abläufe einmal am Handy durchgehen. Das Redesign ist da, es geht nur um Lesbarkeit und Größen."},
+       d:"Im Browser bei 320 px, 360 px und als iPhone 13 geprüft. Offen bleibt der Durchlauf auf einem echten Handy, sobald das Backend läuft."},
       {k:"pt_hosting",e:"☁️",t:"Backend 24/7 hosten",effort:"2 h",neu:true,
        d:"Railway Hobby für 5 $ im Monat (inkl. 5 $ Nutzung). Das Backend lief dort schon, .env.production zeigt noch darauf. Zum Schluss, wenn der Code steht. Mit Claude rund 6,50 $ im Monat bei 5 Testern."},
       {k:"p4_13",e:"🧪",t:"Nutzertests mit Freunden/Familie",effort:"1 Tag Vorbereitung + laufend",neu:false,
