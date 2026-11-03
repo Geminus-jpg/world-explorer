@@ -77,7 +77,7 @@
   <div class="hi">
     <div class="hl">🛒 Forkcast / DealKoch</div>
     <h1>Projekt-Roadmap</h1>
-    <p>Zeitachse aller Features — systematisch abarbeitbar von Phase 1 bis 5.</p>
+    <p>Aktueller Fokus: Test-Reife für den Freundestest. Stand: November 2026.</p>
     <div class="op">
       <div class="op-top"><span>Gesamtfortschritt</span><span id="ot">–</span></div>
       <div class="pb"><div class="pf" id="of" style="width:0%"></div></div>
@@ -89,9 +89,7 @@
 
 <main>
   <div id="tab-done" class="tab-content active"></div>
-  <div id="tab-p1" class="tab-content"></div>
-  <div id="tab-p2" class="tab-content"></div>
-  <div id="tab-p3" class="tab-content"></div>
+  <div id="tab-pt" class="tab-content"></div>
   <div id="tab-p4" class="tab-content"></div>
   <div id="tab-p5" class="tab-content"></div>
 </main>
@@ -143,6 +141,20 @@ const DONE=[
   {e:"❤️",t:"Favoriten-Rezepte",effort:"1 Tag",neu:true},
   {e:"📋",t:"Koch-Dashboard",effort:"1–2 Tage",neu:false},
   {e:"📱",t:"PWA (Progressive Web App)",effort:"1 Tag",neu:false},
+  //Phase 4
+  {e:"📅",t:"7-Tage Wochenplan",d:"Wochenkalender, kombinierte Einkaufsliste, Speicherung in Supabase (week_plans)."},
+  {e:"🎨",t:"Redesign mit Design-System",d:"Light- und Dark-Theme, Bottom-Tab-Navigation. Offen bleibt nur der Mobile-Check in der Test-Reife."},
+  {e:"🏪",t:"Combi, Netto und REWE liefern Preise",d:"Die Daten kommen über Marktguru, eigene Scraper sind nicht nötig."},
+  //Datenqualität 10–11/2026
+  {e:"🔒",t:"RLS auf allen Tabellen",d:"Frontend liest nur angebote und preishistorie, Scraper und Backend nutzen den service_role-Key."},
+  {e:"🌐",t:"/Angebote/ direkt aus Supabase",d:"Kein Backend mehr nötig, der Fehler 'Backend nicht erreichbar' ist damit weg."},
+  {e:"🛒",t:"Kaufland, PENNY, Obst und Gemüse",d:"Marktguru-Scraper mit Sperrliste statt Positivliste."},
+  {e:"🏷️",t:"ALDI mit echten Kategorien",d:"Strukturierte Seitendaten statt Text, Nonfood fliegt raus, Artikelnummer als ID."},
+  {e:"⚖️",t:"Rabatterkennung über den Grundpreis",d:"View angebote_mit_historie vergleicht €/kg, €/l und €/Stk, ein Messpunkt pro Woche."},
+  {e:"🍖",t:"Rezept-Pool mit Quoten",d:"50 Plätze fest verteilt, echte Deals zuerst. Vorher fielen bei 'alle Märkte' Fleisch, Fisch und Milch aus dem Pool."},
+  {e:"🥕",t:"Obst und Gemüse in den Rezepten",d:"Der Filter auf den Platzhalter thisisnobrand hatte alles ohne Marke entfernt."},
+  {e:"📱",t:"Normalpreise und App-Preise",d:"Normalpreis aus dem Prospekttext, Lidl Plus und andere Kundenkarten als eigene Spalten, Hinweis auf /Angebote/."},
+  {e:"🧹",t:"Aufräumen im Scraper",d:"Großhandel und Online-Ware fliegen raus, veraltete Prospektzeilen werden gelöscht, Startdatum in deutscher Zeit."},
 ];
 
 const DONE_GROUPS=[
@@ -155,44 +167,56 @@ const DONE_GROUPS=[
   {label:"Phase 1",idx:[18,19,20,21]},
   {label:"Phase 2",idx:[22,23,24,25,26]},
   {label:"Phase 3",idx:[27,28,29,30,31]},
+  {label:"Phase 4",idx:[32,33,34]},
+  {label:"🧹 Datenqualität (Oktober/November 2026)",idx:[35,36,37,38,39,40,41,42,43]},
 ];
 
 // ── Open Phases ───────────────────────────────────────────────
 const PHASES=[
-  
   {
-    id:"p4",label:"🏗️ Phase 4",sub:"Größere Projekte",color:C.orange,
-    timeline:"Nächste 1–2 Monate",
-    desc:"Neue Infrastruktur oder aufwändige Implementierung nötig. Je mehrere Tage bis eine Woche.",
+    id:"pt",label:"🧪 Test-Reife",sub:"Vor dem Freundestest",color:C.green,
+    timeline:"Reihenfolge von oben nach unten, rund 4 Arbeitstage",
+    desc:"Alles, was vor dem Test mit 3–5 Freunden stehen muss. Danach geht es erst mit Phase 4 weiter.",
     items:[
-      {e:"📅",t:"7-Tage Wochenplan  ⭐ Killer-Feature",effort:"3–5 Tage",neu:false,
-       d:"Das eigentliche Ziel von Forkcast: täglich ein Rezept wählen, eine kombinierte Einkaufsliste für die ganze Woche. Einmal einkaufen, 7 Tage geplant. Braucht: Wochenkalender-UI, Einkaufslisten-Merge (Mengen addieren), KW-Persistenz in Supabase."},
-      {e:"🏋️",t:"Makro-Regler als Prompt-Signal",effort:"1 Tag",neu:true,
+      {k:"p4_6",e:"🌍",t:"Mehrere Postleitzahlen",effort:"1–1,5 Tage",neu:false,
+       d:"Pro Angebot eine PLZ-Liste, PLZ im Profil und auf /Angebote/. Tester-PLZ: 33818, 33813, 32791, 32107, 33758, 32130, 32361, 32289. 32289 und 32361 haben keinen REWE. Neue PLZ aus Profilen werden automatisch mitgenommen, haben aber erst nach dem nächsten Abruf Daten."},
+      {k:"pt_codes",e:"🔑",t:"Persönliche Tester-Codes und Kostenbremse",effort:"½ Tag",neu:true,
+       d:"Ersetzt für den Test den echten Login. Jeder Tester bekommt einen eigenen Code, den ich einzeln sperren kann, damit er nicht weitergegeben wird. Dazu ein Tageslimit für Rezept-Generierungen, sonst kann jeder über den Anthropic-Key Kosten erzeugen."},
+      {k:"p4_12",e:"🛡️",t:"Robuste Fehler- & Leerzustände",effort:"½ Tag",neu:false,
+       d:"Wiederholung bei kaputtem JSON von Haiku, Zeitlimits, verständliche Texte statt 'Backend nicht erreichbar' bei jedem Fehler. Profil speichern darf nicht still scheitern."},
+      {k:"p4_11",e:"🐛",t:"Feedback-Mechanismus für Tester",effort:"2 h",neu:false,
+       d:"Button in der App, der Bug-Reports und Wünsche in eine Supabase-Tabelle schreibt, mit Nutzer, Ansicht und Zeitpunkt. So geht nichts in WhatsApp unter und die Auswertung ist einfach."},
+      {k:"p4_10",e:"⏳",t:"Loading-Screen mit rotierenden Sprüchen",effort:"1–2 h",neu:false,
+       d:"Rotierende Sprüche alle 2 Sekunden während des Claude-Aufrufs, z. B. 'Überredet Haiku, keine 25-kg-Gebinde vorzuschlagen…'. Reiner Frontend-State, ersetzt das bisherige 'Rezepte werden geladen…'."},
+      {k:"p4_8",e:"⏰",t:"Frische-Hinweis für schnell verderbliche Zutaten",effort:"2–3 h",neu:false,
+       d:"Neues Feld frische (kurz/lang) pro Rezept. Das Frontend zeigt '⏰ Bald kochen' und sortiert kurz haltbare Rezepte nach oben. Der Wochenplan kann das später für frühe Tage nutzen."},
+      {k:"p4_7",e:"✂️",t:"Portionsgrößen-Fix Teil 2: Große Packungen aufteilen",effort:"½ Tag",neu:false,
+       d:"Klein starten: Prompt-Zeile mit einem konkreten Beispiel plus Prüfung nach der Generierung, ob die Gewichtssumme pro dealItem die Packungsgröße übersteigt. Erst wenn das nicht reicht, kommt eine Python-Lösung."},
+      {k:"pt_mobile",e:"📱",t:"Mobile-Check",effort:"1 h",neu:true,
+       d:"Die wichtigsten Abläufe einmal am Handy durchgehen. Das Redesign ist da, es geht nur um Lesbarkeit und Größen."},
+      {k:"pt_hosting",e:"☁️",t:"Backend 24/7 hosten",effort:"2 h",neu:true,
+       d:"Railway Hobby für 5 $ im Monat (inkl. 5 $ Nutzung). Das Backend lief dort schon, .env.production zeigt noch darauf. Zum Schluss, wenn der Code steht. Mit Claude rund 6,50 $ im Monat bei 5 Testern."},
+      {k:"p4_13",e:"🧪",t:"Nutzertests mit Freunden/Familie",effort:"1 Tag Vorbereitung + laufend",neu:false,
+       d:"3–5 Personen, kurze Erklärung vorab, aktiv nach dem Feedback-Button fragen statt nur abzuwarten."},
+    ]
+  },
+  {
+    id:"p4",label:"🏗️ Phase 4",sub:"Nach dem Test",color:C.orange,
+    timeline:"Nach dem Freundestest, je nach Rückmeldungen",
+    desc:"Größere Projekte. Die Reihenfolge entscheidet das Feedback der Tester.",
+    items:[
+      {k:"p4_4",e:"🔐",t:"Echter Login (Supabase Auth)",effort:"2–3 Tage",neu:false,
+       d:"Für den Test reichen Tester-Codes. Supabase Auth: E-Mail/Passwort oder Magic Link. Voraussetzung für echten Multi-User-Betrieb."},
+      {k:"p4_1",e:"🏋️",t:"Makro-Regler als Prompt-Signal",effort:"1 Tag",neu:true,
        d:"Weiche Präferenz-Slider: 'mind. X g Protein', 'max. Y g Fett' pro Mahlzeit. Als Formulierung im Prompt ('bevorzuge proteinreiche Rezepte') — KEIN harter Filter (Claude-Schätzungen ±30% zu ungenau). Harte Filter erst wenn Nährwert-Datenbasis verlässlich ist (Phase 5)."},
-      {e:"🔔",t:"Preisalarm (Favoriten-Rezepte + Zutaten)",effort:"2–3 Tage",neu:false,
-       d:"'Rezept X — Zutaten jetzt 20% günstiger als üblich' per Push/E-Mail. Braucht: PWA (Phase 3) für Push, Vergleichslogik gegen preishistorie-Durchschnitt, Favoriten-Feature (Phase 3). Setzt mehrere Abhängigkeiten voraus."},
-      {e:"🥘",t:"Reste-Rezepte Modus",effort:"1–2 Tage",neu:false,
+      {k:"p4_3",e:"🥘",t:"Reste-Rezepte Modus",effort:"1–2 Tage",neu:false,
        d:"'Ich habe noch Hähnchen vom Dienstag — was koche ich heute?' Neuer Prompt-Modus mit User-Zutaten-Input, kombiniert eigene Vorräte mit aktuellen Deals. Neues UI-Element + separater Prompt-Zweig."},
-      {e:"🔐",t:"Echter Login (Supabase Auth)",effort:"2–3 Tage",neu:false,
-       d:"Aktuell: Jeder kann auf 'Janis' Profil zugreifen wenn er den Namen kennt. Supabase Auth: E-Mail/Passwort oder Magic Link. Voraussetzung für echten Multi-User-Betrieb."},
-      {e:"🏪",t:"Combi / Netto / REWE Preisdaten fixen",effort:"1 Woche+",neu:false,
-       d:"Marktguru liefert für PLZ 33818 keine Preisdaten für diese Märkte. Erscheinen in /haendler aber werden aus Rezept-Matching herausgefiltert. Eigene Playwright-Scraper oder alternative API-Quelle nötig."},
-      {e:"🌍",t:"Mehrere Postleitzahlen",effort:"1 Tag",neu:false,
-       d:"PLZ 33818 (Leopoldshöhe) aktuell hardcoded. PLZ als Parameter → andere Regionen unterstützen, Skalierbarkeit, potenziell andere Nutzer. Marktguru API unterstützt PLZ-Parameter."},
-      {e:"✂️",t:"Portionsgrößen-Fix Teil 2: Große Packungen aufteilen",effort:"1–3 Tage",neu:true,
-       d:"Große Packungen (ab ca. 1,5–2× oberer Portionsgrenze) auf 2 Rezepte derselben Woche aufteilen, Kosten/Ersparnis anteilig nach Gewicht. Start: nur eine zusätzliche Prompt-Zeile + Testläufe, kein Python-Umbau vorab. Empfehlung: 1 konkretes Beispiel im Prompt zeigen (Few-Shot statt nur Anweisung) plus ein automatischer Check nach der Generierung, ob die Gewichtssumme pro dealItem über beide Rezepte die Packungsgröße übersteigt — liefert Daten, ob die Python-Fallback-Lösung überhaupt nötig wird."},
-      {e:"⏰",t:"Frische-Hinweis für schnell verderbliche Zutaten",effort:"½–1 Tag",neu:true,
-       d:"MVP ohne Wochenplan: neues Feld frische (kurz/lang) pro Rezept — Haiku setzt es anhand der Hauptzutat (Geflügel/Hack/Fisch roh = kurz, Konserven/Trockenware/Kartoffeln = lang). Frontend zeigt Badge '⏰ Bald kochen' + sortiert kurz-haltbare Rezepte nach oben. Vollversion folgt automatisch mit dem 7-Tage-Wochenplan (kurz-haltbar → frühe Tage empfehlen)."},
-      {e:"🎨",t:"Design-Überarbeitung (minimalistisch + mobiloptimiert)",effort:"1–2 Tage",neu:true,
-       d:"Ziel: minimalistisch, ruhig, nicht überladen — mehr Weißraum, klare Hierarchie, weniger visuelles Rauschen. Aktueller Stand von DealKoch.jsx ist noch nicht bekannt — für einen konkreten Vorschlag am besten die Komponente teilen. Mobile-Optimierung (Größe/Lesbarkeit) direkt mitdenken, meist derselbe Durchgang."},
-      {e:"⏳",t:"Loading-Screen mit rotierenden Sprüchen",effort:"2–4 h",neu:true,
-       d:"Rotierende Sprüche (alle 1,5–2s) während des Claude-Aufrufs, z. B. 'Analysiere dein Essverhalten…', 'Rechne aus, wie viel du sparst…', 'Überredet Haiku, keine 25-kg-Gebinde vorzuschlagen…', 'Fragt den Kühlschrank nach Resten…'. Reiner Frontend-State + Interval, kein Backend nötig."},
-      {e:"🐛",t:"Feedback-Mechanismus für Tester",effort:"2–4 h",neu:true,
-       d:"Kleiner Button/Formular in der App ('🐛 Feedback'), das Bug-Reports/Wünsche direkt an eine Supabase-Tabelle oder per mailto: schickt — sonst geht Tester-Feedback in WhatsApp/mündlich unter."},
-      {e:"🛡️",t:"Robuste Fehler- & Leerzustände",effort:"½–1 Tag",neu:true,
-       d:"Was passiert, wenn Haiku kein valides JSON liefert, eine Kategorie diese Woche keine Deals hat, oder die API mal down ist? Aktuell vermutlich ungetestet, weil nur du die App nutzt — bei Testern ohne Kontext wirkt ein stiller Fehler schnell wie 'kaputt'."},
-      {e:"🧪",t:"Nutzertests mit Freunden/Familie",effort:"1 Tag Vorbereitung + laufend",neu:true,
-       d:"Bevor Freunde/Familie testen: Echter Login (Phase 4) ist Pflicht — sonst teilen sich alle dasselbe 'Janis'-Profil. Dazu: Design + Mobile-Optimierung, Loading-Screen, Feedback-Mechanismus, robuste Fehlerzustände. Danach: 3–5 Personen, kurze Erklärung/Onboarding vorab, aktiv nach dem Feedback-Button fragen statt nur abzuwarten."},
+      {k:"p4_2",e:"🔔",t:"Preisalarm (Favoriten-Rezepte + Zutaten)",effort:"2–3 Tage",neu:false,
+       d:"Zurückgestellt: cooles Feature, aber für den Test und die eigene Auswertung nicht nötig. 'Rezept X — Zutaten jetzt 20% günstiger als üblich' per Push/E-Mail. Braucht: PWA (Phase 3) für Push, Vergleichslogik gegen preishistorie-Durchschnitt, Favoriten-Feature (Phase 3). Setzt mehrere Abhängigkeiten voraus."},
+      {k:"p4_regionen",e:"🗺️",t:"Regionen außerhalb von OWL",effort:"½–1 Tag",neu:true,
+       d:"ALDI SÜD ist in Marktguru vorhanden (z. B. Köln, Stuttgart, München) und müsste aufgenommen werden, dort dann ALDI Nord ausblenden. nahkauf ist bei Bedarf ein weiterer Händler."},
+      {k:"p4_snacks",e:"🍫",t:"Snacks und Top-Deals auf /Angebote/",effort:"½ Tag",neu:true,
+       d:"Die Seite soll auch Snacks und wirklich starke Angebote jenseits von Rezeptzutaten zeigen. Dabei auch die doppelten Zeilen ausblenden."},
     ]
   },
   {
@@ -221,6 +245,8 @@ const LS='fk_roadmap_v1';
 function getState(){try{return JSON.parse(localStorage.getItem(LS)||'{}')}catch{return{}}}
 function toggleItem(id){const s=getState();s[id]?delete s[id]:s[id]=true;localStorage.setItem(LS,JSON.stringify(s));return!!s[id]}
 function isDone(id){return!!getState()[id]}
+// Feste Schlüssel: Haken bleiben beim Umsortieren am richtigen Eintrag
+function itemId(ph,it,i){return it.k||ph.id+'_'+i}
 
 // ── Badge helper ──────────────────────────────────────────────
 function badge(txt,col){return`<span class="badge" style="background:${col}20;color:${col};border:1px solid ${col}40">${txt}</span>`}
@@ -244,7 +270,7 @@ function renderDone(){
 
 // ── Render phase ──────────────────────────────────────────────
 function renderPhase(ph){
-  const chk=ph.items.filter((_,i)=>isDone(ph.id+'_'+i)).length;
+  const chk=ph.items.filter((it,i)=>isDone(itemId(ph,it,i))).length;
   const tot=ph.items.length;
   const pct=Math.round(chk/tot*100);
   let html=`<div class="phase-box">
@@ -255,7 +281,7 @@ function renderPhase(ph){
     <div class="phase-pl" id="ppl_${ph.id}">${chk} / ${tot} erledigt (${pct}%)</div>
   </div>`;
   ph.items.forEach((it,i)=>{
-    const id=ph.id+'_'+i;
+    const id=itemId(ph,it,i);
     const done=isDone(id);
     html+=`<div class="card ${done?'ck':''}" id="card_${id}">
       <div class="card-head" onclick="cardClick(event,'${id}')">
@@ -280,7 +306,7 @@ function checkClick(ev,id){
   const now=toggleItem(id);
   document.getElementById('chk_'+id).classList.toggle('on',now);
   document.getElementById('card_'+id).classList.toggle('ck',now);
-  refreshPhase(id.split('_')[0]);
+  PHASES.forEach(p=>refreshPhase(p.id));
   refreshOverall();
 }
 function cardClick(ev,id){
@@ -289,7 +315,7 @@ function cardClick(ev,id){
 }
 function refreshPhase(pid){
   const ph=PHASES.find(p=>p.id===pid);if(!ph)return;
-  const chk=ph.items.filter((_,i)=>isDone(pid+'_'+i)).length;
+  const chk=ph.items.filter((it,i)=>isDone(itemId(ph,it,i))).length;
   const tot=ph.items.length;const pct=Math.round(chk/tot*100);
   const pf=document.getElementById('ppf_'+pid);
   const pl=document.getElementById('ppl_'+pid);
@@ -298,7 +324,7 @@ function refreshPhase(pid){
 }
 function refreshOverall(){
   const totOpen=PHASES.reduce((s,p)=>s+p.items.length,0);
-  const chkOpen=PHASES.reduce((s,p)=>s+p.items.filter((_,i)=>isDone(p.id+'_'+i)).length,0);
+  const chkOpen=PHASES.reduce((s,p)=>s+p.items.filter((it,i)=>isDone(itemId(p,it,i))).length,0);
   const total=DONE.length+totOpen;
   const done=DONE.length+chkOpen;
   document.getElementById('ot').textContent=`${done} / ${total} erledigt`;
