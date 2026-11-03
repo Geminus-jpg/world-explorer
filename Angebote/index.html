@@ -178,6 +178,21 @@
     .deal-original { font-size: 14px; color: #4a7fa5; text-decoration: line-through; margin-top: 3px; }
     .deal-app { font-size: 12px; font-weight: 700; color: #7ca8cc; margin-top: 5px; }
 
+    .plz-form { display: flex; align-items: center; gap: 8px; }
+    .plz-form .kw-badge { white-space: nowrap; }
+    @media (max-width: 480px) { .header-inner { flex-wrap: wrap; gap: 10px; } }
+    .plz-form label { color: #4a7fa5; font-size: 12px; font-weight: 600; }
+    .plz-form input {
+      width: 76px;
+      padding: 6px 8px;
+      border: 1px solid #1e3a5f;
+      border-radius: 8px;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      font-size: 14px;
+    }
+
     .deal-badge {
       background: rgba(34,197,94,.15);
       color: #22c55e;
@@ -272,7 +287,9 @@
       <span>🛒 Forkcast</span>
       <h1>Angebote der Woche</h1>
     </div>
-    <div>
+    <div class="plz-form">
+      <label for="plz-input">PLZ</label>
+      <input id="plz-input" inputmode="numeric" maxlength="5" autocomplete="postal-code" aria-label="Postleitzahl">
       <span class="kw-badge" id="kw-badge">KW –</span>
     </div>
   </div>
@@ -308,6 +325,7 @@
     </div>
   </div>
 
+  <div id="plz-hinweis" class="gueltig" style="display:none;padding:0 0 14px;color:#f59e0b"></div>
   <div id="content">
     <div class="loading">
       <div class="loading-emoji">🛒</div>
@@ -596,8 +614,36 @@
     renderDeals(allDeals.filter(d => d.haendler === store));
   }
 
+  // PLZ aus dem Link (?plz=32791), sonst die zuletzt genutzte, sonst Leopoldshöhe
+  const PLZ_KEY = "fk_angebote_plz";
+
+  function aktuellePlz() {
+    const ausUrl = new URLSearchParams(location.search).get("plz");
+    if (/^\d{5}$/.test(ausUrl || "")) return ausUrl;
+    try {
+      const gemerkt = localStorage.getItem(PLZ_KEY);
+      if (/^\d{5}$/.test(gemerkt || "")) return gemerkt;
+    } catch (e) {}
+    return "33818";
+  }
+
+  function plzFeldEinrichten(plz) {
+    const feld = document.getElementById("plz-input");
+    feld.value = plz;
+    try { localStorage.setItem(PLZ_KEY, plz); } catch (e) {}
+    feld.addEventListener("input", () => {
+      feld.value = feld.value.replace(/\D/g, "").slice(0, 5);
+      if (feld.value.length === 5 && feld.value !== plz) {
+        try { localStorage.setItem(PLZ_KEY, feld.value); } catch (e) {}
+        location.search = "?plz=" + feld.value;
+      }
+    });
+  }
+
   async function load() {
     try {
+      const plz = aktuellePlz();
+      plzFeldEinrichten(plz);
       const heute = isoLokal(new Date());
       // Nur aktuell gültige Angebote, die entweder einen Streichpreis haben
       // oder laut View ein historischer Deal sind (Filter läuft in Postgres).
@@ -605,12 +651,20 @@
         sbAll(
           `angebote_mit_historie?select=*` +
           `&gueltig_ab=lte.${heute}&gueltig_bis=gte.${heute}` +
-          `&or=(ist_historischer_deal.is.true,normalpreis.not.is.null)` +
+          // Leere PLZ-Liste = gilt überall (ALDI Nord)
+          `&and=(or(ist_historischer_deal.is.true,normalpreis.not.is.null),or(plz.cs.{${plz}},plz.eq.{}))` +
           `&order=gueltig_ab.desc,id.asc`
         ),
         sb(`haendler_aktuell?select=haendler`),
       ]);
       const haendler = haendlerRows.map(r => r.haendler).filter(Boolean).sort((a, b) => a.localeCompare(b, "de"));
+
+      // ALDI Nord gilt überall und zeigt daher nicht, dass die PLZ Daten hat
+      if (!raw.some(d => (d.plz || []).length > 0)) {
+        const hinweis = document.getElementById("plz-hinweis");
+        hinweis.textContent = `Für die PLZ ${plz} liegen noch keine Prospekte vor. Bis zum nächsten Abruf (montags und donnerstags) siehst du nur ALDI.`;
+        hinweis.style.display = "block";
+      }
 
       rawDeals = raw;
       const deals = raw
