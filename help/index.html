@@ -14,9 +14,11 @@
     header h1{font-size:24px;font-weight:800;color:#f0f6ff;margin-bottom:4px}
     header p{font-size:13px;color:#7ca8cc}
     .op{margin-top:14px}
+    .op + .op{margin-top:10px}
     .op-top{display:flex;justify-content:space-between;font-size:12px;color:#7ca8cc;margin-bottom:5px}
     .pb{height:7px;background:#1e3a5f;border-radius:4px;overflow:hidden}
     .pf{height:100%;background:linear-gradient(90deg,#22c55e,#06b6d4);border-radius:4px;transition:width .4s}
+    .pf.vor{background:linear-gradient(90deg,#06b6d4,#f59e0b)}
 
     .tabs{background:#0a1628;border-bottom:1px solid #1e3a5f;padding:0 24px;overflow-x:auto}
     .tabs-inner{max-width:800px;margin:0 auto;display:flex;gap:2px;min-width:max-content}
@@ -29,7 +31,8 @@
     .tab-content{display:none}
     .tab-content.active{display:block}
 
-    .phase-box{background:#0f2236;border:1px solid #1e3a5f;border-radius:14px;padding:16px 18px;margin-bottom:18px}
+    .phase-box{background:#0f2236;border:1px solid #1e3a5f;border-radius:14px;padding:16px 18px;margin:26px 0 12px}
+    .tab-content > .phase-box:first-of-type{margin-top:0}
     .phase-title{font-size:17px;font-weight:800;margin-bottom:3px}
     .phase-meta{font-size:12px;color:#4a7fa5;font-weight:600;margin-bottom:8px}
     .phase-desc{font-size:13px;color:#7ca8cc;margin-bottom:12px}
@@ -39,6 +42,8 @@
 
     .card{background:#0f2236;border:1px solid #1e3a5f;border-radius:12px;padding:13px 15px;margin-bottom:8px;transition:border-color .2s,background .2s}
     .card.ck{border-color:rgba(34,197,94,.45);background:#0d2218}
+    .card.gate{border:1px dashed rgba(245,158,11,.6);background:#1a1f1c}
+    .card.gate.ck{border-style:solid;border-color:rgba(34,197,94,.45);background:#0d2218}
     .card-head{display:flex;align-items:flex-start;gap:11px;cursor:pointer;user-select:none}
     .chk{width:20px;height:20px;border:2px solid #2a4a6a;border-radius:5px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;margin-top:1px;background:transparent;font-size:0}
     .chk.on{background:#22c55e;border-color:#22c55e;font-size:12px;color:#fff;font-weight:700}
@@ -63,6 +68,9 @@
     .done-d{font-size:12px;color:#4a7fa5;line-height:1.5}
 
     .info-box{border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:13px}
+    .info-box .ib-t{font-weight:700;margin-bottom:4px}
+    .info-box .ib-d{color:#7ca8cc;line-height:1.6}
+    .info-box a{color:#06b6d4}
 
     @media(max-width:600px){
       main{padding:16px 14px 60px}
@@ -77,7 +85,11 @@
   <div class="hi">
     <div class="hl">🛒 Forkcast / DealKoch</div>
     <h1>Projekt-Roadmap</h1>
-    <p>Aktueller Fokus: Test-Reife für den Freundestest. Stand: November 2026.</p>
+    <p>Aktueller Fokus: Qualität vor dem Freundestest. Stand: 06.11.2026.</p>
+    <div class="op">
+      <div class="op-top"><span>Bis zum Test</span><span id="vt">–</span></div>
+      <div class="pb"><div class="pf vor" id="vf" style="width:0%"></div></div>
+    </div>
     <div class="op">
       <div class="op-top"><span>Gesamtfortschritt</span><span id="ot">–</span></div>
       <div class="pb"><div class="pf" id="of" style="width:0%"></div></div>
@@ -88,10 +100,10 @@
 <div class="tabs"><div class="tabs-inner" id="tab-bar"></div></div>
 
 <main>
-  <div id="tab-done" class="tab-content active"></div>
-  <div id="tab-pt" class="tab-content"></div>
-  <div id="tab-p4" class="tab-content"></div>
-  <div id="tab-p5" class="tab-content"></div>
+  <div id="tab-done" class="tab-content"></div>
+  <div id="tab-vor" class="tab-content active"></div>
+  <div id="tab-test" class="tab-content"></div>
+  <div id="tab-nach" class="tab-content"></div>
 </main>
 
 <script>
@@ -164,6 +176,14 @@ const DONE=[
   {e:"⏰",t:"Frische-Hinweis",d:"Feld frische pro Rezept, Hinweis 'Bald kochen' und Sortierung nach oben, auch im Wochenplan. Das Backend prüft zusätzlich die Produktnamen."},
   {e:"🤖",t:"Modellwechsel auf Haiku 5.5",d:"Vergleich mit gleichem Prompt: Preise stimmen, keine erfundenen Zutaten im Namen, rund 0,013 $ pro Lauf. Das Modell lässt sich per REZEPT_MODELL ändern."},
   {e:"✂️",t:"Portionsgrößen-Fix Teil 2",d:"Rechenbeispiel im Prompt plus Prüfung nach der Erzeugung. Auffällige Mengen landen im Feedback. Eine Python-Lösung kommt nur, wenn die Tests sie nötig machen."},
+  //Packungen & Analyse 11/2026
+  {e:"📦",t:"Packungen wie im Laden",d:"Einkaufsliste mit ganzen Packungen, zum Beispiel '1 × 500-g-Packung · 4,49 €', lose Ware je 100 g, Hinweis auf Reste. Packungen ab 2 kg und zu große Frischware fliegen aus dem Pool."},
+  {e:"🔗",t:"Geteilte Packungen",d:"Teilen sich Rezepte eine Frischware-Packung, werden sie zusammen ausgewählt und in Liste, Plan und Rezept markiert."},
+  {e:"👩‍🍳",t:"Genauere Kochanleitungen",d:"5 bis 8 Schritte mit Schnitt, Hitze, Zeit und Garprobe, Mindest-Garzeiten im Prompt, Effort medium."},
+  {e:"⚖️",t:"Modellvergleich Haiku 5.5 gegen Sonnet 5.5",d:"Haiku medium bleibt: 0,018 $ pro Lauf, Packungen gehen auf, ausführliche Schritte. Sonnet medium kostet das Zehnfache."},
+  {e:"🧬",t:"Doppelte Angebote zusammengefasst",d:"Gleiches Produkt, gleicher Preis, gleicher Zeitraum wird eine Zeile mit PLZ-Liste. Von 129 auf 23 Dubletten."},
+  {e:"🧽",t:"Kleinigkeiten in der Bedienung",d:"Kein '−0,00 €' und kein 'aus Cache' mehr, Hinweis 'bis zu drei Minuten', iPhone-Icon für den Home-Bildschirm."},
+  {e:"🔎",t:"Analyse: Daten, Preise und Prompt",d:"Dokument mit 9 Befunden, Optionen, Prompt-v2-Entwurf und 55 durchgespielten Fällen. Grundlage dieser Roadmap."},
 ];
 
 const DONE_GROUPS=[
@@ -179,73 +199,321 @@ const DONE_GROUPS=[
   {label:"Phase 4",idx:[32,33,34]},
   {label:"🧹 Datenqualität (Oktober/November 2026)",idx:[35,36,37,38,39,40,41,42,43]},
   {label:"🧪 Test-Reife (November 2026)",idx:[44,45,46,47,48,49,50,51]},
+  {label:"📦 Packungen & Analyse (November 2026)",idx:[52,53,54,55,56,57,58]},
 ];
 
 // ── Open Phases ───────────────────────────────────────────────
+// tab: vor | test | nach. a = Aufwand in Abenden (1 Abend ≈ 3 h) für die Summe "Bis zum Test".
+// k = fester Schlüssel: Haken bleiben beim Umsortieren am richtigen Eintrag.
 const PHASES=[
+  // ── VOR DEM TEST ──
   {
-    id:"pt",label:"🧪 Test-Reife",sub:"Vor dem Freundestest",color:C.green,
-    timeline:"Reihenfolge von oben nach unten, rund 1 Arbeitstag",
-    desc:"Alles, was vor dem Test mit 3–5 Freunden stehen muss. Danach geht es erst mit Phase 4 weiter.",
+    id:"v0",tab:"vor",label:"🗓️ Etappe 0",sub:"Dieses Wochenende",color:C.cyan,
+    timeline:"07.–09.11.2026, kein Code",
+    desc:"Beobachten und entscheiden. Das Ergebnis bestimmt, was in Etappe 1 und 6 nötig ist.",
     items:[
-      {k:"pt_mobile",e:"📱",t:"Mobile-Check",effort:"1 h",neu:true,
-       d:"Im Browser bei 320 px, 360 px und als iPhone 13 geprüft. Offen bleibt der Durchlauf auf einem echten Handy, sobald das Backend läuft."},
-      {k:"pt_hosting",e:"☁️",t:"Backend 24/7 hosten",effort:"2 h",neu:true,
-       d:"Railway Hobby für 5 $ im Monat (inkl. 5 $ Nutzung). Das Backend lief dort schon, .env.production zeigt noch darauf. Zum Schluss, wenn der Code steht. Mit Claude rund 6,50 $ im Monat bei 5 Testern."},
-      {k:"p4_13",e:"🧪",t:"Nutzertests mit Freunden/Familie",effort:"1 Tag Vorbereitung + laufend",neu:false,
-       d:"3–5 Personen, kurze Erklärung vorab, aktiv nach dem Feedback-Button fragen statt nur abzuwarten."},
+      {k:"v0_entscheid",e:"🗳️",t:"Die 7 Entscheidungen bestätigen",effort:"15 min",a:0.1,neu:true,
+       d:"Stehen im Dokument unter 'Entscheidungen für dich'. Die Roadmap folgt den Empfehlungen dort. Entscheidest du anders, verschiebt sich nur der jeweilige Punkt."},
+      {k:"v0_gruppe",e:"👥",t:"Testgruppe festlegen",effort:"30 min",a:0.2,neu:true,
+       d:"3–5 Personen: Wohnort (PLZ), Märkte, Diäten und Allergien, iPhone oder Android. Davon hängen die Testprofile, der Geräte-Check und ALDI in 75245 ab."},
+      {k:"v0_iphone",e:"📱",t:"iPhone: Installation prüfen",effort:"30 min",a:0.2,neu:true,
+       d:"Auf Papas iPhone: Zum Home-Bildschirm, Icon, Vollbild, Startseite. Login und Rezepte gehen erst, wenn das Backend gehostet ist (Etappe 6). Willst du schon jetzt alles testen, zieh das Hosting vor: 2 h, ab dann 5 $ im Monat."},
+      {k:"v0_sonntag",e:"▶️",t:"Sonntag 08.11.: Scraper von Hand starten",effort:"30 min",a:0.2,ref:"D3",neu:true,
+       d:"GitHub → Actions → 'Forkcast Scraper Mo & Do' → Run workflow. Danach in Supabase prüfen, welche Ketten schon Angebote ab Montag liefern. Das entscheidet über den Sonntags-Cron in Etappe 1."},
+      {k:"v0_dubletten",e:"🧬",t:"Montag 09.11.: Dubletten prüfen",effort:"15 min",a:0.1,neu:true,
+       d:"Nach dem Montags-Lauf sollten von den 23 Rest-Dubletten nur echte Varianten übrig sein, also andere Größe oder anderer Start."},
     ]
   },
   {
-    id:"p4",label:"🏗️ Phase 4",sub:"Nach dem Test",color:C.orange,
-    timeline:"Nach dem Freundestest, je nach Rückmeldungen",
+    id:"v1",tab:"vor",label:"🧩 Etappe 1",sub:"Erfassung reparieren",color:C.cyan,
+    timeline:"Scraper und Preishistorie",
+    desc:"Jede Analyse erbt die Fehler der Erfassung. Deshalb kommt sie zuerst.",
+    items:[
+      {k:"v1_rohdaten",e:"🗃️",t:"Rohdaten jedes Abrufs sichern",effort:"1 Abend",a:1,ref:"D10",neu:true,
+       d:"Marktguru- und ALDI-Antworten gezippt in Supabase Storage. So lassen sich neue Felder später rückwirkend auslesen. Jede Woche ohne Rohdaten ist verloren. Speicher im Free-Plan (1 GB) im Blick behalten."},
+      {k:"v1_felder",e:"🧩",t:"Strukturierte Felder beim Scrapen",effort:"2 Abende",a:2,ref:"D6",neu:true,
+       d:"Packungsmenge, Stückzahl, Mengenspanne, Sorte und 'oder', Marke, Hinweistext sowie Marktguru-Produkt- und Marken-ID als eigene Spalten. Spannen wie 'Rindersteak 299–500 g': Menge aus Preis ÷ Grundpreis. Mehrfachpacks wie '9 x 26 g – 100 g' sauber lesen oder als unklar markieren."},
+      {k:"v1_staffel",e:"🔢",t:"Staffelpreise richtig lesen",effort:"½ Abend",a:0.5,ref:"D1",neu:true,
+       d:"30 Netto-Angebote nennen den Preis für 2 oder mehr Stück plus einen Einzelpreis (Granatapfel: 2 Stück 1,90 €, einzeln 1,29 €). Einzelpreis übernehmen, Staffel als Hinweis speichern. Bis dahin fliegen sie aus dem Rezept-Pool."},
+      {k:"v1_texte",e:"🧽",t:"Texte bereinigen, EDEKA-App lesen",effort:"1 Abend",a:1,ref:"D7",neu:true,
+       d:"Hinweiszeilen abtrennen, weiche Trennzeichen und häufige Tippfehler ('Gekühit', 'Bioalnd') korrigieren. App-Preise aus Hinweisen wie 'MIT EDEKA APP 1.11 €' lesen, 38 EDEKA-Zeilen enthalten solche Hinweise."},
+      {k:"v1_historie",e:"🕰️",t:"Historie mit Gültigkeit und Packung",effort:"1 Abend",a:1,ref:"D2",neu:true,
+       d:"preishistorie bekommt gueltig_ab, gueltig_bis, Packung und Grundpreis, auch für ALDI (heute nur 8 % der ALDI-Zeilen mit Grundpreis). Eine Zeile pro Produkt und Woche statt vieler (Lidl: 1.783 Zeilen für 365 Namen in einer Woche)."},
+      {k:"v1_view",e:"🔍",t:"Vergleich ohne Selbstvergleich",effort:"½ Abend",a:0.5,ref:"D2",neu:true,
+       d:"angebote_mit_historie zählt Zeilen derselben Aktion nicht mehr als Historie. Betrifft 82 % der aktuellen Lidl-Angebote, weil Lidl donnerstags schon die nächste Woche zeigt. Vergleich nur bei gleicher Packung oder über den Grundpreis (Heidelbeeren, Cola)."},
+      {k:"v1_sonntagcron",e:"⏰",t:"Sonntags-Abruf als Cron",effort:"15 min",a:0.1,ref:"D3",neu:true,
+       d:"Nur wenn der Handstart am 08.11. Angebote für Montag liefert. Drei Läufe pro Woche brauchen rund 650 Actions-Minuten im Monat, GitHub Free enthält 2.000."},
+      {k:"v1_waechter",e:"🚨",t:"Datenwächter nach jedem Abruf",effort:"1 Abend",a:1,ref:"D4",neu:true,
+       d:"Anzahl je Kette gegen den Schnitt, Dubletten, Anteil ohne Preis oder Packung. Fällt eine Kette unter 60 % ihres Schnitts, wird der Job rot und GitHub meldet den Fehler."},
+    ]
+  },
+  {
+    id:"v2",tab:"vor",label:"🏷️ Etappe 2",sub:"Produkte verstehen",color:C.cyan,
+    timeline:"Produktstamm und Grundzutaten",
+    desc:"Erst wenn die App weiß, was ein Produkt ist, kann sie nach Diät filtern und Preise je Zutatentyp vergleichen.",
+    items:[
+      {k:"v2_stamm",e:"🏷️",t:"Produktstamm mit Klassifizierung",effort:"1–2 Abende",a:1.5,ref:"D5",neu:true,
+       d:"Neue Tabelle produktstamm. Haiku ordnet jeden neuen Produktnamen einmal ein: Typ, Gruppe, Bio, Tiefkühl, frisch, vegetarisch, vegan, Schwein, Gluten, Laktose, Nüsse, Stückgewicht. Geschätzt unter 5 Cent pro Abruf."},
+      {k:"v2_stichprobe",e:"🔎",t:"Stichprobe: 100 Einträge von Hand prüfen",effort:"½ Abend",a:0.5,neu:true,
+       d:"Vor allem die Diät- und Allergie-Flags. Erst danach darf der Pool damit filtern."},
+      {k:"v2_grundzutaten",e:"🧂",t:"Grundzutaten aus echten Preisen",effort:"1 Abend",a:1,ref:"D8",neu:true,
+       d:"Die 41 Preise in normalpreise sind vom 04.07.2026. Monatlich aus Angebotspreisen ableiten. Bis dahin heißen sie im Prompt 'Richtpreise' statt 'aktuelle Marktpreise'. Backpulver und Vanillezucker fliegen raus."},
+      {k:"v2_ausreisser",e:"📏",t:"Preis-Ausreißer melden",effort:"15 min",a:0.1,neu:true,
+       d:"€/kg über dem Dreifachen des Typ-Medians landet im Datenwächter."},
+    ]
+  },
+  {
+    id:"v3",tab:"vor",label:"🎯 Etappe 3",sub:"Preise bewerten",color:C.yellow,
+    timeline:"Typ-Referenz und Deal-Score",
+    desc:"Heute fehlt für 86 % der Angebote ein Vergleich, und die Top-Angebote beruhen fast nur auf ungeprüften Streichpreisen.",
+    items:[
+      {k:"v3_typref",e:"📐",t:"Typ-Referenzpreis je Zutatentyp",effort:"1 Abend",a:1,ref:"A3",neu:true,
+       d:"Median €/kg je Typ über 91 Tage, Bio getrennt. Gibt allen Ketten einen Vergleich, auch Kaufland und PENNY ohne eigene Historie."},
+      {k:"p5_2",e:"🕵️",t:"Fake-Deal-Erkennung: Streichpreise prüfen",effort:"1 h",a:0.3,ref:"A1",neu:false,
+       d:"Vergleichspreis = niedrigster belastbarer Wert aus Streichpreis, Aktionsschnitt und Typ-Median. 24 von 36 prüfbaren Streichpreisen sind nicht günstiger als frühere Aktionen. Die Ersparnis wird dadurch kleiner, aber ehrlich."},
+      {k:"v3_score",e:"🎯",t:"Deal-Score v2 mit Vertrauensstufen",effort:"1 Abend",a:1,ref:"A4",neu:true,
+       d:"Eigene Historie vor Typ-Referenz vor Streichpreis, ungeprüfte Streichpreise zählen halb. TOP ab einem Score von 0,12. Im Prototyp steigen Kaufland, Netto, PENNY und REWE von 7 auf 49 Top-Angebote."},
+      {k:"v3_dauer",e:"🔁",t:"Dauerangebote nach hinten",effort:"1 h",a:0.3,ref:"A2",neu:true,
+       d:"ist_daueraktion (51 Angebote) und ist_schlechter_zeitpunkt (6) stehen schon in der View, der Pool nutzt sie nur noch nicht."},
+      {k:"v3_180",e:"📆",t:"Historie auf 180 Tage für haltbare Ware",effort:"1 h",a:0.3,ref:"D9",neu:true,
+       d:"33 % mehr Produkte mit Vergleich. Obst und Gemüse bleiben bei 91 Tagen, sonst verwässern Saisonpreise den Schnitt."},
+      {k:"v3_varianten",e:"🍝",t:"Varianten im Pool zusammenfassen",effort:"1 h",a:0.3,neu:true,
+       d:"Viermal Barilla belegt heute 4 von 50 Plätzen. Gleiche Marke, gleicher Typ und gleicher Preis zählen einmal."},
+      {k:"v3_markt",e:"⚖️",t:"Marktvergleich je Typ (optional)",effort:"1 Abend",a:1,ref:"A5",neu:true,
+       d:"Günstigster Anbieter je Typ innerhalb der gewählten Märkte. Weniger doppelte Butter im Pool. Kann auch nach dem Test kommen."},
+      {k:"v3_stufen",e:"🏅",t:"Neutrale Preis-Stufen liefern",effort:"1 h",a:0.3,neu:true,
+       d:"Bestpreis seit 13 Wochen, Günstig, Üblicher Aktionspreis, Letzte Aktion war günstiger, Dauerpreis. Messwerte statt 'Fake'. Die App zeigt sie in Etappe 5."},
+    ]
+  },
+  {
+    id:"v4",tab:"vor",label:"🍳 Etappe 4",sub:"Rezept-Pipeline",color:C.yellow,
+    timeline:"Prompt v2, Prüfer, Tor A",
+    desc:"Diät-Regeln werden hart geprüft, das Backend rechnet, und erst ein Test mit 6 Profilen gibt den Weg frei.",
+    items:[
+      {k:"v4_diaet",e:"🥗",t:"Diät- und Allergie-Filter im Pool",effort:"½ Abend",a:0.5,neu:true,
+       d:"Auf Basis der Flags aus dem Produktstamm. Ein vegetarisches Profil verschenkt heute 16 von 50 Plätzen an Fleisch und Fisch. Die Quoten werden danach neu verteilt."},
+      {k:"v4_pool",e:"🧺",t:"Pool-Regeln schärfen",effort:"½ Abend",a:0.5,neu:true,
+       d:"Unklare Angebote raus. Deckel für teure Einzelstücke, Vorschlag 6 € je Portion (der T-Bone kam auf 10,66 €). Ein-Tages-Angebote nicht für geteilte Packungen. Ein zu kleiner Pool führt zu einer klaren Meldung statt zu schwachen Rezepten."},
+      {k:"v4_woche",e:"📅",t:"Planungswoche und Jahreswechsel",effort:"½ Abend",a:0.5,neu:true,
+       d:"Ab Samstag zählt die nächste Woche, sonntags kommen Angebote ab Montag in den Pool. Woche und Jahr beide aus isocalendar(), sonst gibt es vom 01. bis 03.01.2027 einen leeren Cache."},
+      {k:"v4_backend",e:"🧮",t:"Backend rechnet Kosten und Ersparnis",effort:"1 Abend",a:1,ref:"R1",neu:true,
+       d:"Das Modell liefert Menge und Einheit, das Backend rechnet estimatedCost und savedAmount exakt, mit dem ehrlichen Vergleichspreis aus Etappe 3. Spart vermutlich Denk-Tokens und damit Wartezeit."},
+      {k:"v4_prompt",e:"📝",t:"Prompt v2 einbauen",effort:"½ Abend",a:0.5,neu:true,
+       d:"System-Prompt mit Prioritäten und Diät-Block, Daten in Tags, Angebotszeilen mit TOP und frisch, Schema mit menge, einheit und sorte. Der Entwurf steht komplett im Dokument."},
+      {k:"v4_pruefer",e:"✅",t:"Prüfer nach der Antwort",effort:"1 Abend",a:1,ref:"R2",neu:true,
+       d:"Diät, 'Nicht essen' mit Wortgrenzen, Packungen, 8 Rezepte mit je einem Angebot, jede Zutat in einem Schritt, Name passt zu den Zutaten, cookTime, kcal zum Ziel. Treffer landen in feedback."},
+      {k:"v4_reparatur",e:"🔧",t:"Einzelne Rezepte reparieren",effort:"1 Abend",a:1,ref:"R3",neu:true,
+       d:"Fällt ein Rezept durch den Prüfer, wird nur dieses neu erzeugt statt alle 8. Geteilte Packungen bleiben erhalten."},
+      {k:"v4_robust",e:"🛟",t:"Robuste API-Aufrufe",effort:"1 h",a:0.3,neu:true,
+       d:"stop_reason und refusal auswerten. Gesamtzeit höchstens 280 s, denn Railway trennt Anfragen nach 5 Minuten ohne Daten. 'Nicht essen' auf 200 Zeichen begrenzen."},
+      {k:"v4_verlauf",e:"🔄",t:"Keine Wiederholungen",effort:"1 h",a:0.3,neu:true,
+       d:"Die Namen der Gerichte aus den letzten 2 Wochen gehen mit in den Prompt."},
+      {k:"v4_tor",gate:true,e:"🚦",t:"Tor A: Rezepttest bestanden",effort:"1–2 Abende",a:1.5,ref:"R4",neu:true,
+       d:"Angebote einfrieren, modell_vergleich.py auf 6 Profile erweitern, 5 Varianten laufen lassen (zusammen unter 1 $). Bestanden bei 0 Diät-Verstößen, 0 Frischware-Resten über 10 %, 8 von 8 Rezepten mit Angebot, 0 Zutaten ohne Schritt und 0 Rezepten über dem Zeitlimit. Dazu 2 Rezepte je Variante lesen und eins nachkochen. Danach Modell und Effort festlegen."},
+    ]
+  },
+  {
+    id:"v5",tab:"vor",label:"📱 Etappe 5",sub:"App fertig machen",color:C.green,
+    timeline:"Anzeige und Bedienung",
+    desc:"Die App zeigt, was an der Kasse wirklich gilt.",
+    items:[
+      {k:"v5_gueltig",e:"📅",t:"Gültigkeit anzeigen",effort:"½ Abend",a:0.5,neu:true,
+       d:"'gilt bis Samstag' in Liste und Rezept, Hinweis 'nur heute' bei Ein-Tages-Angeboten, Preisstand am Rezept. Freitags enden 96 % der Angebote am nächsten Tag."},
+      {k:"v5_app",e:"📲",t:"App-Preise kennzeichnen",effort:"½ Abend",a:0.5,neu:true,
+       d:"Zum Beispiel '3,49 € nur mit Lidl Plus, sonst 3,99 €' in Liste und Rezept. 44 Angebote zeigen einen Preis, der nur mit App gilt."},
+      {k:"v5_kasse",e:"🧾",t:"Kassensumme in der Einkaufsliste",effort:"½ Abend",a:0.5,neu:true,
+       d:"Ganze Packungen inklusive Grundzutaten, die nicht im Vorrat sind. Zeigt, was an der Kasse wirklich bezahlt wird."},
+      {k:"v5_preisfeedback",e:"🏷️",t:"Knopf 'Preis stimmt nicht'",effort:"½ Abend",a:0.5,ref:"D11",neu:true,
+       d:"Mit Feld für den echten Preis, landet in feedback. Erste Quelle für echte Regalpreise und Messwert im Test."},
+      {k:"v5_stufen",e:"🏅",t:"Preis-Stufen anzeigen",effort:"½ Abend",a:0.5,neu:true,
+       d:"Die neutralen Stufen aus Etappe 3 auf /Angebote/ und am Rezept."},
+      {k:"v5_sorte",e:"🍦",t:"Sorte anzeigen",effort:"15 min",a:0.1,neu:true,
+       d:"Bei 'versch. Sorten' zeigt die Liste die Sorte, die das Rezept braucht."},
+      {k:"v5_meldungen",e:"💬",t:"Klare Meldung bei wenig Angeboten",effort:"15 min",a:0.1,neu:true,
+       d:"Zum Beispiel 'Neue Angebote ab Montag' statt 'Keine Angebote gefunden'."},
+      {k:"v5_profil",e:"⚠️",t:"Hinweise im Profil",effort:"15 min",a:0.1,neu:true,
+       d:"Bei Allergien: 'Zutatenliste im Laden prüfen'. Bei Halal: 'Die Schlachtung können wir nicht prüfen'."},
+      {k:"v5_cache",e:"🧹",t:"'(Cache leeren)' aus dem Button entfernen",effort:"5 min",a:0.05,neu:true,
+       d:"Der Button heißt dann nur 'Neue Rezepte generieren'."},
+    ]
+  },
+  {
+    id:"v6",tab:"vor",label:"☁️ Etappe 6",sub:"Betrieb und Testvorbereitung",color:C.green,
+    timeline:"Hosting, Hinweise, Tor B",
+    desc:"Zum Schluss, wenn der Code steht. Danach eine Woche Eigentest als letztes Tor.",
+    items:[
+      {k:"pt_hosting",e:"☁️",t:"Backend 24/7 hosten (Railway)",effort:"2 h",a:0.7,neu:false,
+       d:"Start Command 'uvicorn main:app --host 0.0.0.0 --port $PORT' (die Procfile ist leer), Variablen SUPABASE_URL, SUPABASE_KEY und ANTHROPIC_API_KEY, neue Adresse in frontend/.env.production, Frontend neu deployen. Railway Hobby kostet 5 $ im Monat inklusive 5 $ Nutzung."},
+      {k:"v6_messen",e:"📈",t:"Messpunkte für den Test",effort:"1 h",a:0.3,neu:true,
+       d:"generierungen speichert heute nur Code und Zeit. Dazu kommen Dauer, Tokens, Modell, Effort und Ergebnis. Ohne das lassen sich Wartezeit und Kosten im Test nicht messen."},
+      {k:"v6_sicherheit",e:"🔒",t:"Sicherheits-Check",effort:"30 min",a:0.2,neu:true,
+       d:"Supabase-Advisors prüfen, CORS von '*' auf wietrychowski.de beschränken, eigene Test-Codes sperren (12 sind aktiv)."},
+      {k:"v6_datenschutz",e:"🛡️",t:"Kurzer Datenschutzhinweis",effort:"½ Abend",a:0.5,neu:true,
+       d:"Was gespeichert wird (Profil, Geräte-ID, Pläne, Bewertungen, Feedback) und welche Dienste beteiligt sind (Supabase, Anthropic, Railway, GitHub Pages). Keine Rechtsberatung. Für einen öffentlichen Start braucht es mehr."},
+      {k:"v6_anleitung",e:"📄",t:"Tester-Anleitung als PDF",effort:"½ Abend",a:0.5,neu:true,
+       d:"Eine Seite: Installation auf iPhone und Android, Code eingeben, Profil, Rezepte, Liste, Plan, Feedback-Knopf."},
+      {k:"pt_mobile",e:"📱",t:"Mobile-Check auf echten Handys",effort:"1 h",a:0.3,neu:false,
+       d:"Im Browser bei 320 px, 360 px und als iPhone 13 schon geprüft. Offen: Papas iPhone und ein Android mit Installation, Login, Rezepten, Liste und Plan. Dabei die App während der Erzeugung schließen und wieder öffnen."},
+      {k:"v6_aldi",e:"🗺️",t:"ALDI in 75245 (nur falls dort ein Tester wohnt)",effort:"1 h bis 1 Abend",a:0.3,neu:true,
+       d:"75245 liegt im Gebiet von ALDI SÜD, die App zeigt dort heute trotzdem ALDI Nord. Mindestens ALDI Nord für diese PLZ ausblenden, besser ALDI SÜD über Marktguru aufnehmen."},
+      {k:"v6_tor",gate:true,e:"🚦",t:"Tor B: Testreif",effort:"1 Woche",a:0,neu:true,
+       d:"Eine Woche selbst planen, einkaufen und kochen, Kassenbon mit der Liste vergleichen. Bewertung von 1 bis 10 wiederholen: jeder Bereich mindestens 8. Kein offener Punkt mit Gesundheits- oder Preisrisiko."},
+    ]
+  },
+
+  // ── WÄHREND DES TESTS ──
+  {
+    id:"t1",tab:"test",label:"🧪 Testphase",sub:"Freundestest",color:C.orange,
+    timeline:"4 Wochen",
+    desc:"Messen statt raten: Die Ergebnisse entscheiden, was nach dem Test zuerst kommt.",
+    items:[
+      {k:"p4_13",e:"🧪",t:"Test starten",effort:"1 Abend",neu:false,
+       d:"3–5 Personen, Einladung mit persönlichem Code und Anleitung, kurze Einführung. Aktiv nach dem Feedback-Knopf fragen statt nur abzuwarten."},
+      {k:"t_stopp",e:"🧊",t:"Feature-Stopp",effort:"laufend",neu:true,
+       d:"Nur Fehler beheben, damit die Messwerte vergleichbar bleiben. Diät-Verstöße und falsche Preise sofort, alles andere sammeln."},
+      {k:"t_routine",e:"🔁",t:"Wöchentliche Prüfung nach dem Montags-Abruf",effort:"30 min pro Woche",neu:true,
+       d:"Datenwächter, Dubletten, 10 Angebote stichprobenartig mit dem Prospekt vergleichen, Feedback und Prüfer-Treffer lesen, Kosten und Laufzeiten ansehen."},
+      {k:"t_kasse",e:"🧾",t:"Messen: Kasse gegen Rezeptpreis",effort:"laufend",neu:true,
+       d:"Über den Knopf 'Preis stimmt nicht' und Nachfragen. Wie oft und wie stark weicht die Kasse ab?"},
+      {k:"t_gekocht",e:"🍳",t:"Messen: Was wirklich gekocht wird",effort:"laufend",neu:true,
+       d:"Gekochte und bewertete Rezepte aus recipe_interactions. Welche Gerichte kommen an, welche werden nur angesehen?"},
+      {k:"t_fahrten",e:"🚗",t:"Messen: Märkte pro Einkauf",effort:"laufend",neu:true,
+       d:"Wie viele Märkte nutzen Tester pro Woche, und stört sie das? Entscheidet über die Marktgrenze (R7)."},
+      {k:"t_warten",e:"⏳",t:"Messen: Wartezeit und Abbrüche",effort:"laufend",neu:true,
+       d:"Dauer je Erzeugung, Abbrüche, erneute Versuche. Entscheidet über die Vorab-Erzeugung (R6)."},
+      {k:"t_zwischen",e:"💬",t:"Zwischenfragen nach Woche 2",effort:"30 min",neu:true,
+       d:"5 kurze Fragen per Messenger: Was nervt, was fehlt, was nutzt du?"},
+      {k:"t_abschluss",e:"🏁",t:"Abschlussgespräch oder Umfrage",effort:"1 Abend",neu:true,
+       d:"Würdest du die App weiter nutzen? Was hat gefehlt, was hat genervt?"},
+    ]
+  },
+
+  // ── NACH DEM TEST ──
+  {
+    id:"n1",tab:"nach",label:"📊 Auswertung",sub:"Direkt nach dem Test",color:C.orange,
+    timeline:"1–2 Abende",
+    desc:"Messwerte zuerst, dann Entscheidungen, dann die Roadmap neu sortieren.",
+    items:[
+      {k:"n_auswertung",e:"📊",t:"Messwerte und Feedback auswerten",effort:"1 Abend",neu:true,
+       d:"Kasse, Gekochtes, Fahrten, Wartezeit, Prüfer-Treffer, Feedback. Bewertung von 1 bis 10 wiederholen."},
+      {k:"n_entscheiden",e:"🗳️",t:"Offene Entscheidungen treffen",effort:"½ Abend",neu:true,
+       d:"Marktgrenze (R7), App-Programme im Profil, Vorrat im Profil, Küchengeräte im Profil, Vorab-Erzeugung ja oder nein."},
+      {k:"n_sortieren",e:"🗺️",t:"Roadmap neu sortieren",effort:"30 min",neu:true,
+       d:"Phase 4 nach dem Feedback ordnen."},
+    ]
+  },
+  {
+    id:"p4",tab:"nach",label:"🏗️ Phase 4",sub:"Ausbau nach Feedback",color:C.orange,
+    timeline:"Nach der Auswertung",
     desc:"Größere Projekte. Die Reihenfolge entscheidet das Feedback der Tester.",
     items:[
-      {k:"p4_4",e:"🔐",t:"Echter Login (Supabase Auth)",effort:"2–3 Tage",neu:false,
-       d:"Für den Test reichen Tester-Codes. Supabase Auth: E-Mail/Passwort oder Magic Link. Voraussetzung für echten Multi-User-Betrieb."},
-      {k:"p4_1",e:"🏋️",t:"Makro-Regler als Prompt-Signal",effort:"1 Tag",neu:true,
+      {k:"n_vorab",e:"⚡",t:"Vorab-Erzeugung per Batch",effort:"2 Abende",ref:"R6",neu:true,
+       d:"Nach jedem Abruf Rezepte für aktive Nutzer vorbereiten. Halber Preis, und die Wartezeit fällt weg. Die meisten Batches sind in unter einer Stunde fertig."},
+      {k:"p5_3",e:"🚀",t:"Prompt Caching (Anthropic API)",effort:"30 min",ref:"R10",neu:false,
+       d:"Erst zusammen mit der Vorab-Erzeugung sinnvoll. Die Eingabe macht nur rund 4 % der Kosten aus, ein Treffer spart rund 0,0003 $."},
+      {k:"n_zweistufig",e:"🪜",t:"Zwei Stufen: erst Plan, dann Rezepte",effort:"2 Abende",ref:"R5",neu:true,
+       d:"Einzelne Gerichte lassen sich tauschen, ohne alle 8 neu zu erzeugen."},
+      {k:"n_job",e:"⏱️",t:"Erzeugung als Hintergrund-Job",effort:"1 Abend",neu:true,
+       d:"Job starten, Status abfragen. Nötig, falls eine Erzeugung länger als rund 4 Minuten dauert oder die App beim Warten oft geschlossen wird."},
+      {k:"n_kassenbon",e:"📷",t:"Kassenbon fotografieren",effort:"1 Woche",ref:"D11",neu:true,
+       d:"Bon-Erkennung per Vision liefert echte Regalpreise. Passt zur Projektidee, lohnt sich ab mehr Nutzern."},
+      {k:"n_appschalter",e:"📲",t:"App-Programme im Profil",effort:"1 Abend",neu:true,
+       d:"Lidl Plus, PAYBACK und Co. ankreuzen, dann rechnet die App mit dem passenden Preis."},
+      {k:"n_vorrat",e:"🥫",t:"Vorrat im Profil",effort:"1 Abend",neu:true,
+       d:"Was zu Hause ist, kommt nicht auf die Liste und nicht in die Kassensumme."},
+      {k:"n_geraete",e:"🔌",t:"Küchengeräte im Profil",effort:"½ Abend",neu:true,
+       d:"Ohne Backofen oder mit Airfryer passen sich die Rezepte an."},
+      {k:"n_marktgrenze",e:"🛒",t:"Höchstens 2 Märkte pro Woche",effort:"1 Abend",ref:"R7",neu:true,
+       d:"Nur wenn die Tester die Fahrten stört."},
+      {k:"n_plan",e:"🗓️",t:"Wochenplan schlauer",effort:"1 Abend",neu:true,
+       d:"Frischware auf die ersten Tage, geteilte Packungen nah beieinander, Einkaufstag wählbar."},
+      {k:"p5_5",e:"📸",t:"Rezept-Bilder",effort:"1–2 Tage",neu:false,
+       d:"DALL·E 2 und 3 sind seit 12.05.2026 nicht mehr in der API, gpt-image-1-mini endet am 01.12.2026. Je nach Modell 0,005 bis 0,21 $ pro Bild. Einmal pro Rezeptname erzeugen und in Supabase speichern."},
+      {k:"p4_1",e:"🏋️",t:"Makro-Regler als Prompt-Signal",effort:"1 Tag",neu:false,
        d:"Weiche Präferenz-Slider: 'mind. X g Protein', 'max. Y g Fett' pro Mahlzeit. Als Formulierung im Prompt ('bevorzuge proteinreiche Rezepte') — KEIN harter Filter (Claude-Schätzungen ±30% zu ungenau). Harte Filter erst wenn Nährwert-Datenbasis verlässlich ist (Phase 5)."},
       {k:"p4_3",e:"🥘",t:"Reste-Rezepte Modus",effort:"1–2 Tage",neu:false,
        d:"'Ich habe noch Hähnchen vom Dienstag — was koche ich heute?' Neuer Prompt-Modus mit User-Zutaten-Input, kombiniert eigene Vorräte mit aktuellen Deals. Neues UI-Element + separater Prompt-Zweig."},
-      {k:"p4_2",e:"🔔",t:"Preisalarm (Favoriten-Rezepte + Zutaten)",effort:"2–3 Tage",neu:false,
-       d:"Zurückgestellt: cooles Feature, aber für den Test und die eigene Auswertung nicht nötig. 'Rezept X — Zutaten jetzt 20% günstiger als üblich' per Push/E-Mail. Braucht: PWA (Phase 3) für Push, Vergleichslogik gegen preishistorie-Durchschnitt, Favoriten-Feature (Phase 3). Setzt mehrere Abhängigkeiten voraus."},
-      {k:"p4_regionen",e:"🗺️",t:"Regionen außerhalb von OWL",effort:"½–1 Tag",neu:true,
-       d:"ALDI SÜD ist in Marktguru vorhanden (z. B. Köln, Stuttgart, München) und müsste aufgenommen werden, dort dann ALDI Nord ausblenden. nahkauf ist bei Bedarf ein weiterer Händler."},
-      {k:"p4_snacks",e:"🍫",t:"Snacks und Top-Deals auf /Angebote/",effort:"½ Tag",neu:true,
-       d:"Die Seite soll auch Snacks und wirklich starke Angebote jenseits von Rezeptzutaten zeigen. Dabei auch die doppelten Zeilen ausblenden."},
+      {k:"p4_snacks",e:"🍫",t:"Snacks und Top-Deals auf /Angebote/",effort:"½ Tag",neu:false,
+       d:"Die Seite soll auch Snacks und wirklich starke Angebote jenseits von Rezeptzutaten zeigen."},
     ]
   },
   {
-    id:"p5",label:"🔮 Phase 5",sub:"Zukunft",color:C.purple,
-    timeline:"Langfristig",
-    desc:"Nice-to-have oder Items die weitere Datenbasis / externe Abhängigkeiten benötigen.",
+    id:"n3",tab:"nach",label:"🌍 Vor dem Start",sub:"Vor einer öffentlichen Version",color:C.yellow,
+    timeline:"Erst wenn die App über Freunde hinausgeht",
+    desc:"Datenquelle, Datenschutz, Konten und Kosten müssen geklärt sein.",
     items:[
-      {e:"🧮",t:"Harte Makro-Filter",effort:"langfristig",neu:true,
+      {k:"n_recht",e:"⚖️",t:"Datenquelle rechtlich klären",effort:"offen",neu:true,
+       d:"Marktguru ist eine inoffizielle Schnittstelle. Vor einem öffentlichen Start die Nutzung klären oder eine Lizenz anfragen."},
+      {k:"n_ersatz",e:"🔁",t:"Ersatzquelle vorbereiten",effort:"2 Abende",ref:"D12",neu:true,
+       d:"Fertige Scraper wie den kaufDA-Scraper bei Apify prüfen: Datenqualität, Kosten (rund 0,90 bis 3,60 $ pro Lauf und Region) und Nutzungsrechte."},
+      {k:"n_dsgvo",e:"📜",t:"Datenschutzerklärung und Impressum",effort:"1 Abend",neu:true,
+       d:"Für eine öffentliche App Pflicht. Keine Rechtsberatung."},
+      {k:"p4_4",e:"🔐",t:"Echter Login (Supabase Auth)",effort:"2–3 Tage",neu:false,
+       d:"Für den Test reichen Tester-Codes. Supabase Auth: E-Mail/Passwort oder Magic Link. Voraussetzung für echten Multi-User-Betrieb."},
+      {k:"p4_regionen",e:"🗺️",t:"Regionen außerhalb von OWL",effort:"½–1 Tag",neu:false,
+       d:"ALDI SÜD ist in Marktguru vorhanden (z. B. Köln, Stuttgart, München) und müsste aufgenommen werden, dort dann ALDI Nord ausblenden. nahkauf ist bei Bedarf ein weiterer Händler."},
+      {k:"n_plz",e:"📍",t:"Abruf je Kette auf nötige PLZ begrenzen",effort:"1 Abend",ref:"D14",neu:true,
+       d:"Viele Ketten haben nur 1–4 Preisgruppen. Kürzere Läufe, wenn mehr Regionen dazukommen."},
+      {k:"n_cache",e:"🤝",t:"Gemeinsamer Cache bei gleichem Profil",effort:"1 Abend",ref:"R8",neu:true,
+       d:"Gleiche Diät, Personen, Märkte und PLZ teilen sich die Rezepte der Woche. Senkt die Kosten pro Nutzer."},
+      {k:"n_kosten",e:"💶",t:"Kosten je Nutzer und Tarife",effort:"1 Abend",neu:true,
+       d:"Supabase, Railway, Anthropic und GitHub Actions: Ab wie vielen Nutzern reicht der Gratis- oder Hobby-Tarif nicht mehr?"},
+      {k:"n_monitoring",e:"📟",t:"Monitoring mit Alarm",effort:"1 Abend",neu:true,
+       d:"Fehlerquote, Laufzeiten und Kosten pro Tag mit Benachrichtigung."},
+    ]
+  },
+  {
+    id:"p5",tab:"nach",label:"🔮 Phase 5",sub:"Zukunft",color:C.purple,
+    timeline:"Langfristig",
+    desc:"Braucht mehr Daten oder mehr Nutzer. Hier liegen die Prognosen und das Empfehlungssystem aus der Projektidee.",
+    items:[
+      {k:"z_takt",e:"📈",t:"Takt je Produkt",effort:"1 Abend",ref:"A6",neu:true,
+       d:"'Kommt etwa alle 4 Wochen': warnt vor einem Kauf kurz vor der nächsten Aktion. Sinnvoll ab rund 26 Wochen Daten, heute reicht es für 19 Produkte."},
+      {k:"z_prognose",e:"🔮",t:"Preisprognose",effort:"Wochen",ref:"A7",neu:true,
+       d:"Zeitreihen- oder ML-Modelle, frühestens mit einem Jahr Daten."},
+      {k:"z_empfehlung",e:"🧠",t:"Empfehlungssystem",effort:"Wochen",neu:true,
+       d:"Lernt aus Bewertungen, Gekochtem und Feedback, was jemand mag."},
+      {k:"z_prospekt",e:"🖼️",t:"Prospekte selbst auslesen",effort:"Wochen",neu:true,
+       d:"OCR oder Vision-Modell für Prospekte als eigene Quelle neben Marktguru."},
+      {k:"z_bibliothek",e:"📚",t:"Rezeptbibliothek",effort:"Wochen",ref:"R9",neu:true,
+       d:"Angebote auf geprüfte Rezepte abbilden: fast kostenlos und sofort. Braucht über 200 gute Rezepte."},
+      {k:"p5_1",e:"🥦",t:"Nährwert-Validierung (Open Food Facts API)",effort:"2–3 Tage",ref:"D13",neu:false,
+       d:"Claude schätzt Makros — oft ungenau. Gegen Open Food Facts API abgleichen für verlässliche Nährwert-Angaben. Voraussetzung für harte Makro-Filter und verlässliches Kalorien-Tracking. Lizenz ODbL, Daten ohne Gewähr."},
+      {k:"p5_0",e:"🧮",t:"Harte Makro-Filter",effort:"langfristig",neu:false,
        d:"Erst wenn verlässliche Nährwert-Daten vorhanden (Open Food Facts API oder eigene DB). Claude-Schätzungen zu ungenau (±30%) für harte Grenzen. Als weiche Prompt-Signale ab Phase 4 möglich."},
-      {e:"🥦",t:"Nährwert-Validierung (Open Food Facts API)",effort:"2–3 Tage",neu:false,
-       d:"Claude schätzt Makros — oft ungenau. Gegen Open Food Facts API abgleichen für verlässliche Nährwert-Angaben. Voraussetzung für harte Makro-Filter und verlässliches Kalorien-Tracking."},
-      {e:"🕵️",t:"Fake-Deal-Erkennung",effort:"1 Tag (wenn Daten da)",neu:false,
-       d:"Erkennt wenn normalpreis immer gleich bleibt, der Preis aber nie wirklich höher war ('Dauerrabatt-Trick'). normalpreis wird seit KW 24 2026 gespeichert → aussagekräftige Analyse ab ~KW 32–34."},
-      {e:"🚀",t:"Prompt Caching (Anthropic API)",effort:"½ Tag",neu:false,
-       d:"Statische Prompt-Teile (Regeln, Schema, PANTRY_STAPLES) über Anthropic Prompt Caching API cachen. Könnte Input-Token-Kosten um weitere 60–70% senken. Einfach zu implementieren."},
-      {e:"👨‍👩‍👧",t:"Familien-Modus",effort:"1 Woche+",neu:false,
-       d:"Mehrere Profile unter einem Account. '4 Personen, 2 mögen kein Fleisch'. Geteilte Einkaufsliste. Setzt echten Login (Phase 4) voraus."},
-      {e:"📸",t:"Rezept-Bilder (DALL-E / Stable Diffusion)",effort:"1–2 Tage",neu:false,
-       d:"Appetitliche Bilder pro Rezept verbessern UX stark. ~€0,04/Bild mit DALL-E 3. Sinnvoll mit Caching: selber Rezeptname = gleiches Bild, einmal generieren."},
+      {k:"p5_4",e:"👨‍👩‍👧",t:"Familien-Modus",effort:"1 Woche+",neu:false,
+       d:"Mehrere Profile unter einem Account. '4 Personen, 2 mögen kein Fleisch'. Geteilte Einkaufsliste. Setzt echten Login voraus."},
+      {k:"p4_2",e:"🔔",t:"Preisalarm (Favoriten-Rezepte + Zutaten)",effort:"2–3 Tage",neu:false,
+       d:"Zurückgestellt: cooles Feature, aber für den Test und die eigene Auswertung nicht nötig. 'Rezept X — Zutaten jetzt 20% günstiger als üblich' per Push/E-Mail. Braucht Vergleichslogik gegen die Preishistorie, PWA und Favoriten sind schon da."},
     ]
   },
 ];
+
+// ── Tabs ──────────────────────────────────────────────────────
+const TAB_INFO={
+  vor:{label:"🧭 Vor dem Test",color:C.green,bg:"#22c55e0d",bd:"#22c55e28",
+    text:`Die Tore entscheiden den Termin, nicht der Kalender. Vorschlag bei rund 4 Abenden pro Woche: Eigentest ab 04.01.2027, Teststart Montag, 11.01.2027. Aufwand für dich allein, 1 Abend ≈ 3 Stunden. Kürzel wie D6, A3 oder R2 verweisen auf das <a href="https://claude.ai/artifact/9aDaNtsGg4L8K6XE9sGfeE" target="_blank" rel="noopener">Dokument „Daten, Preise und Prompt optimieren“</a>.`},
+  test:{label:"🧪 Während des Tests",color:C.orange,bg:"#f973160d",bd:"#f9731628",
+    text:"Vorschlag: 4 Wochen, Montag 11.01. bis Sonntag 07.02.2027, mit 3–5 Personen. Der Test startet erst, wenn Tor A und Tor B bestanden sind."},
+  nach:{label:"📊 Nach dem Test",color:C.purple,bg:"#a855f70d",bd:"#a855f728",
+    text:"Die Auswertung entscheidet die Reihenfolge. Vor einer öffentlichen Version müssen Datenquelle, Datenschutz und Kosten geklärt sein."},
+};
 
 // ── LocalStorage ──────────────────────────────────────────────
 const LS='fk_roadmap_v1';
 function getState(){try{return JSON.parse(localStorage.getItem(LS)||'{}')}catch{return{}}}
-function toggleItem(id){const s=getState();s[id]?delete s[id]:s[id]=true;localStorage.setItem(LS,JSON.stringify(s));return!!s[id]}
+function toggleItem(id){const s=getState();s[id]?delete s[id]:s[id]=true;try{localStorage.setItem(LS,JSON.stringify(s))}catch{}return!!s[id]}
 function isDone(id){return!!getState()[id]}
 // Feste Schlüssel: Haken bleiben beim Umsortieren am richtigen Eintrag
 function itemId(ph,it,i){return it.k||ph.id+'_'+i}
 
-// ── Badge helper ──────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────
 function badge(txt,col){return`<span class="badge" style="background:${col}20;color:${col};border:1px solid ${col}40">${txt}</span>`}
+function abende(x){const r=x>=10?Math.round(x):Math.round(x*2)/2;return String(r).replace('.',',')}
+function phasesOf(tab){return PHASES.filter(p=>p.tab===tab)}
+function itemsOf(tab){return phasesOf(tab).flatMap(p=>p.items.map((it,i)=>({it,id:itemId(p,it,i)})))}
+function sumA(ph){return ph.items.reduce((s,it)=>s+(it.a||0),0)}
+function aufwand(a){if(!a)return'';if(a<1)return' · unter 1 Abend';const r=abende(a);return` · rund ${r} ${r==='1'?'Abend':'Abende'}`}
 
 // ── Render done ───────────────────────────────────────────────
 function renderDone(){
@@ -269,9 +537,10 @@ function renderPhase(ph){
   const chk=ph.items.filter((it,i)=>isDone(itemId(ph,it,i))).length;
   const tot=ph.items.length;
   const pct=Math.round(chk/tot*100);
+  const a=sumA(ph);
   let html=`<div class="phase-box">
     <div class="phase-title" style="color:${ph.color}">${ph.label} — ${ph.sub}</div>
-    <div class="phase-meta">⏱ ${ph.timeline}</div>
+    <div class="phase-meta">⏱ ${ph.timeline}${aufwand(a)}</div>
     <div class="phase-desc">${ph.desc}</div>
     <div class="phase-pb"><div class="phase-pf" id="ppf_${ph.id}" style="width:${pct}%;background:${ph.color}"></div></div>
     <div class="phase-pl" id="ppl_${ph.id}">${chk} / ${tot} erledigt (${pct}%)</div>
@@ -279,14 +548,14 @@ function renderPhase(ph){
   ph.items.forEach((it,i)=>{
     const id=itemId(ph,it,i);
     const done=isDone(id);
-    html+=`<div class="card ${done?'ck':''}" id="card_${id}">
+    html+=`<div class="card ${it.gate?'gate':''} ${done?'ck':''}" id="card_${id}">
       <div class="card-head" onclick="cardClick(event,'${id}')">
         <div class="chk ${done?'on':''}" id="chk_${id}" onclick="checkClick(event,'${id}')">✓</div>
         <span class="card-emoji">${it.e}</span>
         <div class="card-body">
           <div class="card-title">${it.t}${it.neu?badge('✨ Neu',C.purple):''}
           </div>
-          <div class="card-badges">${badge('⏱ '+it.effort,ph.color)}</div>
+          <div class="card-badges">${it.gate?badge('🚦 Tor',C.yellow):''}${badge('⏱ '+it.effort,ph.color)}${it.ref?badge(it.ref,C.muted):''}</div>
         </div>
         <span class="arrow">▼</span>
       </div>
@@ -296,14 +565,36 @@ function renderPhase(ph){
   return html;
 }
 
+// ── Render tab ────────────────────────────────────────────────
+function renderIntro(tab){
+  const t=TAB_INFO[tab];
+  return `<div class="info-box" style="background:${t.bg};border:1px solid ${t.bd}">
+    <div class="ib-t" style="color:${t.color}" id="intro_${tab}">${introTitle(tab)}</div>
+    <div class="ib-d">${t.text}</div>
+  </div>`;
+}
+function introTitle(tab){
+  const items=itemsOf(tab);
+  const offen=items.filter(x=>!isDone(x.id));
+  if(tab==='vor'){
+    const ges=items.reduce((s,x)=>s+(x.it.a||0),0);
+    const rest=offen.reduce((s,x)=>s+(x.it.a||0),0);
+    return offen.length?`Noch rund ${abende(rest)} von ${abende(ges)} Abenden bis zum Test, dazu eine Woche Eigentest`:`Alles erledigt: bereit für den Test`;
+  }
+  return `${items.length-offen.length} / ${items.length} erledigt`;
+}
+function renderTab(id){
+  if(id==='done')return renderDone();
+  return renderIntro(id)+phasesOf(id).map(renderPhase).join('');
+}
+
 // ── Handlers ──────────────────────────────────────────────────
 function checkClick(ev,id){
   ev.stopPropagation();
   const now=toggleItem(id);
   document.getElementById('chk_'+id).classList.toggle('on',now);
   document.getElementById('card_'+id).classList.toggle('ck',now);
-  PHASES.forEach(p=>refreshPhase(p.id));
-  refreshOverall();
+  refreshAll();
 }
 function cardClick(ev,id){
   if(ev.target.classList.contains('chk')||ev.target.closest('.chk'))return;
@@ -325,13 +616,21 @@ function refreshOverall(){
   const done=DONE.length+chkOpen;
   document.getElementById('ot').textContent=`${done} / ${total} erledigt`;
   document.getElementById('of').style.width=Math.round(done/total*100)+'%';
+  const vor=itemsOf('vor');const vorDone=vor.filter(x=>isDone(x.id)).length;
+  document.getElementById('vt').textContent=`${vorDone} / ${vor.length} erledigt`;
+  document.getElementById('vf').style.width=Math.round(vorDone/vor.length*100)+'%';
+}
+function refreshAll(){
+  PHASES.forEach(p=>refreshPhase(p.id));
+  Object.keys(TAB_INFO).forEach(t=>{const el=document.getElementById('intro_'+t);if(el)el.textContent=introTitle(t)});
+  refreshOverall();
 }
 
 // ── Tab logic ─────────────────────────────────────────────────
-let curTab='done';
+let curTab='vor';
 const TABS=[
   {id:'done',label:'✅ Erledigt',count:DONE.length},
-  ...PHASES.map(p=>({id:p.id,label:p.label+' '+p.sub,count:p.items.length}))
+  ...Object.keys(TAB_INFO).map(id=>({id,label:TAB_INFO[id].label,count:itemsOf(id).length}))
 ];
 
 function switchTab(id){
@@ -341,16 +640,16 @@ function switchTab(id){
   document.getElementById('tab-'+id).classList.add('active');
   document.querySelector(`.tb[data-id="${id}"]`).classList.add('active');
   const el=document.getElementById('tab-'+id);
-  if(!el.innerHTML){el.innerHTML=id==='done'?renderDone():renderPhase(PHASES.find(p=>p.id===id))}
+  if(!el.innerHTML)el.innerHTML=renderTab(id);
 }
 
 // ── Init ──────────────────────────────────────────────────────
 document.getElementById('tab-bar').innerHTML=TABS.map(t=>
-  `<button class="tb ${t.id==='done'?'active':''}" data-id="${t.id}" onclick="switchTab('${t.id}')">
+  `<button class="tb ${t.id===curTab?'active':''}" data-id="${t.id}" onclick="switchTab('${t.id}')">
     ${t.label}<span class="tc">${t.count}</span>
   </button>`).join('');
 
-document.getElementById('tab-done').innerHTML=renderDone();
+document.getElementById('tab-'+curTab).innerHTML=renderTab(curTab);
 refreshOverall();
 </script>
 </body>
