@@ -85,7 +85,7 @@
   <div class="hi">
     <div class="hl">🛒 Forkcast / DealKoch</div>
     <h1>Projekt-Roadmap</h1>
-    <p>Aktueller Fokus: Qualität vor dem Freundestest. Stand: 06.11.2026.</p>
+    <p>Aktueller Fokus: Qualität vor dem Freundestest. Stand: 09.11.2026.</p>
     <div class="op">
       <div class="op-top"><span>Bis zum Test</span><span id="vt">–</span></div>
       <div class="pb"><div class="pf vor" id="vf" style="width:0%"></div></div>
@@ -183,6 +183,9 @@ const DONE=[
   {e:"⚖️",t:"Modellvergleich Haiku 5.5 gegen Sonnet 5.5",d:"Haiku medium bleibt: 0,018 $ pro Lauf, Packungen gehen auf, ausführliche Schritte. Sonnet medium kostet das Zehnfache."},
   {e:"🧬",t:"Doppelte Angebote zusammengefasst",d:"Gleiches Produkt, gleicher Preis, gleicher Zeitraum wird eine Zeile mit PLZ-Liste. Von 129 auf 23 Dubletten."},
   {e:"🧽",t:"Kleinigkeiten in der Bedienung",d:"Kein '−0,00 €' und kein 'aus Cache' mehr, Hinweis 'bis zu drei Minuten', iPhone-Icon für den Home-Bildschirm."},
+  {e:"🎯",t:"Zwei Ziele werden gespeichert",d:"Bisher landete nur das erste Ziel im Profil und im Prompt, auf einem neuen Gerät fehlte das zweite. 'Schnelle Küche' ist raus, die Kochzeit regelt der Schieberegler."},
+  {e:"🧄",t:"Mengen sauber addiert",d:"'2 Zehen (10 g)' und '1 Zehe (5 g)' ergeben jetzt '3 Zehen (15 g)', genauso bei Dosen, Scheiben und Co."},
+  {e:"🍏",t:"iPhone: Icon und App-Name",d:"Icon-Pfad im Testserver korrigiert, auf dem Home-Bildschirm heißt die App jetzt 'DealKoch'."},
   {e:"🔎",t:"Analyse: Daten, Preise und Prompt",d:"Dokument mit 9 Befunden, Optionen, Prompt-v2-Entwurf und 55 durchgespielten Fällen. Grundlage dieser Roadmap."},
 ];
 
@@ -199,7 +202,7 @@ const DONE_GROUPS=[
   {label:"Phase 4",idx:[32,33,34]},
   {label:"🧹 Datenqualität (Oktober/November 2026)",idx:[35,36,37,38,39,40,41,42,43]},
   {label:"🧪 Test-Reife (November 2026)",idx:[44,45,46,47,48,49,50,51]},
-  {label:"📦 Packungen & Analyse (November 2026)",idx:[52,53,54,55,56,57,58]},
+  {label:"📦 Packungen & Analyse (November 2026)",idx:[52,53,54,55,56,57,58,59,60,61]},
 ];
 
 // ── Open Phases ───────────────────────────────────────────────
@@ -216,12 +219,12 @@ const PHASES=[
        d:"Stehen im Dokument unter 'Entscheidungen für dich'. Die Roadmap folgt den Empfehlungen dort. Entscheidest du anders, verschiebt sich nur der jeweilige Punkt."},
       {k:"v0_gruppe",e:"👥",t:"Testgruppe festlegen",effort:"30 min",a:0.2,neu:true,
        d:"3–5 Personen: Wohnort (PLZ), Märkte, Diäten und Allergien, iPhone oder Android. Davon hängen die Testprofile, der Geräte-Check und ALDI in 75245 ab."},
-      {k:"v0_iphone",e:"📱",t:"iPhone: Installation prüfen",effort:"30 min",a:0.2,neu:true,
-       d:"Auf Papas iPhone: Zum Home-Bildschirm, Icon, Vollbild, Startseite. Login und Rezepte gehen erst, wenn das Backend gehostet ist (Etappe 6). Willst du schon jetzt alles testen, zieh das Hosting vor: 2 h, ab dann 5 $ im Monat."},
+      {k:"v0_iphone",e:"📱",t:"iPhone im WLAN testen",effort:"1 h",a:0.3,neu:true,
+       d:"Getestet am 09.11. im WLAN: Skalierung und Anzeige gut. Icon fehlte und der Name war abgeschnitten, beides ist behoben (doppelter Basispfad im Testserver, fehlender App-Titel). Die App vom Home-Bildschirm hat eigene Daten, deshalb muss man sich dort neu anmelden."},
       {k:"v0_sonntag",e:"▶️",t:"Sonntag 08.11.: Scraper von Hand starten",effort:"30 min",a:0.2,ref:"D3",neu:true,
        d:"GitHub → Actions → 'Forkcast Scraper Mo & Do' → Run workflow. Danach in Supabase prüfen, welche Ketten schon Angebote ab Montag liefern. Das entscheidet über den Sonntags-Cron in Etappe 1."},
-      {k:"v0_dubletten",e:"🧬",t:"Montag 09.11.: Dubletten prüfen",effort:"15 min",a:0.1,neu:true,
-       d:"Nach dem Montags-Lauf sollten von den 23 Rest-Dubletten nur echte Varianten übrig sein, also andere Größe oder anderer Start."},
+      {k:"v0_dubletten",e:"🧬",t:"Dubletten prüfen",effort:"15 min",a:0.1,neu:true,
+       d:"Ergebnis vom Sonntagslauf am 08.11.: 0 echte Dubletten. 11 Gruppen haben gleichen Namen und Preis, aber eine andere Größe. Das sind echte Varianten."},
     ]
   },
   {
@@ -229,6 +232,8 @@ const PHASES=[
     timeline:"Scraper und Preishistorie",
     desc:"Jede Analyse erbt die Fehler der Erfassung. Deshalb kommt sie zuerst.",
     items:[
+      {k:"v6_aldi",e:"🗺️",t:"ALDI SÜD für 75245",effort:"1 h",a:0.3,neu:true,
+       d:"Code steht seit 09.11.: Marktguru liefert ALDI SÜD, und wo es ALDI SÜD gibt, blenden Marktauswahl und Rezept-Pool ALDI Nord aus. Mit 'scraper_marktguru.py --dry-run --plz=75245' prüfen, dann pushen. Die Preishistorie für ALDI SÜD beginnt mit dem ersten echten Lauf."},
       {k:"v1_rohdaten",e:"🗃️",t:"Rohdaten jedes Abrufs sichern",effort:"1 Abend",a:1,ref:"D10",neu:true,
        d:"Marktguru- und ALDI-Antworten gezippt in Supabase Storage. So lassen sich neue Felder später rückwirkend auslesen. Jede Woche ohne Rohdaten ist verloren. Speicher im Free-Plan (1 GB) im Blick behalten."},
       {k:"v1_felder",e:"🧩",t:"Strukturierte Felder beim Scrapen",effort:"2 Abende",a:2,ref:"D6",neu:true,
@@ -242,7 +247,7 @@ const PHASES=[
       {k:"v1_view",e:"🔍",t:"Vergleich ohne Selbstvergleich",effort:"½ Abend",a:0.5,ref:"D2",neu:true,
        d:"angebote_mit_historie zählt Zeilen derselben Aktion nicht mehr als Historie. Betrifft 82 % der aktuellen Lidl-Angebote, weil Lidl donnerstags schon die nächste Woche zeigt. Vergleich nur bei gleicher Packung oder über den Grundpreis (Heidelbeeren, Cola)."},
       {k:"v1_sonntagcron",e:"⏰",t:"Sonntags-Abruf als Cron",effort:"15 min",a:0.1,ref:"D3",neu:true,
-       d:"Nur wenn der Handstart am 08.11. Angebote für Montag liefert. Drei Läufe pro Woche brauchen rund 650 Actions-Minuten im Monat, GitHub Free enthält 2.000."},
+       d:"Lohnt sich: Der Handlauf am 08.11. holte 1.300 Angebote ab Montag, für 7 von 8 Ketten fast die ganze Woche. EDEKA kam erst mit 47 von sonst rund 265. Der Lauf löscht aber alles, was noch bis Sonntag gilt. Deshalb erst zusammen mit der Sonntags-Logik aus Etappe 4 einschalten. Drei Läufe pro Woche brauchen rund 650 Actions-Minuten im Monat, GitHub Free enthält 2.000."},
       {k:"v1_waechter",e:"🚨",t:"Datenwächter nach jedem Abruf",effort:"1 Abend",a:1,ref:"D4",neu:true,
        d:"Anzahl je Kette gegen den Schnitt, Dubletten, Anteil ohne Preis oder Packung. Fällt eine Kette unter 60 % ihres Schnitts, wird der Job rot und GitHub meldet den Fehler."},
     ]
@@ -279,8 +284,8 @@ const PHASES=[
        d:"33 % mehr Produkte mit Vergleich. Obst und Gemüse bleiben bei 91 Tagen, sonst verwässern Saisonpreise den Schnitt."},
       {k:"v3_varianten",e:"🍝",t:"Varianten im Pool zusammenfassen",effort:"1 h",a:0.3,neu:true,
        d:"Viermal Barilla belegt heute 4 von 50 Plätzen. Gleiche Marke, gleicher Typ und gleicher Preis zählen einmal."},
-      {k:"v3_markt",e:"⚖️",t:"Marktvergleich je Typ (optional)",effort:"1 Abend",a:1,ref:"A5",neu:true,
-       d:"Günstigster Anbieter je Typ innerhalb der gewählten Märkte. Weniger doppelte Butter im Pool. Kann auch nach dem Test kommen."},
+      {k:"v3_markt",e:"⚖️",t:"Marktvergleich je Typ",effort:"1 Abend",a:1,ref:"A5",neu:true,
+       d:"Günstigster Anbieter je Typ innerhalb der gewählten Märkte. Beispiel: Spitzkohl bei REWE von 2 € auf 1 € reduziert, bei ALDI im Angebot für 0,80 €. Dann zählt das REWE-Angebot nicht als Ersparnis, und ALDI kommt in den Pool. Grenze: Regalpreise ohne Aktion kennen wir nicht (D11)."},
       {k:"v3_stufen",e:"🏅",t:"Neutrale Preis-Stufen liefern",effort:"1 h",a:0.3,neu:true,
        d:"Bestpreis seit 13 Wochen, Günstig, Üblicher Aktionspreis, Letzte Aktion war günstiger, Dauerpreis. Messwerte statt 'Fake'. Die App zeigt sie in Etappe 5."},
     ]
@@ -295,7 +300,7 @@ const PHASES=[
       {k:"v4_pool",e:"🧺",t:"Pool-Regeln schärfen",effort:"½ Abend",a:0.5,neu:true,
        d:"Unklare Angebote raus. Deckel für teure Einzelstücke, Vorschlag 6 € je Portion (der T-Bone kam auf 10,66 €). Ein-Tages-Angebote nicht für geteilte Packungen. Ein zu kleiner Pool führt zu einer klaren Meldung statt zu schwachen Rezepten."},
       {k:"v4_woche",e:"📅",t:"Planungswoche und Jahreswechsel",effort:"½ Abend",a:0.5,neu:true,
-       d:"Ab Samstag zählt die nächste Woche, sonntags kommen Angebote ab Montag in den Pool. Woche und Jahr beide aus isocalendar(), sonst gibt es vom 01. bis 03.01.2027 einen leeren Cache."},
+       d:"Ab Samstag zählt die nächste Woche, sonntags kommen Angebote ab Montag in den Pool. Woche und Jahr beide aus isocalendar(), sonst gibt es vom 01. bis 03.01.2027 einen leeren Cache. Voraussetzung für den Sonntags-Cron."},
       {k:"v4_backend",e:"🧮",t:"Backend rechnet Kosten und Ersparnis",effort:"1 Abend",a:1,ref:"R1",neu:true,
        d:"Das Modell liefert Menge und Einheit, das Backend rechnet estimatedCost und savedAmount exakt, mit dem ehrlichen Vergleichspreis aus Etappe 3. Spart vermutlich Denk-Tokens und damit Wartezeit."},
       {k:"v4_prompt",e:"📝",t:"Prompt v2 einbauen",effort:"½ Abend",a:0.5,neu:true,
@@ -304,6 +309,8 @@ const PHASES=[
        d:"Diät, 'Nicht essen' mit Wortgrenzen, Packungen, 8 Rezepte mit je einem Angebot, jede Zutat in einem Schritt, Name passt zu den Zutaten, cookTime, kcal zum Ziel. Treffer landen in feedback."},
       {k:"v4_reparatur",e:"🔧",t:"Einzelne Rezepte reparieren",effort:"1 Abend",a:1,ref:"R3",neu:true,
        d:"Fällt ein Rezept durch den Prüfer, wird nur dieses neu erzeugt statt alle 8. Geteilte Packungen bleiben erhalten."},
+      {k:"v4_tippfehler",e:"🔤",t:"Tippfehler bei 'Nicht essen' erkennen",effort:"½ Abend",a:0.5,neu:true,
+       d:"In den Profilen stehen schon 'Lach' und 'Tomtaten'. Der Prüfer vergleicht unscharf (Lachs, Tomaten) und behandelt solche Treffer wie einen Verstoß."},
       {k:"v4_robust",e:"🛟",t:"Robuste API-Aufrufe",effort:"1 h",a:0.3,neu:true,
        d:"stop_reason und refusal auswerten. Gesamtzeit höchstens 280 s, denn Railway trennt Anfragen nach 5 Minuten ohne Daten. 'Nicht essen' auf 200 Zeichen begrenzen."},
       {k:"v4_verlauf",e:"🔄",t:"Keine Wiederholungen",effort:"1 h",a:0.3,neu:true,
@@ -333,6 +340,14 @@ const PHASES=[
        d:"Zum Beispiel 'Neue Angebote ab Montag' statt 'Keine Angebote gefunden'."},
       {k:"v5_profil",e:"⚠️",t:"Hinweise im Profil",effort:"15 min",a:0.1,neu:true,
        d:"Bei Allergien: 'Zutatenliste im Laden prüfen'. Bei Halal: 'Die Schlachtung können wir nicht prüfen'."},
+      {k:"v5_vorschlaege",e:"⌨️",t:"Vorschläge beim Eintippen",effort:"½ Abend",a:0.5,neu:true,
+       d:"Bei 'Nicht essen' schlägt die App bekannte Zutaten vor und fragt bei Tippfehlern nach: 'Meintest du Lachs?'"},
+      {k:"v5_sync",e:"🔄",t:"Profil beim Start vom Server laden",effort:"½ Abend",a:0.5,neu:true,
+       d:"Jedes Gerät hält heute seine eigene Kopie des Profils. Mit einem Konto auf zwei Handys laufen die Profile auseinander."},
+      {k:"v5_planalt",e:"🗓️",t:"Ältere Rezepte im Wochenplan kennzeichnen",effort:"½ Abend",a:0.5,neu:true,
+       d:"Geplante Rezepte bleiben bei neuer Erzeugung absichtlich stehen, weil vielleicht schon eingekauft ist. Es fehlen ein Hinweis 'aus früherer Auswahl' und eine Warnung, wenn ein Angebot darin abgelaufen ist."},
+      {k:"v5_ios",e:"🍏",t:"iPhone-Hinweis im Browser",effort:"1 h",a:0.3,neu:true,
+       d:"Läuft die App in Safari statt vom Home-Bildschirm, zeigt sie: 'Teilen → Zum Home-Bildschirm, dann dort anmelden.' Browser und App haben getrennte Daten, so geht kein Geräteplatz verloren."},
       {k:"v5_cache",e:"🧹",t:"'(Cache leeren)' aus dem Button entfernen",effort:"5 min",a:0.05,neu:true,
        d:"Der Button heißt dann nur 'Neue Rezepte generieren'."},
     ]
@@ -351,11 +366,9 @@ const PHASES=[
       {k:"v6_datenschutz",e:"🛡️",t:"Kurzer Datenschutzhinweis",effort:"½ Abend",a:0.5,neu:true,
        d:"Was gespeichert wird (Profil, Geräte-ID, Pläne, Bewertungen, Feedback) und welche Dienste beteiligt sind (Supabase, Anthropic, Railway, GitHub Pages). Keine Rechtsberatung. Für einen öffentlichen Start braucht es mehr."},
       {k:"v6_anleitung",e:"📄",t:"Tester-Anleitung als PDF",effort:"½ Abend",a:0.5,neu:true,
-       d:"Eine Seite: Installation auf iPhone und Android, Code eingeben, Profil, Rezepte, Liste, Plan, Feedback-Knopf."},
+       d:"Eine Seite: Installation auf iPhone und Android, Code eingeben, Profil, Rezepte, Liste, Plan, Feedback-Knopf. Wichtig: Erst zum Home-Bildschirm hinzufügen, dann in der App anmelden. Browser und App speichern getrennt und zählen als zwei von drei Geräten."},
       {k:"pt_mobile",e:"📱",t:"Mobile-Check auf echten Handys",effort:"1 h",a:0.3,neu:false,
-       d:"Im Browser bei 320 px, 360 px und als iPhone 13 schon geprüft. Offen: Papas iPhone und ein Android mit Installation, Login, Rezepten, Liste und Plan. Dabei die App während der Erzeugung schließen und wieder öffnen."},
-      {k:"v6_aldi",e:"🗺️",t:"ALDI in 75245 (nur falls dort ein Tester wohnt)",effort:"1 h bis 1 Abend",a:0.3,neu:true,
-       d:"75245 liegt im Gebiet von ALDI SÜD, die App zeigt dort heute trotzdem ALDI Nord. Mindestens ALDI Nord für diese PLZ ausblenden, besser ALDI SÜD über Marktguru aufnehmen."},
+       d:"Im Browser bei 320 px, 360 px und als iPhone 13 geprüft, auf Papas iPhone im WLAN ebenfalls gut. Offen: Installation über HTTPS mit Icon, Name 'DealKoch' und Vollbild, dazu ein Android. Dabei die App während der Erzeugung schließen und wieder öffnen."},
       {k:"v6_tor",gate:true,e:"🚦",t:"Tor B: Testreif",effort:"1 Woche",a:0,neu:true,
        d:"Eine Woche selbst planen, einkaufen und kochen, Kassenbon mit der Liste vergleichen. Bewertung von 1 bis 10 wiederholen: jeder Bereich mindestens 8. Kein offener Punkt mit Gesundheits- oder Preisrisiko."},
     ]
