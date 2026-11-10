@@ -85,7 +85,7 @@
   <div class="hi">
     <div class="hl">🛒 Forkcast / DealKoch</div>
     <h1>Projekt-Roadmap</h1>
-    <p>Aktueller Fokus: Qualität vor dem Freundestest. Stand: 09.11.2026.</p>
+    <p>Aktueller Fokus: Qualität vor dem Freundestest. Stand: 10.11.2026.</p>
     <div class="op">
       <div class="op-top"><span>Bis zum Test</span><span id="vt">–</span></div>
       <div class="pb"><div class="pf vor" id="vf" style="width:0%"></div></div>
@@ -234,8 +234,12 @@ const PHASES=[
     items:[
       {k:"v6_aldi",e:"🗺️",t:"ALDI SÜD für 75245",effort:"1 h",a:0.3,neu:true,
        d:"Code steht seit 09.11.: Marktguru liefert ALDI SÜD, und wo es ALDI SÜD gibt, blenden Marktauswahl und Rezept-Pool ALDI Nord aus. Mit 'scraper_marktguru.py --dry-run --plz=75245' prüfen, dann pushen. Die Preishistorie für ALDI SÜD beginnt mit dem ersten echten Lauf."},
+      {k:"v1_backup",e:"💽",t:"Wöchentliches Backup per pg_dump",effort:"30 min",a:0.2,neu:true,
+       d:"Supabase Free hat keine automatischen Backups, die Preishistorie wäre bei einem Fehler weg. Die Datei supabase-backup.yml liegt bereit: Secret SUPABASE_DB_URL mit dem Session pooler (Port 5432) anlegen, einmal von Hand starten, Dump-Größe notieren. Läuft sonntags, Aufbewahrung 90 Tage als Artefakt. Dateien im Storage sind nicht enthalten."},
       {k:"v1_rohdaten",e:"🗃️",t:"Rohdaten jedes Abrufs sichern",effort:"1 Abend",a:1,ref:"D10",neu:true,
        d:"Marktguru- und ALDI-Antworten gezippt in Supabase Storage. So lassen sich neue Felder später rückwirkend auslesen. Jede Woche ohne Rohdaten ist verloren. Speicher im Free-Plan (1 GB) im Blick behalten."},
+      {k:"v1_trigger",e:"🕖",t:"Pünktlicher Abruf per workflow_dispatch",effort:"1 h",a:0.3,neu:true,
+       d:"Geplante GitHub-Läufe starten immer später: im Juli 1–2 Stunden, seit November rund 8 Stunden nach Plan (Montag 09.11. erst 14:47 Uhr). Supabase startet den Scraper per pg_cron und pg_net über workflow_dispatch. Dafür ein Fine-grained Token nur für das Forkcast-Repo mit 'Actions: write', gespeichert im Vault. Der GitHub-Zeitplan bleibt als Reserve und läuft nicht, wenn am selben Tag schon abgerufen wurde."},
       {k:"v1_felder",e:"🧩",t:"Strukturierte Felder beim Scrapen",effort:"2 Abende",a:2,ref:"D6",neu:true,
        d:"Packungsmenge, Stückzahl, Mengenspanne, Sorte und 'oder', Marke, Hinweistext sowie Marktguru-Produkt- und Marken-ID als eigene Spalten. Spannen wie 'Rindersteak 299–500 g': Menge aus Preis ÷ Grundpreis. Mehrfachpacks wie '9 x 26 g – 100 g' sauber lesen oder als unklar markieren."},
       {k:"v1_staffel",e:"🔢",t:"Staffelpreise richtig lesen",effort:"½ Abend",a:0.5,ref:"D1",neu:true,
@@ -246,8 +250,6 @@ const PHASES=[
        d:"preishistorie bekommt gueltig_ab, gueltig_bis, Packung und Grundpreis, auch für ALDI (heute nur 8 % der ALDI-Zeilen mit Grundpreis). Eine Zeile pro Produkt und Woche statt vieler (Lidl: 1.783 Zeilen für 365 Namen in einer Woche)."},
       {k:"v1_view",e:"🔍",t:"Vergleich ohne Selbstvergleich",effort:"½ Abend",a:0.5,ref:"D2",neu:true,
        d:"angebote_mit_historie zählt Zeilen derselben Aktion nicht mehr als Historie. Betrifft 82 % der aktuellen Lidl-Angebote, weil Lidl donnerstags schon die nächste Woche zeigt. Vergleich nur bei gleicher Packung oder über den Grundpreis (Heidelbeeren, Cola)."},
-      {k:"v1_sonntagcron",e:"⏰",t:"Sonntags-Abruf als Cron",effort:"15 min",a:0.1,ref:"D3",neu:true,
-       d:"Lohnt sich: Der Handlauf am 08.11. holte 1.300 Angebote ab Montag, für 7 von 8 Ketten fast die ganze Woche. EDEKA kam erst mit 47 von sonst rund 265. Der Lauf löscht aber alles, was noch bis Sonntag gilt. Deshalb erst zusammen mit der Sonntags-Logik aus Etappe 4 einschalten. Drei Läufe pro Woche brauchen rund 650 Actions-Minuten im Monat, GitHub Free enthält 2.000."},
       {k:"v1_waechter",e:"🚨",t:"Datenwächter nach jedem Abruf",effort:"1 Abend",a:1,ref:"D4",neu:true,
        d:"Anzahl je Kette gegen den Schnitt, Dubletten, Anteil ohne Preis oder Packung. Fällt eine Kette unter 60 % ihres Schnitts, wird der Job rot und GitHub meldet den Fehler."},
     ]
@@ -301,6 +303,8 @@ const PHASES=[
        d:"Unklare Angebote raus. Deckel für teure Einzelstücke, Vorschlag 6 € je Portion (der T-Bone kam auf 10,66 €). Ein-Tages-Angebote nicht für geteilte Packungen. Ein zu kleiner Pool führt zu einer klaren Meldung statt zu schwachen Rezepten."},
       {k:"v4_woche",e:"📅",t:"Planungswoche und Jahreswechsel",effort:"½ Abend",a:0.5,neu:true,
        d:"Ab Samstag zählt die nächste Woche, sonntags kommen Angebote ab Montag in den Pool. Woche und Jahr beide aus isocalendar(), sonst gibt es vom 01. bis 03.01.2027 einen leeren Cache. Voraussetzung für den Sonntags-Cron."},
+      {k:"v1_sonntagcron",e:"⏰",t:"Sonntags-Abruf als Cron",effort:"15 min",a:0.1,ref:"D3",neu:true,
+       d:"Lohnt sich: Der Handlauf am 08.11. holte 1.300 Angebote ab Montag, für 7 von 8 Ketten fast die ganze Woche. EDEKA kam erst mit 47 von sonst rund 265. Der Lauf löscht aber alles, was noch bis Sonntag gilt. Deshalb erst zusammen mit der Planungswoche einschalten, gestartet über den pünktlichen Abruf aus Etappe 1. Drei Läufe pro Woche brauchen rund 650 Actions-Minuten im Monat, GitHub Free enthält 2.000."},
       {k:"v4_backend",e:"🧮",t:"Backend rechnet Kosten und Ersparnis",effort:"1 Abend",a:1,ref:"R1",neu:true,
        d:"Das Modell liefert Menge und Einheit, das Backend rechnet estimatedCost und savedAmount exakt, mit dem ehrlichen Vergleichspreis aus Etappe 3. Spart vermutlich Denk-Tokens und damit Wartezeit."},
       {k:"v4_prompt",e:"📝",t:"Prompt v2 einbauen",effort:"½ Abend",a:0.5,neu:true,
@@ -456,7 +460,7 @@ const PHASES=[
     desc:"Datenquelle, Datenschutz, Konten und Kosten müssen geklärt sein.",
     items:[
       {k:"n_recht",e:"⚖️",t:"Datenquelle rechtlich klären",effort:"offen",neu:true,
-       d:"Marktguru ist eine inoffizielle Schnittstelle. Vor einem öffentlichen Start die Nutzung klären oder eine Lizenz anfragen."},
+       d:"Marktguru ist eine inoffizielle Schnittstelle. Zu klären: Was erlauben die Nutzungsbedingungen? Und das Datenbankrecht: Nach § 87b UrhG kann auch das wiederholte, systematische Abrufen kleiner Teile verboten sein. Vor einem öffentlichen oder bezahlten Start klären oder eine Lizenz anfragen. Keine Rechtsberatung."},
       {k:"n_ersatz",e:"🔁",t:"Ersatzquelle vorbereiten",effort:"2 Abende",ref:"D12",neu:true,
        d:"Fertige Scraper wie den kaufDA-Scraper bei Apify prüfen: Datenqualität, Kosten (rund 0,90 bis 3,60 $ pro Lauf und Region) und Nutzungsrechte."},
       {k:"n_dsgvo",e:"📜",t:"Datenschutzerklärung und Impressum",effort:"1 Abend",neu:true,
@@ -469,8 +473,10 @@ const PHASES=[
        d:"Viele Ketten haben nur 1–4 Preisgruppen. Kürzere Läufe, wenn mehr Regionen dazukommen."},
       {k:"n_cache",e:"🤝",t:"Gemeinsamer Cache bei gleichem Profil",effort:"1 Abend",ref:"R8",neu:true,
        d:"Gleiche Diät, Personen, Märkte und PLZ teilen sich die Rezepte der Woche. Senkt die Kosten pro Nutzer."},
-      {k:"n_kosten",e:"💶",t:"Kosten je Nutzer und Tarife",effort:"1 Abend",neu:true,
-       d:"Supabase, Railway, Anthropic und GitHub Actions: Ab wie vielen Nutzern reicht der Gratis- oder Hobby-Tarif nicht mehr?"},
+      {k:"n_pool",e:"🗂️",t:"Pool im Backend zwischenspeichern",effort:"½ Abend",neu:true,
+       d:"Heute lädt jede Erzeugung den ganzen Pool aus Supabase (1.782 Zeilen, rund 1,5 MB). Einmal pro Abruf laden und im Speicher halten. Senkt den Datenabfluss fast auf null und spart Wartezeit. Ohne Cache reichen die 5 GB im Free-Plan für rund 250 Nutzer."},
+      {k:"n_kosten",e:"💶",t:"Kosten je Nutzer und Tarife",effort:"½ Abend",neu:true,
+       d:"Schätzung vom 09.11.: Anthropic rund 0,26 $ je Nutzer und Monat bei 3 Läufen pro Woche. Railway Hobby trägt geschätzt 100–200 aktive Nutzer. Erster Engpass ist der Supabase-Datenabfluss bei rund 250 Nutzern ohne Pool-Cache. GitHub-Minuten wachsen mit den Regionen, nicht mit den Nutzern. Mit den Messwerten aus dem Test nachrechnen."},
       {k:"n_monitoring",e:"📟",t:"Monitoring mit Alarm",effort:"1 Abend",neu:true,
        d:"Fehlerquote, Laufzeiten und Kosten pro Tag mit Benachrichtigung."},
     ]
@@ -484,6 +490,8 @@ const PHASES=[
        d:"'Kommt etwa alle 4 Wochen': warnt vor einem Kauf kurz vor der nächsten Aktion. Sinnvoll ab rund 26 Wochen Daten, heute reicht es für 19 Produkte."},
       {k:"z_prognose",e:"🔮",t:"Preisprognose",effort:"Wochen",ref:"A7",neu:true,
        d:"Zeitreihen- oder ML-Modelle, frühestens mit einem Jahr Daten."},
+      {k:"z_verdichten",e:"🗜️",t:"Alte Preishistorie verdichten",effort:"1 Abend",neu:true,
+       d:"Ab Mitte 2028 Zeilen älter als 2 Jahre auf einen Wert pro Produkt und Monat verdichten (Minimum, Median, Maximum, Anzahl Aktionen) statt sie zu löschen. Takt und Prognose brauchen lange Reihen. Die Inflation stört nicht, weil die Vergleiche nur 91 bzw. 180 Tage zurückschauen. Heute 26 von 500 MB, Wachstum rund 4–6 MB pro Monat."},
       {k:"z_empfehlung",e:"🧠",t:"Empfehlungssystem",effort:"Wochen",neu:true,
        d:"Lernt aus Bewertungen, Gekochtem und Feedback, was jemand mag."},
       {k:"z_prospekt",e:"🖼️",t:"Prospekte selbst auslesen",effort:"Wochen",neu:true,
