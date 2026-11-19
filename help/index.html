@@ -60,6 +60,7 @@
 
     .sec{font-size:11px;font-weight:700;color:#4a7fa5;text-transform:uppercase;letter-spacing:.08em;margin:18px 0 9px 2px}
 
+    .chk.fix{cursor:default}
     .done-wrap{background:#0f2236;border:1px solid #1e3a5f;border-radius:12px;overflow:hidden;margin-bottom:12px}
     .done-item{display:flex;align-items:flex-start;gap:11px;padding:11px 15px;border-bottom:1px solid #1e3a5f}
     .done-item:last-child{border-bottom:none}
@@ -85,7 +86,7 @@
   <div class="hi">
     <div class="hl">🛒 Forkcast / DealKoch</div>
     <h1>Projekt-Roadmap</h1>
-    <p>Aktueller Fokus: Qualität vor dem Freundestest. Stand: 10.11.2026.</p>
+    <p>Aktueller Fokus: Qualität vor dem Freundestest. Stand: 19.11.2026.</p>
     <div class="op">
       <div class="op-top"><span>Bis zum Test</span><span id="vt">–</span></div>
       <div class="pb"><div class="pf vor" id="vf" style="width:0%"></div></div>
@@ -208,6 +209,7 @@ const DONE_GROUPS=[
 // ── Open Phases ───────────────────────────────────────────────
 // tab: vor | test | nach. a = Aufwand in Abenden (1 Abend ≈ 3 h) für die Summe "Bis zum Test".
 // k = fester Schlüssel: Haken bleiben beim Umsortieren am richtigen Eintrag.
+// fertig:true = erledigt auf allen Geräten (steht in der Datei, nicht im Browser).
 const PHASES=[
   // ── VOR DEM TEST ──
   {
@@ -215,15 +217,15 @@ const PHASES=[
     timeline:"07.–09.11.2026, kein Code",
     desc:"Beobachten und entscheiden. Das Ergebnis bestimmt, was in Etappe 1 und 6 nötig ist.",
     items:[
-      {k:"v0_entscheid",e:"🗳️",t:"Die 7 Entscheidungen bestätigen",effort:"15 min",a:0.1,neu:true,
+      {k:"v0_entscheid",fertig:true,e:"🗳️",t:"Die 7 Entscheidungen bestätigen",effort:"15 min",a:0.1,neu:true,
        d:"Entschieden am 10.11.: (1) Prompt v2 vor dem Test. (2) Das Backend rechnet Kosten und Ersparnis. (3) 'Gespart' gegen den niedrigsten belastbaren Vergleich. (4) App-Preise für den Test als Hinweis in der Liste. (5) Für den Test höchstens 2 Märkte pro Woche, jetzt in Etappe 4. (6) Sonntags-Abruf kommt mit der Planungswoche. (7) Neutrale Messwerte statt 'Fake', dazu eine Hilfe-Seite in der App (Etappe 6)."},
       {k:"v0_gruppe",e:"👥",t:"Testgruppe festlegen",effort:"30 min",a:0.2,neu:true,
        d:"3–5 Personen: Wohnort (PLZ), Märkte, Diäten und Allergien, iPhone oder Android. Davon hängen die Testprofile, der Geräte-Check und ALDI in 75245 ab."},
-      {k:"v0_iphone",e:"📱",t:"iPhone im WLAN testen",effort:"1 h",a:0.3,neu:true,
+      {k:"v0_iphone",fertig:true,e:"📱",t:"iPhone im WLAN testen",effort:"1 h",a:0.3,neu:true,
        d:"Getestet am 09.11. im WLAN: Skalierung und Anzeige gut. Icon fehlte und der Name war abgeschnitten, beides ist behoben (doppelter Basispfad im Testserver, fehlender App-Titel). Die App vom Home-Bildschirm hat eigene Daten, deshalb muss man sich dort neu anmelden."},
-      {k:"v0_sonntag",e:"▶️",t:"Sonntag 08.11.: Scraper von Hand starten",effort:"30 min",a:0.2,ref:"D3",neu:true,
+      {k:"v0_sonntag",fertig:true,e:"▶️",t:"Sonntag 08.11.: Scraper von Hand starten",effort:"30 min",a:0.2,ref:"D3",neu:true,
        d:"GitHub → Actions → 'Forkcast Scraper Mo & Do' → Run workflow. Danach in Supabase prüfen, welche Ketten schon Angebote ab Montag liefern. Das entscheidet über den Sonntags-Cron in Etappe 1."},
-      {k:"v0_dubletten",e:"🧬",t:"Dubletten prüfen",effort:"15 min",a:0.1,neu:true,
+      {k:"v0_dubletten",fertig:true,e:"🧬",t:"Dubletten prüfen",effort:"15 min",a:0.1,neu:true,
        d:"Ergebnis vom Sonntagslauf am 08.11.: 0 echte Dubletten. 11 Gruppen haben gleichen Namen und Preis, aber eine andere Größe. Das sind echte Varianten."},
     ]
   },
@@ -232,26 +234,26 @@ const PHASES=[
     timeline:"Scraper und Preishistorie",
     desc:"Jede Analyse erbt die Fehler der Erfassung. Deshalb kommt sie zuerst.",
     items:[
-      {k:"v6_aldi",e:"🗺️",t:"ALDI SÜD für 75245",effort:"1 h",a:0.3,neu:true,
+      {k:"v6_aldi",fertig:true,e:"🗺️",t:"ALDI SÜD für 75245",effort:"1 h",a:0.3,neu:true,
        d:"Läuft seit 10.11.: 177 ALDI-SÜD-Angebote für 75245, davon 44 mit Normalpreis. Wo es ALDI SÜD gibt, blenden Marktauswahl und Rezept-Pool ALDI Nord aus. Die Preishistorie für ALDI SÜD beginnt am 10.11."},
-      {k:"v1_backup",e:"💽",t:"Wöchentliches Backup per pg_dump",effort:"30 min",a:0.2,neu:true,
+      {k:"v1_backup",fertig:true,e:"💽",t:"Wöchentliches Backup per pg_dump",effort:"30 min",a:0.2,neu:true,
        d:"Supabase Free hat keine automatischen Backups. Läuft seit 10.11.: supabase-backup.yml sichert sonntags das Schema public, der erste Dump hatte 2,9 MB und bleibt 90 Tage als Artefakt. Secret SUPABASE_DB_URL nutzt den Session pooler (Port 5432). Dateien im Storage sind nicht enthalten."},
-      {k:"v1_rohdaten",e:"🗃️",t:"Rohdaten jedes Abrufs sichern",effort:"1 Abend",a:1,ref:"D10",neu:true,
+      {k:"v1_rohdaten",fertig:true,e:"🗃️",t:"Rohdaten jedes Abrufs sichern",effort:"1 Abend",a:1,ref:"D10",neu:true,
        d:"Läuft seit 10.11.: rohdaten.py sichert jede Marktguru- und ALDI-Antwort gezippt im privaten Bucket 'rohdaten', zusammen rund 0,8 MB pro Lauf. So lassen sich neue Felder später rückwirkend auslesen. Die 1 GB im Free-Plan reichen damit für Jahre."},
-      {k:"v1_trigger",e:"🕖",t:"Pünktlicher Abruf per workflow_dispatch",effort:"1 h",a:0.3,neu:true,
+      {k:"v1_trigger",fertig:true,e:"🕖",t:"Pünktlicher Abruf per workflow_dispatch",effort:"1 h",a:0.3,neu:true,
        d:"Läuft seit 10.11.: Supabase startet den Scraper Mo + Do um 05:00 UTC (06:00 Uhr im Winter, 07:00 im Sommer) per pg_cron und workflow_dispatch. Das Token liegt im Vault, sein Ablaufdatum gehört in den Kalender. Der GitHub-Zeitplan bleibt Reserve: Er läuft nur, wenn heute noch kein pünktlicher Start kam, und warnt dann im Lauf."},
-      {k:"v1_felder",e:"🧩",t:"Strukturierte Felder beim Scrapen",effort:"2 Abende",a:2,ref:"D6",neu:true,
-       d:"Packungsmenge, Stückzahl, Mengenspanne, Sorte und 'oder', Marke, Hinweistext sowie Marktguru-Produkt- und Marken-ID als eigene Spalten. Spannen wie 'Rindersteak 299–500 g': Menge aus Preis ÷ Grundpreis. Mehrfachpacks wie '9 x 26 g – 100 g' sauber lesen oder als unklar markieren."},
-      {k:"v1_staffel",e:"🔢",t:"Staffelpreise richtig lesen",effort:"½ Abend",a:0.5,ref:"D1",neu:true,
-       d:"30 Netto-Angebote nennen den Preis für 2 oder mehr Stück plus einen Einzelpreis (Granatapfel: 2 Stück 1,90 €, einzeln 1,29 €). Einzelpreis übernehmen, Staffel als Hinweis speichern. Bis dahin fliegen sie aus dem Rezept-Pool."},
-      {k:"v1_texte",e:"🧽",t:"Texte bereinigen, EDEKA-App lesen",effort:"1 Abend",a:1,ref:"D7",neu:true,
-       d:"Hinweiszeilen abtrennen, weiche Trennzeichen und häufige Tippfehler ('Gekühit', 'Bioalnd') korrigieren. App-Preise aus Hinweisen wie 'MIT EDEKA APP 1.11 €' lesen, 38 EDEKA-Zeilen enthalten solche Hinweise."},
-      {k:"v1_historie",e:"🕰️",t:"Historie mit Gültigkeit und Packung",effort:"1 Abend",a:1,ref:"D2",neu:true,
-       d:"preishistorie bekommt gueltig_ab, gueltig_bis, Packung und Grundpreis, auch für ALDI (heute nur 8 % der ALDI-Zeilen mit Grundpreis). Eine Zeile pro Produkt und Woche statt vieler (Lidl: 1.783 Zeilen für 365 Namen in einer Woche)."},
-      {k:"v1_view",e:"🔍",t:"Vergleich ohne Selbstvergleich",effort:"½ Abend",a:0.5,ref:"D2",neu:true,
-       d:"angebote_mit_historie zählt Zeilen derselben Aktion nicht mehr als Historie. Betrifft 82 % der aktuellen Lidl-Angebote, weil Lidl donnerstags schon die nächste Woche zeigt. Vergleich nur bei gleicher Packung oder über den Grundpreis (Heidelbeeren, Cola)."},
-      {k:"v1_waechter",e:"🚨",t:"Datenwächter nach jedem Abruf",effort:"1 Abend",a:1,ref:"D4",neu:true,
-       d:"Anzahl je Kette gegen den Schnitt, Dubletten, Anteil ohne Preis oder Packung. Fällt eine Kette unter 60 % ihres Schnitts, wird der Job rot und GitHub meldet den Fehler."},
+      {k:"v1_felder",fertig:true,e:"🧩",t:"Strukturierte Felder beim Scrapen",effort:"2 Abende",a:2,ref:"D6",neu:true,
+       d:"Läuft seit 19.11.: angebote hat 13 neue Spalten (Produkt, Marke, Marktguru-IDs, Menge, Einheit, Stückzahl, Spanne, lose Ware, Sorten, Hinweis, unklar), gefüllt für alle 2.250 Angebote. Marktguru liefert die Packung schon als Stückzahl × Menge. packung.py liest Spannen und lose Ware aus dem Text, das Backend rechnet damit statt mit dem Text. Behoben: Kaffeekapseln '128 g – 268 g' als 128 kg, Mikado 176 statt 75 g, Spannen mit der größten statt der kleinsten Packung, Lammkeule je kg als 1-kg-Packung. 20 Angebote mit Widerspruch oder ohne Größe bleiben als unklar markiert und nutzen den Text."},
+      {k:"v1_staffel",fertig:true,e:"🔢",t:"Staffelpreise richtig lesen",effort:"½ Abend",a:0.5,ref:"D1",neu:true,
+       d:"Läuft seit 19.11.: preis ist immer der Einzelpreis, die Staffel steht in staffel_anzahl und staffel_preis (23 Angebote im ersten Lauf). Meldet Marktguru den Bündelpreis (PENNY 'je 3 Stück 1,00 €, Einzelpreis 0,49'), wird auf 0,49 € umgerechnet, samt Grundpreis und Preishistorie. Das Modell sieht '0,49 € (ab 3 Stück: 1,00 € zusammen)'. Die H-Milch zählt so nicht mehr als 12-Liter-Packung."},
+      {k:"v1_texte",fertig:true,e:"🧽",t:"Texte bereinigen, EDEKA-App lesen",effort:"1 Abend",a:1,ref:"D7",neu:true,
+       d:"Läuft seit 19.11.: texte.py bereinigt Beschreibung, Marke und Produkt vor allem anderen. Alle 32 EDEKA-App-Preise werden erkannt, REWE '10 % Bonus' wird umgerechnet. Im Bestand stehen keine HINWEIS-Texte, weichen Trennzeichen, bekannten Tippfehler ('Gekühit', 'Bioalnd', 'KI. I', 'le 5 x') oder Trennungen wie 'Weihnachts- artikel' mehr."},
+      {k:"v1_historie",fertig:true,e:"🕰️",t:"Historie mit Gültigkeit und Packung",effort:"1 Abend",a:1,ref:"D2",neu:true,
+       d:"Läuft seit 19.11.: historie.py schreibt eine Zeile pro Angebot und Woche, weitere Läufe setzen nur zuletzt_am. Die Woche kommt aus gueltig_ab, Lidl- und ALDI-SÜD-Vorschauen landen so in der richtigen Woche. Neue Zeilen tragen Gültigkeit, Produkt, Marke und Packung, ALDI ohne Grundpreis bekommt ihn aus Preis und Packung. Altbestand (62.517 Zeilen) hat die Woche aus erfasst_am, gelöscht wurde nichts. Ein Lauf dauert jetzt gut 16 statt rund 20 Minuten."},
+      {k:"v1_view",fertig:true,e:"🔍",t:"Vergleich ohne Selbstvergleich",effort:"½ Abend",a:0.5,ref:"D2",neu:true,
+       d:"Läuft seit 19.11.: angebote_mit_historie zählt Zeilen derselben Aktion (gleiche offer_id) nicht mehr als Vergleich und rechnet das 13-Wochen-Fenster ab der Angebotswoche. Vorher verglich die View 350 von 382 Lidl- und 214 von 220 ALDI-SÜD-Angeboten mit sich selbst. Lidl 'konstant' fiel von 57 auf 29, 'Bestpreis' von 31 auf 20. Preisvergleich ohne Grundpreis nur bei gleicher Packung. Auch der Preisverlauf auf /Angebote/ ist korrigiert."},
+      {k:"v1_waechter",fertig:true,e:"🚨",t:"Datenwächter nach jedem Abruf",effort:"1 Abend",a:1,ref:"D4",neu:true,
+       d:"Läuft seit 19.11.: waechter.py prüft nach jedem Abruf jede Kette gegen den Median ihrer letzten 8 Läufe. Unter 60 % oder fehlende Kette: Job rot, GitHub schickt eine Mail. Warnung bei über 5 % Dubletten, 2 % ohne Preis oder 15 % ohne Packung. Ergebnis steht in abruf_log und in der Zusammenfassung des GitHub-Laufs. Die Läufe seit 29.10. sind aus der Preishistorie nachgetragen. Erster Testlauf: alle 9 Ketten ok (PENNY 88 %, EDEKA 119 % des Schnitts). Der EDEKA-Lauf vom 08.11. mit 49 statt rund 230 Angeboten wäre rot gewesen."},
     ]
   },
   {
@@ -524,9 +526,10 @@ const TAB_INFO={
 const LS='fk_roadmap_v1';
 function getState(){try{return JSON.parse(localStorage.getItem(LS)||'{}')}catch{return{}}}
 function toggleItem(id){const s=getState();s[id]?delete s[id]:s[id]=true;try{localStorage.setItem(LS,JSON.stringify(s))}catch{}return!!s[id]}
-function isDone(id){return!!getState()[id]}
+function isDone(id){return FERTIG.has(id)||!!getState()[id]}
 // Feste Schlüssel: Haken bleiben beim Umsortieren am richtigen Eintrag
 function itemId(ph,it,i){return it.k||ph.id+'_'+i}
+const FERTIG=new Set(PHASES.flatMap(p=>p.items.map((it,i)=>it.fertig?itemId(p,it,i):'')).filter(Boolean));
 
 // ── Helpers ───────────────────────────────────────────────────
 function badge(txt,col){return`<span class="badge" style="background:${col}20;color:${col};border:1px solid ${col}40">${txt}</span>`}
@@ -571,7 +574,7 @@ function renderPhase(ph){
     const done=isDone(id);
     html+=`<div class="card ${it.gate?'gate':''} ${done?'ck':''}" id="card_${id}">
       <div class="card-head" onclick="cardClick(event,'${id}')">
-        <div class="chk ${done?'on':''}" id="chk_${id}" onclick="checkClick(event,'${id}')">✓</div>
+        <div class="chk ${done?'on':''} ${FERTIG.has(id)?'fix':''}" id="chk_${id}" onclick="checkClick(event,'${id}')">✓</div>
         <span class="card-emoji">${it.e}</span>
         <div class="card-body">
           <div class="card-title">${it.t}${it.neu?badge('✨ Neu',C.purple):''}
@@ -612,6 +615,7 @@ function renderTab(id){
 // ── Handlers ──────────────────────────────────────────────────
 function checkClick(ev,id){
   ev.stopPropagation();
+  if(FERTIG.has(id))return;
   const now=toggleItem(id);
   document.getElementById('chk_'+id).classList.toggle('on',now);
   document.getElementById('card_'+id).classList.toggle('ck',now);
