@@ -8,40 +8,72 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      /* Flächen & Text */
+      --bg: #0d1b2a;
+      --card: #0f2236;
+      --head: #0a1628;
+      --line: #1e3a5f;
+      --line-2: #2d5a8a;
+      --ink: #f0f6ff;
+      --ink-2: #c8dff0;
+      --ink-3: #7ca8cc;
+      --ink-4: #4a7fa5;
+      --accent: #22c55e;
+      --warn: #f59e0b;
+      --bad: #ef4444;
+      /* Datenfarben (dunkle Stufen, gegen #0f2236 validiert) */
+      --s1: #3987e5;   /* Snacks & Süßes */
+      --s2: #d95926;   /* Getränke */
+      --s3: #199e70;   /* Tiefkühl */
+      --s-rest: #5b708a;
+      /* Preisstufen: blau (gut) → grau → rot (teuer) */
+      --st-best: #3987e5;
+      --st-gut: #86b6ef;
+      --st-ueblich: #6b7f94;
+      --st-teuer: #e66767;
+    }
+
     body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: #0d1b2a;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
       color: #e2e8f0;
       min-height: 100vh;
     }
 
     header {
-      background: #0a1628;
-      border-bottom: 1px solid #1e3a5f;
-      padding: 22px 24px;
+      background: var(--head);
+      border-bottom: 1px solid var(--line);
+      padding: 18px 24px 0;
       position: sticky;
       top: 0;
       z-index: 10;
     }
 
-    .header-inner {
-      max-width: 960px;
+    .header-inner, .filters-inner, main, .tabs-inner {
+      max-width: 1040px;
       margin: 0 auto;
+    }
+
+    .header-inner {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
     }
 
     .header-left span {
-      color: #4a7fa5;
+      color: var(--ink-4);
       font-size: 12px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: .08em;
     }
+    .header-left span a { color: inherit; text-decoration: none; }
+    .header-left span a:hover { color: var(--accent); }
 
     .header-left h1 {
-      color: #f0f6ff;
+      color: var(--ink);
       font-size: 26px;
       font-weight: 800;
       margin-top: 4px;
@@ -49,233 +81,282 @@
 
     .kw-badge {
       background: rgba(34,197,94,.15);
-      color: #22c55e;
+      color: var(--accent);
       font-size: 14px;
       font-weight: 700;
       padding: 9px 18px;
       border-radius: 20px;
       border: 1px solid rgba(34,197,94,.25);
-    }
-
-    .filters {
-      background: #0f2236;
-      border-bottom: 1px solid #1e3a5f;
-      padding: 14px 24px;
-      overflow-x: auto;
-    }
-
-    .filters-inner {
-      max-width: 960px;
-      margin: 0 auto;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      padding: 9px 20px;
-      border-radius: 20px;
-      border: 1px solid #1e3a5f;
-      background: #0d1b2a;
-      color: #7ca8cc;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
       white-space: nowrap;
-      transition: all .15s;
     }
-
-    .filter-btn.active {
-      background: #22c55e;
-      color: #fff;
-      border-color: #22c55e;
-    }
-
-    .filter-btn:hover:not(.active) {
-      background: #1e3a5f;
-      color: #c8dff0;
-    }
-
-    main {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 28px 24px;
-    }
-
-    .stats-row {
-      display: flex;
-      gap: 14px;
-      margin-bottom: 28px;
-    }
-
-    .stat-card {
-      flex: 1;
-      background: #0f2236;
-      border: 1px solid #1e3a5f;
-      border-radius: 16px;
-      padding: 18px 20px;
-    }
-
-    .stat-label { font-size: 12px; color: #4a7fa5; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
-    .stat-value { font-size: 28px; font-weight: 800; color: #f0f6ff; margin-top: 6px; }
-    .stat-sub   { font-size: 13px; color: #7ca8cc; margin-top: 4px; }
-
-    .deals-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px;
-    }
-
-    .deal-card {
-      background: #0f2236;
-      border: 1px solid #1e3a5f;
-      border-radius: 16px;
-      overflow: hidden;
-      transition: transform .15s, box-shadow .15s, border-color .15s;
-    }
-
-    .deal-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 28px rgba(0,0,0,.4);
-      border-color: #2d5a8a;
-    }
-
-    .deal-top {
-      padding: 18px 18px 14px;
-      border-bottom: 1px solid #1e3a5f;
-    }
-
-    .deal-store {
-      font-size: 12px;
-      font-weight: 700;
-      color: #4a7fa5;
-      text-transform: uppercase;
-      letter-spacing: .07em;
-      margin-bottom: 8px;
-    }
-
-    .deal-name {
-      font-size: 17px;
-      font-weight: 700;
-      color: #e8f0fe;
-      line-height: 1.35;
-      margin-bottom: 6px;
-    }
-
-    .deal-unit {
-      font-size: 13px;
-      color: #5a8ab0;
-    }
-
-    .deal-bottom {
-      padding: 14px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .deal-price { font-size: 28px; font-weight: 800; color: #f0f6ff; }
-    .deal-original { font-size: 14px; color: #4a7fa5; text-decoration: line-through; margin-top: 3px; }
-    .deal-app { font-size: 12px; font-weight: 700; color: #7ca8cc; margin-top: 5px; }
 
     .plz-form { display: flex; align-items: center; gap: 8px; }
-    .plz-form .kw-badge { white-space: nowrap; }
-    @media (max-width: 480px) { .header-inner { flex-wrap: wrap; gap: 10px; } }
-    .plz-form label { color: #4a7fa5; font-size: 12px; font-weight: 600; }
+    .plz-form label { color: var(--ink-4); font-size: 12px; font-weight: 600; }
     .plz-form input {
-      width: 76px;
-      padding: 6px 8px;
-      border: 1px solid #1e3a5f;
-      border-radius: 8px;
-      background: transparent;
-      color: inherit;
-      font: inherit;
-      font-size: 14px;
+      width: 76px; padding: 6px 8px;
+      border: 1px solid var(--line); border-radius: 8px;
+      background: transparent; color: inherit; font: inherit; font-size: 14px;
     }
 
-    .deal-badge {
-      background: rgba(34,197,94,.15);
-      color: #22c55e;
-      border: 1px solid rgba(34,197,94,.3);
-      font-size: 18px;
-      font-weight: 800;
-      padding: 10px 16px;
-      border-radius: 12px;
-      text-align: center;
-    }
-
-    .deal-badge-sub { font-size: 12px; font-weight: 600; color: #16a34a; margin-top: 3px; }
-
-    .deal-badge-hist {
-      background: rgba(245,158,11,.15);
-      color: #f59e0b;
-      border: 1px solid rgba(245,158,11,.3);
-      font-size: 18px;
-      font-weight: 800;
-      padding: 10px 16px;
-      border-radius: 12px;
-      text-align: center;
-    }
-
-    .deal-badge-hist-sub { font-size: 12px; font-weight: 600; color: #d97706; margin-top: 3px; }
-
-    .loading {
-      text-align: center;
-      padding: 80px 20px;
-      color: #4a7fa5;
-    }
-
-    .loading-emoji { font-size: 56px; margin-bottom: 20px; animation: spin 1s linear infinite; display: block; }
-    .loading p { font-size: 17px; color: #7ca8cc; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .error {
-      text-align: center;
-      padding: 60px 20px;
-      color: #f87171;
-    }
-
-    .gueltig {
-      font-size: 12px;
-      font-weight: 700;
-      padding: 0 18px 14px;
-    }
-
-    a.back-link {
-      color: #22c55e;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    a.back-link:hover { text-decoration: underline; }
-
-    .history-btn {
-      width: 100%;
-      padding: 10px 18px;
-      background: transparent;
-      border: none;
-      border-top: 1px solid #1e3a5f;
-      color: #4a7fa5;
-      font-size: 13px;
-      font-weight: 600;
+    /* ── Tabs ─────────────────────────────────────────── */
+    .tabs-inner { display: flex; gap: 4px; margin-top: 14px; }
+    .tab-btn {
+      padding: 10px 16px 12px;
+      background: none; border: none;
+      border-bottom: 3px solid transparent;
+      color: var(--ink-3);
+      font: inherit; font-size: 15px; font-weight: 700;
       cursor: pointer;
-      text-align: left;
-      font-family: inherit;
+    }
+    .tab-btn:hover { color: var(--ink-2); }
+    .tab-btn.active { color: var(--ink); border-bottom-color: var(--accent); }
+    .tab-btn .tab-count {
+      font-size: 12px; font-weight: 700; margin-left: 6px;
+      background: rgba(239,68,68,.18); color: #fca5a5;
+      padding: 2px 7px; border-radius: 10px;
+    }
+
+    /* ── Filterleisten ────────────────────────────────── */
+    .filters {
+      background: #0f2236;
+      border-bottom: 1px solid var(--line);
+      padding: 12px 24px;
+    }
+    .filters-inner { display: flex; flex-direction: column; gap: 10px; }
+    .chip-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+    .filter-btn {
+      padding: 7px 15px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+      color: var(--ink-3);
+      font: inherit; font-size: 13px; font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
       transition: background .15s, color .15s;
     }
+    .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .filter-btn:hover:not(.active) { background: var(--line); color: var(--ink-2); }
+    .filter-btn .n { opacity: .7; font-weight: 500; margin-left: 4px; }
 
-    .history-btn:hover {
-      background: #0d1b2a;
-      color: #7ca8cc;
+    .ctl-label { font-size: 12px; font-weight: 700; color: var(--ink-4); text-transform: uppercase; letter-spacing: .06em; margin-right: 2px; }
+    select.ctl {
+      padding: 7px 10px; border-radius: 10px;
+      border: 1px solid var(--line); background: var(--bg); color: var(--ink-2);
+      font: inherit; font-size: 13px; font-weight: 600;
     }
+    label.check { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-3); cursor: pointer; }
+    label.check input { accent-color: var(--accent); width: 15px; height: 15px; }
 
+    main { padding: 24px; }
+    .view[hidden] { display: none; }
+
+    /* ── Kacheln ──────────────────────────────────────── */
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .stat-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; min-width: 0; }
+    .stat-label { font-size: 12px; color: var(--ink-4); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+    .stat-value { font-size: 28px; font-weight: 800; color: var(--ink); margin-top: 6px; }
+    .stat-sub   { font-size: 13px; color: var(--ink-3); margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .stat-card.link { cursor: pointer; }
+    .stat-card.link:hover { border-color: var(--line-2); }
+
+    /* ── Angebots-Karten ──────────────────────────────── */
+    .deals-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .deal-card {
+      background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+      transition: transform .15s, box-shadow .15s, border-color .15s;
+    }
+    .deal-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,.4); border-color: var(--line-2); }
+    .deal-top { padding: 16px 18px 12px; border-bottom: 1px solid var(--line); }
+    .deal-store { font-size: 12px; font-weight: 700; color: var(--ink-4); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 8px; display: flex; justify-content: space-between; gap: 8px; }
+    .deal-name { font-size: 17px; font-weight: 700; color: #e8f0fe; line-height: 1.35; margin-bottom: 6px; }
+    .deal-unit { font-size: 13px; color: #5a8ab0; }
+    .deal-bottom { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .deal-price { font-size: 28px; font-weight: 800; color: var(--ink); }
+    .deal-original { font-size: 14px; color: var(--ink-4); text-decoration: line-through; margin-top: 3px; }
+    .deal-app { font-size: 12px; font-weight: 700; color: var(--ink-3); margin-top: 5px; }
+
+    .deal-badge {
+      background: rgba(34,197,94,.15); color: var(--accent); border: 1px solid rgba(34,197,94,.3);
+      font-size: 18px; font-weight: 800; padding: 10px 16px; border-radius: 12px; text-align: center; white-space: nowrap;
+    }
+    .deal-badge-sub { font-size: 12px; font-weight: 600; color: #16a34a; margin-top: 3px; }
+    .deal-badge-hist {
+      background: rgba(245,158,11,.15); color: var(--warn); border: 1px solid rgba(245,158,11,.3);
+      font-size: 18px; font-weight: 800; padding: 10px 16px; border-radius: 12px; text-align: center; white-space: nowrap;
+    }
+    .deal-badge-hist-sub { font-size: 12px; font-weight: 600; color: #d97706; margin-top: 3px; }
+
+    .pill-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .pill {
+      font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 8px;
+      background: rgba(124,168,204,.12); color: var(--ink-2); border: 1px solid rgba(124,168,204,.2);
+      white-space: nowrap;
+    }
+    .pill.best  { background: rgba(57,135,229,.16); border-color: rgba(57,135,229,.35); }
+    .pill.teuer { background: rgba(230,103,103,.14); border-color: rgba(230,103,103,.35); }
+    .pill.hot   { background: rgba(239,68,68,.16); border-color: rgba(239,68,68,.4); color: #fecaca; }
+    .pill.warn  { background: rgba(245,158,11,.12); border-color: rgba(245,158,11,.35); }
+
+    .gueltig { font-size: 12px; font-weight: 700; padding: 0 18px 14px; }
+
+    .history-btn {
+      width: 100%; padding: 10px 18px; background: transparent; border: none; border-top: 1px solid var(--line);
+      color: var(--ink-4); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; text-align: left;
+      transition: background .15s, color .15s;
+    }
+    .history-btn:hover { background: var(--bg); color: var(--ink-3); }
+
+    .loading { text-align: center; padding: 80px 20px; color: var(--ink-4); }
+    .loading-emoji { font-size: 56px; margin-bottom: 20px; animation: spin 1s linear infinite; display: block; }
+    .loading p { font-size: 17px; color: var(--ink-3); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error { text-align: center; padding: 60px 20px; color: #f87171; }
+    .leer { text-align: center; padding: 40px 20px; color: var(--ink-3); font-size: 15px; }
+
+    /* ── Knaller-Liste ────────────────────────────────── */
+    .week-head {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin: 26px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line);
+    }
+    .week-head:first-child { margin-top: 0; }
+    .week-head h3 { font-size: 15px; color: var(--ink); font-weight: 800; }
+    .week-head span { font-size: 12px; color: var(--ink-4); font-weight: 600; }
+
+    .k-list { display: flex; flex-direction: column; gap: 8px; }
+    .k-row {
+      display: grid; grid-template-columns: 74px 1fr auto; gap: 14px; align-items: center;
+      background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 16px;
+    }
+    .k-row.aktiv { border-color: rgba(34,197,94,.35); }
+    .k-pct {
+      font-size: 20px; font-weight: 800; text-align: center; padding: 8px 0; border-radius: 10px;
+      background: rgba(239,68,68,.12); color: #fca5a5; border: 1px solid rgba(239,68,68,.25);
+    }
+    .k-pct.p60 { background: rgba(239,68,68,.24); color: #fee2e2; border-color: rgba(239,68,68,.5); }
+    .k-pct.p40 { background: rgba(245,158,11,.12); color: #fcd34d; border-color: rgba(245,158,11,.3); }
+    .k-main { min-width: 0; }
+    .k-name { font-size: 15px; font-weight: 700; color: #e8f0fe; line-height: 1.3; }
+    .k-desc { font-size: 12px; color: #5a8ab0; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .k-meta { font-size: 12px; color: var(--ink-4); font-weight: 600; margin-top: 4px; }
+    .k-meta b { color: var(--ink-3); }
+    .k-price { text-align: right; white-space: nowrap; }
+    .k-price .now { font-size: 20px; font-weight: 800; color: var(--ink); }
+    .k-price .ref { font-size: 12px; color: var(--ink-4); margin-top: 2px; }
+    .k-price .ref s { color: var(--ink-3); }
+    .k-price .save { font-size: 12px; font-weight: 700; color: var(--accent); margin-top: 2px; }
+
+    /* ── Statistik-Karten ─────────────────────────────── */
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 16px; margin-bottom: 16px; }
+    .panel { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; margin-bottom: 16px; min-width: 0; }
+    .grid-2 .panel { margin-bottom: 0; }
+    .panel h2 { font-size: 16px; font-weight: 800; color: var(--ink); }
+    .panel .sub { font-size: 13px; color: var(--ink-3); margin-top: 4px; line-height: 1.45; }
+    .panel .insight { font-size: 14px; color: var(--ink-2); margin: 12px 0 4px; line-height: 1.5; }
+    .panel .insight b { color: var(--ink); }
+    .panel-body { margin-top: 14px; }
+
+    .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--ink-3); margin: 10px 0 4px; }
+    .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+
+    .seg-rows { display: flex; flex-direction: column; gap: 12px; }
+    .seg-row { display: grid; grid-template-columns: 150px 1fr 70px; gap: 12px; align-items: center; }
+    .seg-name { font-size: 13px; font-weight: 700; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .seg-n { font-size: 12px; color: var(--ink-4); text-align: right; font-variant-numeric: tabular-nums; }
+    .seg-bar { display: flex; gap: 2px; height: 8px; }
+    .seg-bar > div { height: 8px; border-radius: 4px; min-width: 3px; cursor: default; outline-offset: 2px; }
+    .seg-bar > div:hover, .seg-bar > div:focus { filter: brightness(1.25); }
+
+    .hbars { display: flex; flex-direction: column; gap: 9px; }
+    .hbar { display: grid; grid-template-columns: 150px 1fr; gap: 12px; align-items: center; font-size: 13px; }
+    .hbar .lbl { color: var(--ink-2); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hbar .track { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .hbar .area { flex: 1 1 auto; min-width: 0; }
+    .hbar .fill { height: 14px; border-radius: 0 4px 4px 0; background: var(--s1); min-width: 2px; }
+    .hbar .val { color: var(--ink-2); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; flex: none; }
+    .hbar .val .muted { font-weight: 500; margin-left: 4px; }
+
+    table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.tbl th { text-align: left; font-size: 11px; color: var(--ink-4); font-weight: 700; text-transform: uppercase; letter-spacing: .05em; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+    table.tbl td { padding: 8px; border-bottom: 1px solid rgba(30,58,95,.6); color: var(--ink-2); vertical-align: top; }
+    table.tbl td.num, table.tbl th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    table.tbl tr.sel td { background: rgba(34,197,94,.06); }
+    table.tbl tr.klick { cursor: pointer; }
+    table.tbl tr.klick:hover td { background: rgba(124,168,204,.06); }
+    .tbl-wrap { overflow-x: auto; }
+    .muted { color: var(--ink-4); }
+    .small { font-size: 12px; }
+
+    details.tabelle { margin-top: 12px; }
+    details.tabelle summary { font-size: 12px; color: var(--ink-4); font-weight: 700; cursor: pointer; }
+    details.tabelle summary:hover { color: var(--ink-3); }
+    details.tabelle[open] summary { margin-bottom: 8px; }
+
+    .meter { height: 6px; background: #1c3d63; border-radius: 3px; overflow: hidden; margin-top: 5px; max-width: 120px; }
+    .meter > div { height: 100%; background: var(--s1); border-radius: 3px; }
+
+    .pv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+    .pv-card { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+    .pv-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+    .pv-head b { color: var(--ink); font-size: 14px; }
+    .pv-head span { font-size: 12px; font-weight: 800; color: #fcd34d; white-space: nowrap; }
+    .pv-row { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; margin-top: 9px; font-size: 13px; }
+    .pv-row .h { color: var(--ink-2); font-weight: 700; }
+    .pv-row .h.best::after { content: " ✓ günstigster"; color: var(--accent); font-weight: 700; font-size: 11px; }
+    .pv-row .p { text-align: right; color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+    .pv-row .d { grid-column: 1 / -1; font-size: 11px; color: #5a8ab0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pv-row .bar { grid-column: 1 / -1; height: 6px; border-radius: 0 3px 3px 0; background: var(--s-rest); }
+    .pv-row .bar.best { background: var(--s1); }
+
+    .multiples { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+    .mini { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px 8px; position: relative; }
+    .mini-head { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--ink-2); }
+    .mini-head span { color: var(--ink); }
+    .mini svg { display: block; margin-top: 6px; width: 100%; height: auto; overflow: visible; }
+
+    .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+    .chart .hit { fill: transparent; cursor: default; }
+    .chart .col:hover path, .chart .col:hover rect:not(.hit), .chart .col:focus path, .chart .col:focus rect:not(.hit) { filter: brightness(1.2); }
+    .chart .col:focus { outline: none; }
+
+    .mehr-btn {
+      margin-top: 12px; padding: 7px 14px; border-radius: 10px; border: 1px solid var(--line);
+      background: transparent; color: var(--ink-3); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+    .mehr-btn:hover { background: var(--line); color: var(--ink-2); }
+
+    /* Tooltip */
+    #tip {
+      position: fixed; z-index: 100; pointer-events: none; display: none;
+      background: #08121e; border: 1px solid var(--line-2); border-radius: 10px;
+      padding: 8px 10px; font-size: 12px; color: var(--ink-3);
+      box-shadow: 0 8px 24px rgba(0,0,0,.5); max-width: 280px;
+    }
+    #tip .t { color: var(--ink-3); font-weight: 600; margin-bottom: 4px; }
+    #tip .r { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+    #tip .r i { width: 12px; height: 2px; border-radius: 1px; flex: none; }
+    #tip .r b { color: var(--ink); font-size: 13px; font-variant-numeric: tabular-nums; }
+
+    @media (max-width: 700px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .seg-row, .hbar { grid-template-columns: 100px 1fr 54px; }
+      .hbar { grid-template-columns: 100px 1fr; }
+    }
     @media (max-width: 600px) {
-      .stats-row { flex-direction: column; }
+      header { padding: 14px 16px 0; }
+      .filters { padding: 10px 16px; }
       .deals-grid { grid-template-columns: 1fr 1fr; }
       main { padding: 16px; }
       .deal-name { font-size: 15px; }
       .deal-price { font-size: 24px; }
+      .deal-bottom { flex-wrap: wrap; }
+      header { position: static; }
+      .k-row { grid-template-columns: 58px 1fr; gap: 10px; padding: 10px 12px; }
+      .k-pct { font-size: 15px; white-space: nowrap; }
+      .k-price { grid-column: 2; text-align: left; }
+      .tab-btn { padding: 8px 10px 10px; font-size: 14px; }
+      .header-inner { flex-wrap: wrap; }
     }
   </style>
 </head>
@@ -284,8 +365,8 @@
 <header>
   <div class="header-inner">
     <div class="header-left">
-      <span>🛒 Forkcast</span>
-      <h1>Angebote der Woche</h1>
+      <span>🛒 <a href="/Forkcast/" title="DealKoch öffnen">Forkcast → DealKoch</a></span>
+      <h1 id="titel">Angebote der Woche</h1>
     </div>
     <div class="plz-form">
       <label for="plz-input">PLZ</label>
@@ -293,62 +374,167 @@
       <span class="kw-badge" id="kw-badge">KW –</span>
     </div>
   </div>
+  <nav class="tabs-inner" role="tablist">
+    <button class="tab-btn active" data-tab="angebote" role="tab">🛒 Angebote</button>
+    <button class="tab-btn" data-tab="knaller" role="tab">🔥 Knaller<span class="tab-count" id="tab-knaller-n" hidden></span></button>
+    <button class="tab-btn" data-tab="statistik" role="tab">📊 Statistik</button>
+  </nav>
 </header>
 
-<div class="filters">
-  <div class="filters-inner" id="store-filters">
-    <button class="filter-btn active" onclick="filterStore('')">Alle Märkte</button>
+<!-- ═════════════ Angebote ═════════════ -->
+<section class="view" id="view-angebote">
+  <div class="filters">
+    <div class="filters-inner">
+      <div class="chip-row" id="store-filters"></div>
+      <div class="chip-row" id="gruppe-filters"></div>
+      <div class="chip-row">
+        <span class="ctl-label">Sortierung</span>
+        <select class="ctl" id="a-sort">
+          <option value="rabatt">Höchster Rabatt</option>
+          <option value="ersparnis">Größte Ersparnis (€)</option>
+          <option value="preis">Niedrigster Preis</option>
+          <option value="ablauf">Läuft bald ab</option>
+        </select>
+        <label class="check"><input type="checkbox" id="a-nur-knaller"> nur Knaller (ab 40 %)</label>
+      </div>
+    </div>
   </div>
-</div>
+  <main>
+    <div class="stats-row" id="stats-row" style="display:none">
+      <div class="stat-card">
+        <div class="stat-label">Angebote</div>
+        <div class="stat-value" id="stat-count">–</div>
+        <div class="stat-sub" id="stat-count-sub">mit Rabatt</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Ø Ersparnis</div>
+        <div class="stat-value" id="stat-avg">–</div>
+        <div class="stat-sub">pro Produkt</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Top-Rabatt</div>
+        <div class="stat-value" id="stat-top">–</div>
+        <div class="stat-sub" id="stat-top-name">–</div>
+      </div>
+      <div class="stat-card link" id="stat-knaller-card" title="Zum Knaller-Archiv">
+        <div class="stat-label">🔥 Knaller</div>
+        <div class="stat-value" id="stat-knaller">–</div>
+        <div class="stat-sub">ab 40 % → Archiv</div>
+      </div>
+    </div>
+    <div id="plz-hinweis" class="gueltig" style="display:none;padding:0 0 14px;color:var(--warn)"></div>
+    <div id="content">
+      <div class="loading">
+        <div class="loading-emoji">🛒</div>
+        <p>Angebote werden geladen…</p>
+      </div>
+    </div>
+  </main>
+</section>
 
-<main>
-  <div class="stats-row" id="stats-row" style="display:none">
-    <div class="stat-card">
-      <div class="stat-label">Angebote</div>
-      <div class="stat-value" id="stat-count">–</div>
-      <div class="stat-sub">diese Woche</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Ø Ersparnis</div>
-      <div class="stat-value" id="stat-avg">–</div>
-      <div class="stat-sub">pro Produkt</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Top Rabatt</div>
-      <div class="stat-value" id="stat-top">–</div>
-      <div class="stat-sub" id="stat-top-name">–</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Rezepte</div>
-      <div class="stat-value">🍳</div>
-      <div class="stat-sub"><a class="back-link" href="/Forkcast/">→ DealKoch öffnen</a></div>
+<!-- ═════════════ Knaller ═════════════ -->
+<section class="view" id="view-knaller" hidden>
+  <div class="filters">
+    <div class="filters-inner">
+      <div class="chip-row">
+        <span class="ctl-label">Zeitraum</span>
+        <select class="ctl" id="k-zeit">
+          <option value="jetzt">Jetzt gültig</option>
+          <option value="4w">Letzte 4 Wochen</option>
+          <option value="3m">Letzte 3 Monate</option>
+          <option value="alle" selected>Alles seit Start</option>
+        </select>
+        <span class="ctl-label" style="margin-left:8px">Ab</span>
+        <select class="ctl" id="k-schwelle">
+          <option value="40">40 %</option>
+          <option value="50" selected>50 %</option>
+          <option value="60">60 %</option>
+          <option value="70">70 %</option>
+        </select>
+        <span class="ctl-label" style="margin-left:8px">Sortierung</span>
+        <select class="ctl" id="k-sort">
+          <option value="neu">Neueste zuerst</option>
+          <option value="rabatt">Höchster Rabatt</option>
+          <option value="ersparnis">Größte Ersparnis (€)</option>
+        </select>
+      </div>
+      <div class="chip-row" id="k-gruppen"></div>
+      <div class="chip-row">
+        <label class="check" title="Streichpreis-Deals, die laut Verlauf ein ganz normaler Aktionspreis sind"><input type="checkbox" id="k-ohne-regel" checked> Dauer-Aktionspreise ausblenden</label>
+        <label class="check" title="Vergleich evtl. schief, z. B. andere Packungsgröße"><input type="checkbox" id="k-ohne-pruefen"> Unsichere ausblenden</label>
+        <label class="check" title="Regionale Angebote anderer PLZ ausblenden"><input type="checkbox" id="k-plz" checked> nur meine PLZ</label>
+      </div>
     </div>
   </div>
+  <main id="knaller-main">
+    <div class="loading"><div class="loading-emoji">🔥</div><p>Knaller-Archiv wird geladen…</p></div>
+  </main>
+</section>
 
-  <div id="plz-hinweis" class="gueltig" style="display:none;padding:0 0 14px;color:#f59e0b"></div>
-  <div id="content">
-    <div class="loading">
-      <div class="loading-emoji">🛒</div>
-      <p>Angebote werden geladen…</p>
-    </div>
-  </div>
-</main>
+<!-- ═════════════ Statistik ═════════════ -->
+<section class="view" id="view-statistik" hidden>
+  <main id="statistik-main">
+    <div class="loading"><div class="loading-emoji">📊</div><p>Statistik wird berechnet…</p></div>
+  </main>
+</section>
+
+<div id="tip" role="tooltip"></div>
 
 <script>
-  // ── Datenquelle: Supabase direkt (kein Backend mehr nötig) ──────────
+  // ── Datenquelle: Supabase direkt (kein Backend nötig) ───────────────
   // Der Publishable Key ist für den Browser gedacht und öffentlich.
-  // Row Level Security erlaubt damit nur LESEN von angebote/preishistorie
-  // (inkl. View angebote_mit_historie) — alle anderen Tabellen sind gesperrt.
+  // RLS erlaubt damit nur LESEN von angebote/preishistorie/top_deals
+  // (+ Views angebote_mit_historie / angebote_seite, RPC angebote_statistik).
+  // SQL dazu: sql/2026-11_top_deals_tracker.sql + 2026-11_angebote_statistik.sql
   const SUPABASE_URL = "https://gycshdraqunwllkaoqfs.supabase.co";
   const SUPABASE_KEY = "sb_publishable_0U4zDLDqyOkkckye2P0Xvg_bI7jI6dx";
 
-  let allDeals = [];
-  let rawDeals = [];
-  let renderedDeals = [];
-  let activeStore = "";
+  const KNALLER_AB = 40;   // ab so viel % gilt ein Angebot als Knaller
 
+  const GRUPPEN = [
+    { key: "Snacks & Süßes",   icon: "🍫", kurz: "Snacks" },
+    { key: "Getränke",         icon: "🥤", kurz: "Getränke" },
+    { key: "Tiefkühl",         icon: "🧊", kurz: "Tiefkühl" },
+    { key: "Kühlregal",        icon: "🧀", kurz: "Kühlregal" },
+    { key: "Fleisch & Fisch",  icon: "🥩", kurz: "Fleisch & Fisch" },
+    { key: "Obst & Gemüse",    icon: "🥦", kurz: "Obst & Gemüse" },
+    { key: "Brot & Backwaren", icon: "🥖", kurz: "Brot" },
+    { key: "Vorrat",           icon: "🥫", kurz: "Vorrat" },
+    { key: "Sonstiges",        icon: "📦", kurz: "Sonstiges" },
+  ];
+  const GRUPPE_ICON = Object.fromEntries(GRUPPEN.map(g => [g.key, g.icon]));
+  function gruppeVon(d) {
+    const g = d.gruppe;
+    return g && GRUPPE_ICON[g] ? g : "Sonstiges";
+  }
+
+  // Serien im Knaller-Wochenchart: Farbe folgt der Gruppe, nie dem Rang
+  const SERIEN = [
+    { key: "Snacks & Süßes", name: "Snacks & Süßes", farbe: "var(--s1)" },
+    { key: "Getränke",       name: "Getränke",       farbe: "var(--s2)" },
+    { key: "Tiefkühl",       name: "Tiefkühl",       farbe: "var(--s3)" },
+    { key: "_rest",          name: "Andere",         farbe: "var(--s-rest)" },
+  ];
+  const STUFEN = [
+    { key: "bestpreis", name: "Bestpreis",       farbe: "var(--st-best)" },
+    { key: "guenstig",  name: "Günstig",         farbe: "var(--st-gut)" },
+    { key: "ueblich",   name: "Üblich",          farbe: "var(--st-ueblich)" },
+    { key: "teuer",     name: "Sonst billiger",  farbe: "var(--st-teuer)" },
+  ];
+
+  // ── Helfer ──────────────────────────────────────────────────────────
   async function sb(path) {
     const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, { headers: { apikey: SUPABASE_KEY } });
+    if (!r.ok) throw new Error(`Supabase ${r.status}: ${(await r.text()).substring(0, 120)}`);
+    return r.json();
+  }
+
+  async function rpc(fn, body) {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {
+      method: "POST",
+      headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify(body || {}),
+    });
     if (!r.ok) throw new Error(`Supabase ${r.status}: ${(await r.text()).substring(0, 120)}`);
     return r.json();
   }
@@ -368,24 +554,40 @@
     return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
 
+  const nf2 = new Intl.NumberFormat("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const nf0 = new Intl.NumberFormat("de-DE", { maximumFractionDigits: 0 });
+  const eur = x => nf2.format(+x || 0) + " €";
+  const zahl = x => nf0.format(+x || 0);
+  function gross(x) {
+    x = +x || 0;
+    if (x >= 1e6) return (x / 1e6).toLocaleString("de-DE", { maximumFractionDigits: 1 }) + " Mio.";
+    if (x >= 10000) return (x / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 }) + " Tsd.";
+    return zahl(x);
+  }
+
   // Lokales Datum als YYYY-MM-DD (toISOString wäre UTC → nachts falscher Tag)
   function isoLokal(date) { return date.toLocaleDateString("sv-SE"); }
+  function datumAus(str) { const [y, m, d] = String(str).substring(0, 10).split("-").map(Number); return new Date(y, m - 1, d); }
+  function montag(date) { const t = new Date(date); t.setHours(0, 0, 0, 0); t.setDate(t.getDate() - ((t.getDay() + 6) % 7)); return t; }
+  function isoKW(date) {
+    const dt = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const day = dt.getUTCDay() || 7;
+    dt.setUTCDate(dt.getUTCDate() + 4 - day);
+    const y = new Date(Date.UTC(dt.getUTCFullYear(), 0, 1));
+    return Math.ceil((((dt - y) / 86400000) + 1) / 7);
+  }
+  const kwVon = str => isoKW(datumAus(str));
+  const kurzDatum = str => datumAus(str).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" });
 
-  // KW berechnen
-  const d = new Date();
-  const dt = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  const day = dt.getUTCDay() || 7;
-  dt.setUTCDate(dt.getUTCDate() + 4 - day);
-  const y = new Date(Date.UTC(dt.getUTCFullYear(), 0, 1));
-  const kw = Math.ceil((((dt - y) / 86400000) + 1) / 7);
+  const HEUTE = isoLokal(new Date());
+  const AKT_MONTAG = isoLokal(montag(new Date()));
+  const kw = isoKW(new Date());
   document.getElementById("kw-badge").textContent = `KW ${kw}`;
 
-  // ── Countdown statt Datum ───────────────────────────────────
   function daysUntil(str) {
     if (!str) return null;
     const today = new Date(); today.setHours(0,0,0,0);
-    const expiry = new Date(str); expiry.setHours(0,0,0,0);
-    const days = Math.round((expiry - today) / 86400000);
+    const days = Math.round((datumAus(str) - today) / 86400000);
     if (days < 0)  return null;
     if (days === 0) return { text: "Läuft heute ab", color: "#ef4444" };
     if (days === 1) return { text: "Noch 1 Tag",      color: "#f59e0b" };
@@ -394,72 +596,116 @@
     return null;
   }
 
-  // ── Deal-Helper: offizieller Rabatt ODER historischer Deal ──
-  // ist_historischer_deal / preis_historisch_avg kommen fertig aus der
-  // View angebote_mit_historie (Grundpreis-Vergleich, siehe sql/ im Repo).
+  // "Name - Beschreibung" → [Name, Beschreibung]
+  function nameTeile(name) {
+    const s = String(name || "");
+    const i = s.indexOf(" - ");
+    return i < 0 ? [s, ""] : [s.substring(0, i), s.substring(i + 3)];
+  }
+
+  // ── Tooltip (ein gemeinsames, Inhalte nur per textContent) ──────────
+  const tip = document.getElementById("tip");
+  function tipZeigen(x, y, daten) {
+    tip.replaceChildren();
+    if (daten.t) {
+      const t = document.createElement("div"); t.className = "t"; t.textContent = daten.t; tip.appendChild(t);
+    }
+    for (const [wert, label, farbe] of daten.r || []) {
+      const r = document.createElement("div"); r.className = "r";
+      if (farbe) { const i = document.createElement("i"); i.style.background = farbe; r.appendChild(i); }
+      const b = document.createElement("b"); b.textContent = wert; r.appendChild(b);
+      if (label) { const s = document.createElement("span"); s.textContent = label; r.appendChild(s); }
+      tip.appendChild(r);
+    }
+    tip.style.display = "block";
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    let left = x + 14, top = y + 14;
+    if (left + w > innerWidth - 8) left = x - w - 14;
+    if (top + h > innerHeight - 8) top = y - h - 14;
+    tip.style.left = Math.max(8, left) + "px";
+    tip.style.top = Math.max(8, top) + "px";
+  }
+  function tipWeg() { tip.style.display = "none"; }
+  function tipAttr(t, rows) { return `data-tip="${esc(JSON.stringify({ t, r: rows }))}"`; }
+  document.addEventListener("pointermove", e => {
+    const el = e.target.closest?.("[data-tip]");
+    if (!el) return tipWeg();
+    try { tipZeigen(e.clientX, e.clientY, JSON.parse(el.dataset.tip)); } catch (_) { tipWeg(); }
+  });
+  document.addEventListener("focusin", e => {
+    const el = e.target.closest?.("[data-tip]");
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    try { tipZeigen(r.left + r.width / 2, r.bottom, JSON.parse(el.dataset.tip)); } catch (_) {}
+  });
+  document.addEventListener("focusout", tipWeg);
+  addEventListener("scroll", tipWeg, { passive: true });
+
+  // ── Deal-Helper: offizieller Rabatt ODER historischer Deal ──────────
   function hasOfficialDiscount(d) {
     const preis = parseFloat(d.preis || 0);
     const norm  = parseFloat(d.normalpreis || 0);
     return norm > preis && preis > 0;
   }
-
   function isHistDeal(d) {
     return !hasOfficialDiscount(d)
       && parseFloat(d.preis || 0) > 0
       && d.ist_historischer_deal === true
       && parseFloat(d.preis_historisch_avg || 0) > 0;
   }
-
   function effSaved(d) {
     const preis = parseFloat(d.preis || 0);
     if (hasOfficialDiscount(d)) return parseFloat(d.normalpreis || 0) - preis;
     if (isHistDeal(d))          return parseFloat(d.preis_historisch_avg || 0) - preis;
     return 0;
   }
-
   function effRabatt(d) {
     const preis = parseFloat(d.preis || 0);
     if (hasOfficialDiscount(d)) {
       const norm = parseFloat(d.normalpreis || 0);
       return d.rabatt_prozent ? parseFloat(d.rabatt_prozent) : ((1 - preis / norm) * 100);
     }
-    if (isHistDeal(d)) {
-      return (1 - preis / parseFloat(d.preis_historisch_avg)) * 100;
-    }
+    if (isHistDeal(d)) return (1 - preis / parseFloat(d.preis_historisch_avg)) * 100;
     return 0;
   }
+  const istIrgendeinDeal = d => hasOfficialDiscount(d) || isHistDeal(d);
 
-  function istIrgendeinDeal(d) {
-    return hasOfficialDiscount(d) || isHistDeal(d);
+  function stufenPill(d) {
+    if (d.ist_daueraktion) return `<span class="pill" title="Seit Wochen immer derselbe Aktionspreis">🔁 Daueraktion</span>`;
+    switch (d.preis_stufe) {
+      case "bestpreis": return `<span class="pill best" title="Günstiger als in den letzten 90 Tagen">🏆 Bestpreis</span>`;
+      case "guenstig":  return `<span class="pill best" title="Unteres Viertel der letzten 90 Tage">👍 Günstig laut Verlauf</span>`;
+      case "ueblich":   return `<span class="pill" title="Mittleres Preisniveau der letzten 90 Tage">😐 Üblicher Aktionspreis</span>`;
+      case "konstant":  return `<span class="pill" title="Preis seit Wochen gleich">😐 Immer dieser Preis</span>`;
+      case "teuer":     return `<span class="pill teuer" title="Oberes Viertel der letzten 90 Tage">⚠️ Sonst oft billiger</span>`;
+      default: return "";
+    }
   }
 
-  // ── Sparkline ──────────────────────────────────────────────
-  function drawSparkline(prices, width=140, height=44) {
-    if(!prices || prices.length < 2) return '<span style="color:#4a7fa5;font-size:12px">Nicht genug Daten</span>';
+  // ── Sparkline (Preisverlauf je Karte) ───────────────────────────────
+  function drawSparkline(prices, width = 140, height = 44) {
+    if (!prices || prices.length < 2) return '<span style="color:#4a7fa5;font-size:12px">Nicht genug Daten</span>';
     const min = Math.min(...prices), max = Math.max(...prices);
     const range = max - min || 0.01;
-    const avg = prices.reduce((a,b)=>a+b,0)/prices.length;
-    const cur = prices[prices.length-1];
+    const avg = prices.reduce((a, b) => a + b, 0) / prices.length;
+    const cur = prices[prices.length - 1];
     const isRealDeal = cur <= avg * 0.9;
     const color = isRealDeal ? '#22c55e' : cur <= avg ? '#f59e0b' : '#ef4444';
-
-    const pts = prices.map((p,i)=>{
-      const x = (i/(prices.length-1))*(width-4)+2;
-      const y = height-2 - ((p-min)/range)*(height-4);
+    const pts = prices.map((p, i) => {
+      const x = (i / (prices.length - 1)) * (width - 4) + 2;
+      const y = height - 2 - ((p - min) / range) * (height - 4);
       return `${x.toFixed(1)},${y.toFixed(1)}`;
     }).join(' ');
-
-    const cx = (width-2).toFixed(1);
-    const cy = (height-2-((cur-min)/range)*(height-4)).toFixed(1);
-
+    const cx = (width - 2).toFixed(1);
+    const cy = (height - 2 - ((cur - min) / range) * (height - 4)).toFixed(1);
     return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" style="display:block">
       <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-      <circle cx="${cx}" cy="${cy}" r="4" fill="${color}"/>
+      <circle cx="${cx}" cy="${cy}" r="4" fill="${color}" stroke="#0f2236" stroke-width="2"/>
     </svg>
-    <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:4px">
-      <span style="color:#4a7fa5">Tief: ${min.toFixed(2)}€</span>
-      <span style="color:${color};font-weight:700">${isRealDeal?'✓ Echter Deal':'~ Durchschnitt'}</span>
-      <span style="color:#4a7fa5">Hoch: ${max.toFixed(2)}€</span>
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 8px;font-size:11px;margin-top:4px">
+      <span style="color:#4a7fa5">Tief: ${eur(min)}</span>
+      <span style="color:#c8dff0;font-weight:700">${isRealDeal ? '✓ Echter Deal' : '~ Durchschnitt'}</span>
+      <span style="color:#4a7fa5">Hoch: ${eur(max)}</span>
     </div>`;
   }
 
@@ -480,11 +726,13 @@
     const preis  = parseFloat(d.preis || 0);
     const nutzeGp = gp > 0 && d.vergleichsbasis !== "preis"
       && history.filter(h => h.grundpreis > 0 && h.grundpreis_einheit === gpEinh).length >= 2;
-    const aktWoche = wochenStart(new Date().toISOString());
-
+    // Woche des Angebots, nicht heute. Zeilen derselben Aktion (gleiche
+    // offer_id) zählen nie als früherer Preis, wie in der View.
+    const aktWoche = d.gueltig_ab ? wochenStart(d.gueltig_ab + "T12:00:00Z") : wochenStart(new Date().toISOString());
     const proWoche = {};
     for (const h of history) {
-      const w = wochenStart(h.erfasst_am);
+      if (d.offer_id && h.offer_id === d.offer_id) continue;
+      const w = h.woche || wochenStart(h.erfasst_am);
       if (w >= aktWoche) continue;
       let wert;
       if (nutzeGp) {
@@ -504,23 +752,19 @@
   async function toggleHistory(idx) {
     const cardEl = document.getElementById(`card-${idx}`);
     const deal   = renderedDeals[idx];
-
     const existing = cardEl.querySelector('.price-history');
-    if(existing) { existing.remove(); return; }
-
+    if (existing) { existing.remove(); return; }
     const div = document.createElement('div');
     div.className = 'price-history';
     div.style.cssText = 'padding:12px 18px 14px;border-top:1px solid #1e3a5f';
     div.innerHTML = '<div style="color:#4a7fa5;font-size:12px">⏳ Lade Verlauf…</div>';
     cardEl.appendChild(div);
-
     try {
-      // Gleiche Namenslogik wie die View: angebote.name ist "Name - Beschreibung",
-      // preishistorie.name nur "Name".
+      // angebote.name ist "Name - Beschreibung", preishistorie.name nur "Name".
       const basis = (deal.name || "").split(" - ")[0];
       const seit  = isoLokal(new Date(Date.now() - 182 * 86400000));
       const history = await sb(
-        `preishistorie?select=preis,grundpreis,grundpreis_einheit,erfasst_am` +
+        `preishistorie?select=preis,grundpreis,grundpreis_einheit,erfasst_am,woche,offer_id` +
         `&haendler=eq.${encodeURIComponent(deal.haendler)}` +
         `&name=eq.${encodeURIComponent(basis)}` +
         `&erfasst_am=gte.${seit}&order=erfasst_am.asc&limit=1000`
@@ -531,92 +775,127 @@
         return;
       }
       div.innerHTML = `<div style="font-size:12px;color:#7ca8cc;font-weight:600;margin-bottom:8px">📊 Preisverlauf (${prices.length - 1} frühere Wochen + jetzt)</div>${drawSparkline(prices)}`;
-    } catch(e) {
+    } catch (e) {
       div.innerHTML = '<div style="color:#f87171;font-size:12px">Verlauf nicht verfügbar</div>';
     }
   }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // Tab 1: Angebote
+  // ═══════════════════════════════════════════════════════════════════
+  let allDeals = [];
+  let renderedDeals = [];
+  const aFilter = { store: "", gruppe: "", sort: "rabatt", nurKnaller: false };
 
   function renderDeals(deals) {
     renderedDeals = deals;
     const grid = document.getElementById("content");
     if (deals.length === 0) {
-      grid.innerHTML = '<div class="error">Keine Angebote gefunden.</div>';
+      grid.innerHTML = '<div class="leer">Keine Angebote für diese Auswahl.</div>';
       return;
     }
-
-    grid.innerHTML = `<div class="deals-grid">${deals.map((d,i) => {
+    grid.innerHTML = `<div class="deals-grid">${deals.map((d, i) => {
       const preisNum    = parseFloat(d.preis || 0);
       const normNum     = parseFloat(d.normalpreis || 0);
       const hasDiscount = hasOfficialDiscount(d);
-      const preis       = preisNum.toFixed(2);
-      const norm        = normNum.toFixed(2);
       const rabatt      = hasDiscount ? parseFloat(d.rabatt_prozent || ((1 - preisNum / normNum) * 100)).toFixed(0) : null;
-      const saved       = hasDiscount ? (normNum - preisNum).toFixed(2) : null;
-
-      // Historischer Deal — nur wenn kein offizieller Rabatt vorliegt
       const histDeal    = isHistDeal(d);
       const histAvgNum  = parseFloat(d.preis_historisch_avg || 0);
-      const histAvg     = histDeal ? histAvgNum.toFixed(2) : null;
-      const histSaved   = histDeal ? (histAvgNum - preisNum).toFixed(2) : null;
-
       const expiry      = daysUntil(d.gueltig_bis);
+      const knaller     = effRabatt(d) >= KNALLER_AB;
 
       // App-/Karten-Angebote: siehe sql/2026-11_app_preis_view.sql im Forkcast-Repo
-      const appNum      = parseFloat(d.app_preis || 0);
-      const appText     = !d.app_name ? ""
-        : appNum > 0 && appNum < preisNum ? `📱 ${appNum.toFixed(2)}€ mit ${d.app_name}`
+      const appNum  = parseFloat(d.app_preis || 0);
+      const appText = !d.app_name ? ""
+        : appNum > 0 && appNum < preisNum ? `📱 ${eur(appNum)} mit ${d.app_name}`
         : appNum > 0 ? `📱 nur mit ${d.app_name}`
         : `📱 Extrapreis mit ${d.app_name}`;
+
+      const pills = [
+        knaller ? `<span class="pill hot">🔥 Knaller</span>` : "",
+        stufenPill(d),
+      ].join("");
 
       return `
         <div class="deal-card" id="card-${i}">
           <div class="deal-top">
-            <div class="deal-store">${esc(d.haendler)}</div>
+            <div class="deal-store"><span>${esc(d.haendler)}</span><span>${GRUPPE_ICON[gruppeVon(d)]}</span></div>
             <div class="deal-name">${esc(d.name)}</div>
             <div class="deal-unit">${esc(d.einheit)}</div>
+            ${pills ? `<div class="pill-row">${pills}</div>` : ""}
           </div>
           <div class="deal-bottom">
             <div class="deal-price-block">
-              <div class="deal-price">${preis}€</div>
-              ${hasDiscount ? `<div class="deal-original">statt ${norm}€</div>` : ""}
-              ${histDeal ? `<div class="deal-original">Ø sonst ${histAvg}€</div>` : ""}
+              <div class="deal-price">${eur(preisNum)}</div>
+              ${hasDiscount ? `<div class="deal-original">statt ${eur(normNum)}</div>` : ""}
+              ${histDeal ? `<div class="deal-original">Ø sonst ${eur(histAvgNum)}</div>` : ""}
               ${appText ? `<div class="deal-app">${esc(appText)}</div>` : ""}
             </div>
             ${hasDiscount ? `
-            <div class="deal-badge">
-              −${rabatt}%
-              <div class="deal-badge-sub">−${saved}€</div>
+            <div class="deal-badge">−${rabatt} %
+              <div class="deal-badge-sub">−${eur(normNum - preisNum)}</div>
             </div>` : ""}
             ${histDeal ? `
-            <div class="deal-badge-hist">
-              📉 Günstig
-              <div class="deal-badge-hist-sub">−${histSaved}€</div>
+            <div class="deal-badge-hist">📉 −${(effRabatt(d)).toFixed(0)} %
+              <div class="deal-badge-hist-sub">−${eur(histAvgNum - preisNum)}</div>
             </div>` : ""}
           </div>
           ${expiry ? `<div class="gueltig" style="color:${expiry.color}">${expiry.text}</div>` : ""}
-          <button class="history-btn" onclick="toggleHistory(${i})">
-            📊 Preisverlauf anzeigen
-          </button>
-        </div>
-      `;
+          <button class="history-btn" onclick="toggleHistory(${i})">📊 Preisverlauf anzeigen</button>
+        </div>`;
     }).join("")}</div>`;
   }
 
-  function filterStore(store) {
-    activeStore = store;
-    document.querySelectorAll(".filter-btn").forEach(btn => {
-      btn.classList.toggle("active", (btn.dataset.store || "") === store);
-    });
-    if (!store) {
-      renderDeals(allDeals);
-      return;
+  function angeboteAnwenden() {
+    let liste = allDeals.filter(d =>
+      (!aFilter.store  || d.haendler === aFilter.store) &&
+      (!aFilter.gruppe || gruppeVon(d) === aFilter.gruppe) &&
+      (!aFilter.nurKnaller || effRabatt(d) >= KNALLER_AB));
+    const sortierer = {
+      rabatt:    (a, b) => effRabatt(b) - effRabatt(a),
+      ersparnis: (a, b) => effSaved(b) - effSaved(a),
+      preis:     (a, b) => parseFloat(a.preis) - parseFloat(b.preis),
+      ablauf:    (a, b) => String(a.gueltig_bis).localeCompare(String(b.gueltig_bis)) || effRabatt(b) - effRabatt(a),
+    };
+    liste = liste.slice().sort(sortierer[aFilter.sort]);
+
+    // Kacheln folgen den Filtern
+    const totalSaved = liste.reduce((s, d) => s + effSaved(d), 0);
+    const topDeal = liste.reduce((best, d) => !best || effRabatt(d) > effRabatt(best) ? d : best, null);
+    document.getElementById("stat-count").textContent = zahl(liste.length);
+    document.getElementById("stat-count-sub").textContent = liste.length === allDeals.length ? "mit Rabatt" : `von ${zahl(allDeals.length)} mit Rabatt`;
+    document.getElementById("stat-avg").textContent = liste.length ? `−${eur(totalSaved / liste.length)}` : "–";
+    document.getElementById("stat-top").textContent = topDeal ? `−${effRabatt(topDeal).toFixed(0)} %` : "–";
+    document.getElementById("stat-top-name").textContent = topDeal ? nameTeile(topDeal.name)[0] : "";
+    document.getElementById("stat-knaller").textContent = zahl(liste.filter(d => effRabatt(d) >= KNALLER_AB).length);
+    document.getElementById("stats-row").style.display = "grid";
+
+    chipsMarkieren("store-filters", aFilter.store);
+    chipsMarkieren("gruppe-filters", aFilter.gruppe);
+    renderDeals(liste);
+  }
+
+  function chipsMarkieren(containerId, wert) {
+    document.querySelectorAll(`#${containerId} .filter-btn`).forEach(btn =>
+      btn.classList.toggle("active", (btn.dataset.wert || "") === wert));
+  }
+
+  function chipsBauen(containerId, eintraege, onClick) {
+    const c = document.getElementById(containerId);
+    c.replaceChildren();
+    for (const e of eintraege) {
+      const btn = document.createElement("button");
+      btn.className = "filter-btn";
+      btn.dataset.wert = e.wert;
+      btn.textContent = e.text;
+      if (e.n != null) { const s = document.createElement("span"); s.className = "n"; s.textContent = e.n; btn.appendChild(s); }
+      btn.onclick = () => onClick(e.wert);
+      c.appendChild(btn);
     }
-    renderDeals(allDeals.filter(d => d.haendler === store));
   }
 
   // PLZ aus dem Link (?plz=32791), sonst die zuletzt genutzte, sonst Leopoldshöhe
   const PLZ_KEY = "fk_angebote_plz";
-
   function aktuellePlz() {
     const ausUrl = new URLSearchParams(location.search).get("plz");
     if (/^\d{5}$/.test(ausUrl || "")) return ausUrl;
@@ -626,6 +905,7 @@
     } catch (e) {}
     return "33818";
   }
+  const PLZ = aktuellePlz();
 
   function plzFeldEinrichten(plz) {
     const feld = document.getElementById("plz-input");
@@ -635,22 +915,18 @@
       feld.value = feld.value.replace(/\D/g, "").slice(0, 5);
       if (feld.value.length === 5 && feld.value !== plz) {
         try { localStorage.setItem(PLZ_KEY, feld.value); } catch (e) {}
-        location.search = "?plz=" + feld.value;
+        location.href = location.pathname + "?plz=" + feld.value + location.hash;
       }
     });
   }
 
-  async function load() {
+  async function ladeAngebote() {
     try {
-      const plz = aktuellePlz();
-      plzFeldEinrichten(plz);
-      const heute = isoLokal(new Date());
-      // Nur aktuell gültige Angebote, die entweder einen Streichpreis haben
-      // oder laut View ein historischer Deal sind (Filter läuft in Postgres).
+      const plz = PLZ;
       const [raw, haendlerRows] = await Promise.all([
         sbAll(
-          `angebote_mit_historie?select=*` +
-          `&gueltig_ab=lte.${heute}&gueltig_bis=gte.${heute}` +
+          `angebote_seite?select=*` +
+          `&gueltig_ab=lte.${HEUTE}&gueltig_bis=gte.${HEUTE}` +
           // Leere PLZ-Liste = gilt überall (ALDI Nord)
           `&and=(or(ist_historischer_deal.is.true,normalpreis.not.is.null),or(plz.cs.{${plz}},plz.eq.{}))` +
           `&order=gueltig_ab.desc,id.asc`
@@ -666,46 +942,28 @@
         hinweis.style.display = "block";
       }
 
-      rawDeals = raw;
-      const deals = raw
+      allDeals = raw
         .map(d => {
           const preis = parseFloat(d.preis || 0);
           const norm  = parseFloat(d.normalpreis || 0);
-          if (!d.rabatt_prozent && norm > preis && preis > 0) {
-            d.rabatt_prozent = ((1 - preis / norm) * 100).toFixed(1);
-          }
+          if (!d.rabatt_prozent && norm > preis && preis > 0) d.rabatt_prozent = ((1 - preis / norm) * 100).toFixed(1);
           return d;
         })
-        .filter(d => istIrgendeinDeal(d))
-        .sort((a, b) => effRabatt(b) - effRabatt(a));
+        .filter(istIrgendeinDeal);
 
-      allDeals = deals;
+      const proStore = {}, proGruppe = {};
+      for (const d of allDeals) {
+        proStore[d.haendler] = (proStore[d.haendler] || 0) + 1;
+        proGruppe[gruppeVon(d)] = (proGruppe[gruppeVon(d)] || 0) + 1;
+      }
+      chipsBauen("store-filters",
+        [{ wert: "", text: "Alle Märkte" }, ...haendler.filter(h => proStore[h]).map(h => ({ wert: h, text: h, n: proStore[h] }))],
+        w => { aFilter.store = w; angeboteAnwenden(); });
+      chipsBauen("gruppe-filters",
+        [{ wert: "", text: "Alle Gruppen" }, ...GRUPPEN.filter(g => proGruppe[g.key]).map(g => ({ wert: g.key, text: `${g.icon} ${g.kurz}`, n: proGruppe[g.key] }))],
+        w => { aFilter.gruppe = w; angeboteAnwenden(); });
 
-      const totalSaved = deals.reduce((s, d) => s + effSaved(d), 0);
-      const avgSaved   = deals.length ? (totalSaved / deals.length) : 0;
-      const topDeal    = deals.reduce((best, d) => effRabatt(d) > effRabatt(best) ? d : best, deals[0]);
-
-      document.getElementById("stat-count").textContent = deals.length;
-      document.getElementById("stat-avg").textContent   = `−${avgSaved.toFixed(2)}€`;
-      document.getElementById("stat-top").textContent   = topDeal ? `−${effRabatt(topDeal).toFixed(0)}%` : "–";
-      document.getElementById("stat-top-name").textContent = topDeal?.name?.substring(0,20) || "";
-      document.getElementById("stats-row").style.display = "flex";
-
-      const storesWithDeals = new Set(deals.map(d => d.haendler));
-      const filterContainer = document.getElementById("store-filters");
-      haendler
-        .filter(h => storesWithDeals.has(h))
-        .forEach(h => {
-          const btn = document.createElement("button");
-          btn.className = "filter-btn";
-          btn.textContent = h;
-          btn.dataset.store = h;
-          btn.onclick = () => filterStore(h);
-          filterContainer.appendChild(btn);
-        });
-
-      renderDeals(deals);
-
+      angeboteAnwenden();
     } catch (e) {
       document.getElementById("content").innerHTML = `
         <div class="error">
@@ -716,7 +974,491 @@
     }
   }
 
-  load();
+  document.getElementById("a-sort").onchange = e => { aFilter.sort = e.target.value; angeboteAnwenden(); };
+  document.getElementById("a-nur-knaller").onchange = e => { aFilter.nurKnaller = e.target.checked; angeboteAnwenden(); };
+  document.getElementById("stat-knaller-card").onclick = () => tabZeigen("knaller");
+
+  // ═══════════════════════════════════════════════════════════════════
+  // Tab 2: Knaller-Archiv (Tabelle top_deals, stündlich per pg_cron befüllt)
+  // ═══════════════════════════════════════════════════════════════════
+  let topDeals = null;
+  let knallerLaden = null;
+  const kFilter = { zeit: "alle", schwelle: 50, sort: "neu", gruppe: "", ohneRegel: true, ohnePruefen: false, nurPlz: true };
+
+  // Einmal laden (auch für den Zähler im Tab), Fehler erlauben neuen Versuch
+  function ladeKnaller() {
+    return knallerLaden ||= sbAll(`top_deals?select=*&order=woche.desc,deal_prozent.desc,id.asc`)
+      .then(rows => { topDeals = rows; knallerZaehler(); knallerAnwenden(); })
+      .catch(e => {
+        knallerLaden = null;
+        document.getElementById("knaller-main").innerHTML =
+          `<div class="error"><div style="font-size:48px;margin-bottom:12px">⚠️</div><div>Knaller-Archiv konnte nicht geladen werden</div><div style="font-size:13px;color:#64748b;margin-top:8px">${esc(e.message)}</div></div>`;
+      });
+  }
+
+  const istAktiv = d => d.gueltig_bis >= HEUTE && (!d.gueltig_ab || d.gueltig_ab <= HEUTE);
+  const passtPlz = d => !d.plz || d.plz.length === 0 || d.plz.includes(PLZ);
+
+  // Zähler im Tab: aktuell gültige Knaller ≥ 50 % für meine PLZ
+  function knallerZaehler() {
+    const n = topDeals.filter(d => istAktiv(d) && passtPlz(d) && !d.ist_regelmaessig && +d.deal_prozent >= 50).length;
+    const el = document.getElementById("tab-knaller-n");
+    el.textContent = n; el.hidden = !n;
+  }
+
+  function knallerBasisFilter(d) {
+    if (+d.deal_prozent < kFilter.schwelle) return false;
+    if (kFilter.ohneRegel && d.ist_regelmaessig) return false;
+    if (kFilter.ohnePruefen && d.pruefen) return false;
+    if (kFilter.nurPlz && !passtPlz(d)) return false;
+    const ab = { jetzt: null, "4w": 28, "3m": 91, alle: null }[kFilter.zeit];
+    if (kFilter.zeit === "jetzt" && !istAktiv(d)) return false;
+    if (ab != null) {
+      const grenze = isoLokal(new Date(montag(new Date()).getTime() - ab * 86400000));
+      if (d.woche < grenze) return false;
+    }
+    return true;
+  }
+
+  function knallerAnwenden() {
+    if (!topDeals) return;
+    const ohneGruppe = topDeals.filter(knallerBasisFilter);
+    const liste = ohneGruppe.filter(d => !kFilter.gruppe || gruppeVon(d) === kFilter.gruppe);
+
+    // Gruppen-Chips mit Anzahl (unter allen anderen Filtern)
+    const proGruppe = {};
+    for (const d of ohneGruppe) proGruppe[gruppeVon(d)] = (proGruppe[gruppeVon(d)] || 0) + 1;
+    chipsBauen("k-gruppen",
+      [{ wert: "", text: "Alle", n: ohneGruppe.length },
+       ...GRUPPEN.filter(g => proGruppe[g.key] || g.key === kFilter.gruppe).map(g => ({ wert: g.key, text: `${g.icon} ${g.kurz}`, n: proGruppe[g.key] || 0 }))],
+      w => { kFilter.gruppe = w; knallerAnwenden(); });
+    chipsMarkieren("k-gruppen", kFilter.gruppe);
+
+    const main = document.getElementById("knaller-main");
+    if (!liste.length) {
+      main.innerHTML = `<div class="leer">Keine Knaller für diese Auswahl. Schwelle senken oder Zeitraum erweitern?</div>`;
+      return;
+    }
+
+    // Kennzahlen
+    const avg = liste.reduce((s, d) => s + +d.deal_prozent, 0) / liste.length;
+    const maxSave = liste.reduce((b, d) => +d.ersparnis > +(b?.ersparnis ?? -1) ? d : b, null);
+    const rekord = liste.reduce((b, d) => +d.deal_prozent > +(b?.deal_prozent ?? -1) ? d : b, null);
+    const snackGetr = liste.filter(d => ["Snacks & Süßes", "Getränke"].includes(gruppeVon(d))).length;
+    const aktiv = liste.filter(istAktiv).length;
+
+    // Wiederholungstäter: gleiches Produkt (Grundname) beim gleichen Händler
+    const wieder = {};
+    for (const d of liste) {
+      const key = d.haendler + "|" + nameTeile(d.name)[0].toLowerCase();
+      (wieder[key] ||= { name: nameTeile(d.name)[0], haendler: d.haendler, wochen: new Set(), best: d }).wochen.add(d.woche);
+      if (+d.deal_prozent > +wieder[key].best.deal_prozent) wieder[key].best = d;
+    }
+    const wiederTop = Object.values(wieder).filter(w => w.wochen.size >= 2).sort((a, b) => b.wochen.size - a.wochen.size || +b.best.deal_prozent - +a.best.deal_prozent).slice(0, 6);
+    const wiederZahl = d => wieder[d.haendler + "|" + nameTeile(d.name)[0].toLowerCase()]?.wochen.size || 1;
+
+    // Händler-Ranking
+    const proH = {};
+    for (const d of liste) proH[d.haendler] = (proH[d.haendler] || 0) + 1;
+    const hRang = Object.entries(proH).sort((a, b) => b[1] - a[1]);
+    const hMax = hRang[0]?.[1] || 1;
+
+    let html = `
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-label">Knaller</div><div class="stat-value">${zahl(liste.length)}</div><div class="stat-sub">${aktiv ? `${zahl(aktiv)} gerade gültig` : "keiner gerade gültig"}</div></div>
+        <div class="stat-card"><div class="stat-label">Snacks & Getränke</div><div class="stat-value">${zahl(snackGetr)}</div><div class="stat-sub">${liste.length ? Math.round(snackGetr / liste.length * 100) : 0} % der Knaller</div></div>
+        <div class="stat-card"><div class="stat-label">Ø Rabatt</div><div class="stat-value">−${zahl(avg)} %</div><div class="stat-sub">bei ${zahl(liste.length)} Knallern</div></div>
+        <div class="stat-card"><div class="stat-label">Rekord</div><div class="stat-value">−${zahl(rekord.deal_prozent)} %</div><div class="stat-sub" title="${esc(rekord.name)}">${esc(nameTeile(rekord.name)[0])}</div></div>
+        <div class="stat-card"><div class="stat-label">Größte Ersparnis</div><div class="stat-value">${eur(maxSave.ersparnis)}</div><div class="stat-sub" title="${esc(maxSave.name)}">${esc(nameTeile(maxSave.name)[0])}</div></div>
+      </div>`;
+
+    const wochenChart = knallerWochenChart(liste);
+    html += `<div class="grid-2">
+      ${wochenChart ? `<div class="panel"><h2>Knaller pro Woche</h2><div class="sub">Nach Gruppe gestapelt · KW = Angebotswoche</div>${wochenChart}</div>` : ""}
+      <div class="panel"><h2>Wer haut sie raus?</h2><div class="sub">Knaller je Händler in dieser Auswahl</div>
+        <div class="panel-body hbars">${hRang.map(([h, n]) => `
+          <div class="hbar" ${tipAttr(h, [[`${zahl(n)} Knaller`, "", "var(--s1)"]])}>
+            <div class="lbl">${esc(h)}</div>
+            <div class="track"><div class="area"><div class="fill" style="width:${(n / hMax * 100).toFixed(1)}%"></div></div><span class="val">${zahl(n)}</span></div>
+          </div>`).join("")}
+        </div>
+      </div>
+      ${wiederTop.length ? `<div class="panel"><h2>Wiederholungstäter</h2><div class="sub">Produkte, die schon mehrfach Knaller waren — hier lohnt Warten</div>
+        <div class="panel-body tbl-wrap"><table class="tbl"><thead><tr><th>Produkt</th><th>Händler</th><th class="num">Wochen</th><th class="num">Bestwert</th></tr></thead><tbody>
+          ${wiederTop.map(w => `<tr><td>${esc(w.name)}</td><td class="muted">${esc(w.haendler)}</td><td class="num">${w.wochen.size}×</td><td class="num">${eur(w.best.preis)} <span class="muted">(−${zahl(w.best.deal_prozent)} %)</span></td></tr>`).join("")}
+        </tbody></table></div></div>` : ""}
+    </div>`;
+
+    // Liste
+    const sortierer = {
+      neu:       (a, b) => b.woche.localeCompare(a.woche) || +b.deal_prozent - +a.deal_prozent,
+      rabatt:    (a, b) => +b.deal_prozent - +a.deal_prozent,
+      ersparnis: (a, b) => +b.ersparnis - +a.ersparnis,
+    };
+    const sortiert = liste.slice().sort(sortierer[kFilter.sort]);
+    const zeigen = sortiert.slice(0, knallerLimit);
+
+    const zeile = d => {
+      const [titel, beschr] = nameTeile(d.name);
+      const pct = +d.deal_prozent;
+      const aktivJetzt = istAktiv(d);
+      const ablauf = aktivJetzt ? daysUntil(d.gueltig_bis) : null;
+      const refText = d.referenz_art === "streichpreis"
+        ? `statt <s>${eur(d.referenzpreis)}</s>`
+        : d.referenz_art === "historisch" ? `Ø sonst ${eur(d.referenzpreis)}` : `Referenz ${eur(d.referenzpreis)}`;
+      const n = wiederZahl(d);
+      const tags = [
+        d.ist_bestpreis ? `<span class="pill best" title="Unter dem 90-Tage-Tief">🏆 Bestpreis</span>` : "",
+        d.ist_regelmaessig ? `<span class="pill" title="Laut Verlauf ein üblicher Aktionspreis">🔁 oft so günstig</span>` : "",
+        d.pruefen ? `<span class="pill warn" title="Vergleich evtl. schief (Packungsgröße/Menge)">⚠️ prüfen</span>` : "",
+        d.app_name ? `<span class="pill">📱 ${esc(d.app_name)}</span>` : "",
+        n >= 2 ? `<span class="pill" title="So oft war dieses Produkt in der Auswahl schon Knaller">${n}× Knaller</span>` : "",
+        d.quelle === "backfill" ? `<span class="pill" title="Nachträglich aus der Preishistorie ermittelt">↺ nachgetragen</span>` : "",
+      ].join("");
+      return `
+        <div class="k-row${aktivJetzt ? " aktiv" : ""}">
+          <div class="k-pct ${pct >= 60 ? "p60" : pct < 50 ? "p40" : ""}">−${zahl(pct)} %</div>
+          <div class="k-main">
+            <div class="k-name">${GRUPPE_ICON[gruppeVon(d)]} ${esc(titel)}</div>
+            ${beschr ? `<div class="k-desc" title="${esc(beschr)}">${esc(beschr)}</div>` : ""}
+            <div class="k-meta"><b>${esc(d.haendler)}</b> · KW ${kwVon(d.woche)}${d.gueltig_ab ? ` · ${kurzDatum(d.gueltig_ab)}–${kurzDatum(d.gueltig_bis)}` : ""}${aktivJetzt ? ` · <span style="color:${ablauf ? ablauf.color : "var(--accent)"}">${ablauf ? ablauf.text : "gültig"}</span>` : ""}</div>
+            ${tags ? `<div class="pill-row">${tags}</div>` : ""}
+          </div>
+          <div class="k-price">
+            <div class="now">${eur(d.preis)}</div>
+            <div class="ref">${refText}</div>
+            <div class="save">−${eur(d.ersparnis)}</div>
+          </div>
+        </div>`;
+    };
+
+    if (kFilter.sort === "neu") {
+      const proWoche = new Map();
+      for (const d of zeigen) { if (!proWoche.has(d.woche)) proWoche.set(d.woche, []); proWoche.get(d.woche).push(d); }
+      const gesamtProWoche = {};
+      for (const d of sortiert) gesamtProWoche[d.woche] = (gesamtProWoche[d.woche] || 0) + 1;
+      for (const [w, rows] of proWoche) {
+        const zuk = w > AKT_MONTAG ? " · nächste Woche" : w === AKT_MONTAG ? " · diese Woche" : "";
+        html += `<div class="week-head"><h3>KW ${kwVon(w)}${zuk}</h3><span>${zahl(gesamtProWoche[w])} Knaller · ab ${kurzDatum(w)}</span></div><div class="k-list">${rows.map(zeile).join("")}</div>`;
+      }
+    } else {
+      html += `<div class="k-list">${zeigen.map(zeile).join("")}</div>`;
+    }
+    if (sortiert.length > zeigen.length) {
+      html += `<button class="mehr-btn" id="k-mehr">Weitere ${zahl(Math.min(100, sortiert.length - zeigen.length))} von ${zahl(sortiert.length - zeigen.length)} anzeigen</button>`;
+    }
+    main.innerHTML = html;
+    document.getElementById("k-mehr")?.addEventListener("click", () => { knallerLimit += 100; knallerAnwenden(); });
+  }
+  let knallerLimit = 100;
+
+  // Gestapelte Säulen: Knaller pro Woche, Gruppen als feste Serien
+  function knallerWochenChart(liste) {
+    const wochen = [...new Set(liste.map(d => d.woche))].sort();
+    if (wochen.length < 3) return "";
+    // lückenlos von erster bis letzter Woche
+    const alle = [];
+    for (let t = datumAus(wochen[0]); isoLokal(t) <= wochen[wochen.length - 1]; t.setDate(t.getDate() + 7)) alle.push(isoLokal(t));
+    const serienKey = d => ["Snacks & Süßes", "Getränke", "Tiefkühl"].includes(gruppeVon(d)) ? gruppeVon(d) : "_rest";
+    const werte = alle.map(w => Object.fromEntries(SERIEN.map(s => [s.key, 0])));
+    const idx = Object.fromEntries(alle.map((w, i) => [w, i]));
+    for (const d of liste) werte[idx[d.woche]][serienKey(d)]++;
+    const summen = werte.map(v => SERIEN.reduce((s, x) => s + v[x.key], 0));
+    const benutzt = SERIEN.filter(s => werte.some(v => v[s.key] > 0));
+
+    const W = 520, H = 220, L = 34, R = 8, T = 10, B = 26;
+    const pw = W - L - R, ph = H - T - B;
+    const maxRoh = Math.max(...summen, 1);
+    const schritt = maxRoh <= 5 ? 1 : maxRoh <= 12 ? 2 : maxRoh <= 30 ? 5 : maxRoh <= 60 ? 10 : 20;
+    const yMax = Math.ceil(maxRoh / schritt) * schritt;
+    const y = v => T + ph - (v / yMax) * ph;
+    const band = pw / alle.length;
+    const bw = Math.min(24, Math.max(4, band * 0.62));
+
+    let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Knaller pro Woche, gestapelt nach Gruppe">`;
+    for (let v = 0; v <= yMax; v += schritt) {
+      svg += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="${v === 0 ? "#2d5a8a" : "#1e3a5f"}" stroke-width="1"/>`;
+      svg += `<text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="#7ca8cc" style="font-variant-numeric:tabular-nums">${v}</text>`;
+    }
+    const labelJede = Math.ceil(alle.length / 10);
+    alle.forEach((w, i) => {
+      const cx = L + band * i + band / 2;
+      const x0 = cx - bw / 2;
+      let basis = 0;
+      const stapel = SERIEN.filter(s => werte[i][s.key] > 0);
+      let segs = "";
+      stapel.forEach((s, j) => {
+        const v = werte[i][s.key];
+        const yTop = y(basis + v), yBot = y(basis);
+        const gapOben = j < stapel.length - 1 ? 2 : 0;      // 2px Flächen-Lücke zwischen Segmenten
+        const h = Math.max(0, yBot - yTop - gapOben);
+        const top = yTop + gapOben;
+        if (j === stapel.length - 1 && h >= 4) {
+          // oberstes Segment: 4px rund oben, eckig unten
+          const r = 4;
+          segs += `<path d="M${x0},${top + h} V${top + r} Q${x0},${top} ${x0 + r},${top} H${x0 + bw - r} Q${x0 + bw},${top} ${x0 + bw},${top + r} V${top + h} Z" fill="${s.farbe}"/>`;
+        } else {
+          segs += `<rect x="${x0}" y="${top}" width="${bw}" height="${h}" fill="${s.farbe}"/>`;
+        }
+        basis += v;
+      });
+      const zeilen = SERIEN.filter(s => werte[i][s.key] > 0).map(s => [String(werte[i][s.key]), s.name, s.farbe]);
+      const t = `KW ${kwVon(w)} · ${summen[i]} Knaller`;
+      svg += `<g class="col" ${tipAttr(t, zeilen.length ? zeilen : [["0", "Knaller", ""]])} tabindex="0"><rect class="hit" x="${L + band * i}" y="${T}" width="${band}" height="${ph}"/>${segs}</g>`;
+      if (i % labelJede === 0) svg += `<text x="${cx}" y="${H - 8}" text-anchor="middle" font-size="11" fill="#7ca8cc">${kwVon(w)}</text>`;
+    });
+    svg += `</svg>`;
+
+    const legende = benutzt.length > 1
+      ? `<div class="legend">${benutzt.map(s => `<span><i style="background:${s.farbe}"></i>${s.name}</span>`).join("")}</div>` : "";
+    const tabelle = `<details class="tabelle"><summary>Als Tabelle</summary><div class="tbl-wrap"><table class="tbl"><thead><tr><th>KW</th>${benutzt.map(s => `<th class="num">${s.name}</th>`).join("")}<th class="num">Summe</th></tr></thead><tbody>
+      ${alle.map((w, i) => `<tr><td>KW ${kwVon(w)} <span class="muted small">(${kurzDatum(w)})</span></td>${benutzt.map(s => `<td class="num">${werte[i][s.key]}</td>`).join("")}<td class="num">${summen[i]}</td></tr>`).reverse().join("")}
+    </tbody></table></div></details>`;
+    return `${legende}<div class="chart panel-body">${svg}</div>${tabelle}`;
+  }
+
+  for (const [id, key, conv] of [["k-zeit", "zeit", v => v], ["k-schwelle", "schwelle", Number], ["k-sort", "sort", v => v]]) {
+    document.getElementById(id).onchange = e => { kFilter[key] = conv(e.target.value); knallerLimit = 100; knallerAnwenden(); };
+  }
+  for (const [id, key] of [["k-ohne-regel", "ohneRegel"], ["k-ohne-pruefen", "ohnePruefen"], ["k-plz", "nurPlz"]]) {
+    document.getElementById(id).onchange = e => { kFilter[key] = e.target.checked; knallerAnwenden(); };
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // Tab 3: Statistik (RPC angebote_statistik)
+  // ═══════════════════════════════════════════════════════════════════
+  let stat = null;
+  let sGruppe = "Snacks & Süßes";
+  let pvAlle = false;
+
+  async function ladeStatistik() {
+    if (stat) return;
+    try {
+      stat = await rpc("angebote_statistik", { p_plz: PLZ });
+      statistikRendern();
+    } catch (e) {
+      stat = null;
+      document.getElementById("statistik-main").innerHTML =
+        `<div class="error"><div style="font-size:48px;margin-bottom:12px">⚠️</div><div>Statistik konnte nicht geladen werden</div><div style="font-size:13px;color:#64748b;margin-top:8px">${esc(e.message)}</div></div>`;
+    }
+  }
+
+  function statistikRendern() {
+    const s = stat;
+    const main = document.getElementById("statistik-main");
+    const b = s.basis || {};
+
+    // ── Datenbasis (unabhängig vom Filter) ──
+    let html = `
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-label">Preise erfasst</div><div class="stat-value">${gross(b.preise)}</div><div class="stat-sub">seit ${b.seit ? datumAus(b.seit).toLocaleDateString("de-DE") : "–"}</div></div>
+        <div class="stat-card"><div class="stat-label">Wochen</div><div class="stat-value">${zahl(b.wochen)}</div><div class="stat-sub">Prospektwochen getrackt</div></div>
+        <div class="stat-card"><div class="stat-label">Produkte</div><div class="stat-value">${gross(b.produkte)}</div><div class="stat-sub">je Händler unterschieden</div></div>
+        <div class="stat-card"><div class="stat-label">Händler</div><div class="stat-value">${zahl(b.haendler)}</div><div class="stat-sub">in der Preishistorie</div></div>
+      </div>`;
+
+    html += `<div class="panel"><h2>Prospektumfang pro Woche</h2><div class="sub">Verschiedene Produkte im Prospekt je Händler (alle erfassten Regionen). Sprünge = neue Regionen oder Händler im Scraper.</div><div class="panel-body">${prospektMultiples(s.wochen || [])}</div></div>`;
+
+    // ── Gruppen-Filter: gilt für alles darunter ──
+    const gruppenDa = new Set((s.haendler || []).map(r => r.gruppe));
+    html += `<div class="chip-row" id="s-gruppen" style="margin:22px 0 14px"></div>`;
+
+    const hRows = (s.haendler || []).filter(r => !sGruppe || r.gruppe === sGruppe);
+    const proH = {};
+    for (const r of hRows) {
+      const z = proH[r.haendler] ||= { haendler: r.haendler, anzahl: 0, streich: 0, knaller: 0, bestpreis: 0, guenstig: 0, ueblich: 0, teuer: 0, unbekannt: 0, streich_ohne_vorteil: 0, streich_mit_verlauf: 0 };
+      for (const k of Object.keys(z)) if (k !== "haendler") z[k] += +r[k] || 0;
+    }
+    const hListe = Object.values(proH).sort((a, b) => b.anzahl - a.anzahl);
+
+    html += `<div class="grid-2">${echtheitPanel(hListe)}${knallerHaendlerPanel(hListe)}</div>`;
+    html += gruppenPanel(s.gruppen || []);
+    html += preisvergleichPanel((s.preisvergleich || []).filter(p => !sGruppe || (p.gruppe || "Sonstiges") === sGruppe));
+    html += dauerbrennerPanel((s.dauerbrenner || []).filter(p => !sGruppe || (p.gruppe || "Sonstiges") === sGruppe), b.wochen || 1);
+    html += `<div class="muted small" style="margin-top:8px">Stand: ${new Date(s.stand).toLocaleString("de-DE")} · PLZ ${esc(s.plz)} · „diese Woche“ = heute gültige Angebote</div>`;
+
+    main.innerHTML = html;
+
+    chipsBauen("s-gruppen",
+      [{ wert: "", text: "Alle Gruppen" }, ...GRUPPEN.filter(g => gruppenDa.has(g.key)).map(g => ({ wert: g.key, text: `${g.icon} ${g.kurz}` }))],
+      w => { sGruppe = w; pvAlle = false; statistikRendern(); });
+    chipsMarkieren("s-gruppen", sGruppe);
+    document.querySelectorAll("#s-gruppen-tabelle tr[data-gruppe]").forEach(tr =>
+      tr.addEventListener("click", () => { sGruppe = tr.dataset.gruppe; pvAlle = false; statistikRendern(); }));
+    document.getElementById("pv-mehr")?.addEventListener("click", () => { pvAlle = true; statistikRendern(); });
+  }
+
+  // Wie echt sind die Angebote? Preisstufe laut 90-Tage-Verlauf, je Händler
+  function echtheitPanel(hListe) {
+    const mitVerlauf = hListe.map(h => ({ ...h, bewertet: h.bestpreis + h.guenstig + h.ueblich + h.teuer }))
+                             .filter(h => h.bewertet > 0)
+                             .sort((a, b) => (b.bestpreis + b.guenstig) / b.bewertet - (a.bestpreis + a.guenstig) / a.bewertet);
+    const sum = k => hListe.reduce((s, h) => s + h[k], 0);
+    const bewertet = sum("bestpreis") + sum("guenstig") + sum("ueblich") + sum("teuer");
+    const gut = sum("bestpreis") + sum("guenstig");
+    const strMit = sum("streich_mit_verlauf"), strOhne = sum("streich_ohne_vorteil");
+    const prozent = (a, b) => b ? Math.round(a / b * 100) : 0;
+
+    let insight = bewertet
+      ? `Von <b>${zahl(bewertet)}</b> Angeboten mit Preisverlauf sind <b>${prozent(gut, bewertet)} %</b> wirklich günstig (Bestpreis oder unteres Viertel), <b>${prozent(sum("teuer"), bewertet)} %</b> gab es in den letzten 90 Tagen schon billiger.`
+      : `Für diese Auswahl gibt es noch keine Angebote mit genug Preisverlauf (ab 3 früheren Wochen).`;
+    if (strMit) insight += ` Streichpreis-Check: <b>${zahl(strOhne)} von ${zahl(strMit)}</b> Streichpreis-Angeboten sind laut Verlauf nur der übliche Aktionspreis.`;
+
+    const zeilen = mitVerlauf.map(h => {
+      const segs = STUFEN.filter(st => h[st.key] > 0).map(st =>
+        `<div style="flex:${h[st.key]} 1 0;background:${st.farbe}" tabindex="0" ${tipAttr(h.haendler, [[`${h[st.key]} (${prozent(h[st.key], h.bewertet)} %)`, st.name, st.farbe]])}></div>`).join("");
+      return `<div class="seg-row"><div class="seg-name">${esc(h.haendler)}</div><div class="seg-bar" role="img" aria-label="${esc(h.haendler)}: ${STUFEN.map(st => `${st.name} ${h[st.key]}`).join(", ")}">${segs}</div><div class="seg-n">${h.bewertet} / ${h.anzahl}</div></div>`;
+    }).join("");
+
+    const tabelle = `<details class="tabelle"><summary>Als Tabelle</summary><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Händler</th>${STUFEN.map(st => `<th class="num">${st.name}</th>`).join("")}<th class="num">ohne Verlauf</th></tr></thead><tbody>
+      ${hListe.map(h => `<tr><td>${esc(h.haendler)}</td>${STUFEN.map(st => `<td class="num">${h[st.key]}</td>`).join("")}<td class="num muted">${h.unbekannt}</td></tr>`).join("")}
+    </tbody></table></div></details>`;
+
+    return `<div class="panel"><h2>Wie echt sind die Angebote?</h2>
+      <div class="sub">Heute gültige Angebote, eingeordnet gegen die eigenen Prospektpreise der letzten 90 Tage. Rechts: bewertet / gesamt.</div>
+      <div class="insight">${insight}</div>
+      <div class="legend">${STUFEN.map(st => `<span><i style="background:${st.farbe}"></i>${st.name}</span>`).join("")}</div>
+      <div class="panel-body seg-rows">${zeilen || `<div class="muted small">Keine bewerteten Angebote.</div>`}</div>
+      ${tabelle}</div>`;
+  }
+
+  function knallerHaendlerPanel(hListe) {
+    const rang = hListe.filter(h => h.anzahl > 0).sort((a, b) => b.knaller - a.knaller || b.anzahl - a.anzahl);
+    const max = Math.max(1, ...rang.map(h => h.knaller));
+    const gesamt = rang.reduce((s, h) => s + h.knaller, 0);
+    return `<div class="panel"><h2>Knaller diese Woche je Händler</h2>
+      <div class="sub">Heute gültige Angebote ab ${KNALLER_AB} % unter Streichpreis bzw. 90-Tage-Schnitt · insgesamt ${zahl(gesamt)}</div>
+      <div class="panel-body hbars">${rang.map(h => `
+        <div class="hbar" ${tipAttr(h.haendler, [[`${h.knaller} Knaller`, `von ${h.anzahl} Angeboten`, "var(--s1)"], ...(h.streich ? [[`${h.streich}`, "mit Streichpreis", ""]] : [])])}>
+          <div class="lbl">${esc(h.haendler)}</div>
+          <div class="track"><div class="area"><div class="fill" style="width:${(h.knaller / max * 100).toFixed(1)}%"></div></div><span class="val">${h.knaller}<span class="muted small">/ ${h.anzahl}</span></span></div>
+        </div>`).join("")}</div>
+      <div class="sub" style="margin-top:12px">Ohne Streichpreis (REWE, Kaufland, Netto, Combi …) zählt nur der Vergleich mit dem eigenen Verlauf – dort gibt es naturgemäß weniger Knaller.</div>
+    </div>`;
+  }
+
+  function gruppenPanel(gruppen) {
+    const ord = GRUPPEN.map(g => g.key);
+    const liste = gruppen.slice().sort((a, b) => ord.indexOf(a.gruppe) - ord.indexOf(b.gruppe));
+    return `<div class="panel"><h2>Gruppen diese Woche</h2><div class="sub">Zeile anklicken = Filter setzen. Deal = mind. 10 % unter Streichpreis bzw. 90-Tage-Schnitt.</div>
+      <div class="panel-body tbl-wrap"><table class="tbl" id="s-gruppen-tabelle"><thead><tr><th>Gruppe</th><th class="num">Angebote</th><th class="num">mit Deal</th><th class="num">Ø Rabatt</th><th>Bester Deal</th></tr></thead><tbody>
+      ${liste.map(g => `<tr class="klick${g.gruppe === sGruppe ? " sel" : ""}" data-gruppe="${esc(g.gruppe)}">
+        <td>${GRUPPE_ICON[g.gruppe] || "📦"} ${esc(g.gruppe)}</td>
+        <td class="num">${zahl(g.anzahl)}</td>
+        <td class="num">${zahl(g.mit_deal)}</td>
+        <td class="num">${g.avg_deal != null ? `−${zahl(g.avg_deal)} %` : "–"}</td>
+        <td>${g.top_name ? `${esc(nameTeile(g.top_name)[0])} <span class="muted small">${esc(g.top_haendler)} · ${eur(g.top_preis)} · −${zahl(g.top_deal)} %</span>` : `<span class="muted">–</span>`}</td>
+      </tr>`).join("")}
+      </tbody></table></div></div>`;
+  }
+
+  function preisvergleichPanel(liste) {
+    const zeigen = pvAlle ? liste : liste.slice(0, 6);
+    const karten = zeigen.map(p => {
+      const max = Math.max(...p.angebote.map(a => +a.gp));
+      const titel = [p.marke, p.produkt].filter(Boolean).join(" ");
+      return `<div class="pv-card">
+        <div class="pv-head"><b>${esc(titel)}</b><span>bis +${zahl(p.spanne)} %</span></div>
+        ${p.angebote.map((a, i) => `<div class="pv-row" ${tipAttr(a.haendler, [[`${eur(a.gp)} / ${p.gpe}`, `Packung ${eur(a.preis)}`, i === 0 ? "var(--s1)" : "var(--s-rest)"]])}>
+          <div class="h${i === 0 ? " best" : ""}">${esc(a.haendler)}</div>
+          <div class="p">${eur(a.gp)}/${esc(p.gpe)}</div>
+          <div class="bar${i === 0 ? " best" : ""}" style="width:${(+a.gp / max * 100).toFixed(1)}%"></div>
+          <div class="d" title="${esc(a.name)}">${eur(a.preis)} · ${esc(nameTeile(a.name)[1] || a.name)}</div>
+        </div>`).join("")}
+      </div>`;
+    }).join("");
+    return `<div class="panel"><h2>Gleiches Produkt, anderer Preis</h2>
+      <div class="sub">Heute gültige Angebote derselben Marke/Produktlinie bei mehreren Händlern, verglichen nach Grundpreis (pro kg/l/Stück). ALDI Nord fehlt hier (keine Produkt-IDs).</div>
+      <div class="panel-body">${karten ? `<div class="pv-grid">${karten}</div>` : `<div class="muted small">Diese Woche kein Produkt dieser Gruppe bei mehreren Händlern.</div>`}</div>
+      ${!pvAlle && liste.length > zeigen.length ? `<button class="mehr-btn" id="pv-mehr">Alle ${liste.length} anzeigen</button>` : ""}
+    </div>`;
+  }
+
+  function dauerbrennerPanel(liste, wochenGesamt) {
+    const akt = AKT_MONTAG;
+    const zeilen = liste.slice(0, 15).map(p => {
+      const imAngebot = p.letzte >= akt;
+      let naechste = "–";
+      if (imAngebot) naechste = `<span style="color:var(--accent);font-weight:700">jetzt</span>`;
+      else if (p.abstand_wochen) {
+        const erw = datumAus(p.letzte); erw.setDate(erw.getDate() + Math.round(p.abstand_wochen * 7));
+        naechste = erw < montag(new Date()) ? `überfällig <span class="muted small">(KW ${isoKW(erw)})</span>` : `~KW ${isoKW(erw)}`;
+      }
+      const preisSpanne = +p.preis_min === +p.preis_max ? eur(p.preis_min) : `${eur(p.preis_min)} – ${eur(p.preis_max)}`;
+      return `<tr>
+        <td>${esc(p.basis)}<div class="meter" title="${p.wochen} von ${wochenGesamt} Wochen"><div style="width:${Math.min(100, p.wochen / wochenGesamt * 100).toFixed(0)}%"></div></div></td>
+        <td class="muted">${esc(p.haendler)}</td>
+        <td class="num">${p.wochen}×</td>
+        <td class="num">${p.abstand_wochen ? `alle ${String(p.abstand_wochen).replace(".", ",")} Wo.` : "–"}</td>
+        <td class="num">${preisSpanne}</td>
+        <td class="num">KW ${kwVon(p.letzte)}</td>
+        <td class="num">${naechste}</td>
+      </tr>`;
+    }).join("");
+    return `<div class="panel"><h2>Dauerbrenner & Rhythmus</h2>
+      <div class="sub">Wie oft ein Produkt im Prospekt war (von ${wochenGesamt} Wochen), im Schnitt alle wie viele Wochen, und wann es nach diesem Rhythmus wiederkommt. Wer ständig im Angebot ist, sollte nie zum Normalpreis gekauft werden.</div>
+      <div class="panel-body tbl-wrap">${zeilen ? `<table class="tbl"><thead><tr><th>Produkt</th><th>Händler</th><th class="num">Im Prospekt</th><th class="num">Rhythmus</th><th class="num">Preis</th><th class="num">Zuletzt</th><th class="num">Nächstes</th></tr></thead><tbody>${zeilen}</tbody></table>` : `<div class="muted small">Keine Daten für diese Gruppe.</div>`}</div>
+    </div>`;
+  }
+
+  // Small Multiples: eine Linie je Händler, gleiche y-Skala für ehrlichen Vergleich
+  function prospektMultiples(wochenRows) {
+    const wochen = [...new Set(wochenRows.map(r => r.woche))].sort();
+    if (wochen.length < 2) return `<div class="muted small">Noch zu wenig Wochen.</div>`;
+    const proH = {};
+    for (const r of wochenRows) (proH[r.haendler] ||= {})[r.woche] = +r.produkte;
+    const haendler = Object.keys(proH).sort((a, b) => a.localeCompare(b, "de"));
+    const yMax = Math.max(...wochenRows.map(r => +r.produkte), 1);
+    const W = 180, H = 56, P = 4;
+    const x = i => P + (i / (wochen.length - 1)) * (W - 2 * P);
+    const y = v => H - P - (v / yMax) * (H - 2 * P);
+
+    const karten = haendler.map(h => {
+      const pts = wochen.map((w, i) => proH[h][w] != null ? [i, proH[h][w], w] : null).filter(Boolean);
+      const letzter = pts[pts.length - 1];
+      // Linie nur über belegte Wochen, Lücken unterbrechen sie
+      let d = "", vorher = -2;
+      for (const [i, v] of pts) { d += (i === vorher + 1 ? "L" : "M") + x(i).toFixed(1) + "," + y(v).toFixed(1); vorher = i; }
+      const hits = pts.map(([i, v, w]) =>
+        `<rect x="${(x(i) - (W - 2 * P) / (wochen.length - 1) / 2).toFixed(1)}" y="0" width="${((W - 2 * P) / (wochen.length - 1)).toFixed(1)}" height="${H}" fill="transparent" ${tipAttr(`${h} · KW ${kwVon(w)}`, [[zahl(v), "Produkte", "var(--s1)"]])}/>`).join("");
+      return `<div class="mini">
+        <div class="mini-head">${esc(h)}<span>${letzter ? zahl(letzter[1]) : "–"}</span></div>
+        <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(h)}: Produkte pro Woche">
+          <line x1="${P}" x2="${W - P}" y1="${H - P}" y2="${H - P}" stroke="#2d5a8a" stroke-width="1"/>
+          <path d="${d}" fill="none" stroke="var(--s1)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+          ${letzter ? `<circle cx="${x(letzter[0])}" cy="${y(letzter[1])}" r="4" fill="var(--s1)" stroke="#0f2236" stroke-width="2"/>` : ""}
+          ${hits}
+        </svg>
+      </div>`;
+    }).join("");
+
+    const tabelle = `<details class="tabelle"><summary>Als Tabelle</summary><div class="tbl-wrap"><table class="tbl"><thead><tr><th>KW</th>${haendler.map(h => `<th class="num">${esc(h)}</th>`).join("")}</tr></thead><tbody>
+      ${wochen.slice().reverse().map(w => `<tr><td>KW ${kwVon(w)}</td>${haendler.map(h => `<td class="num">${proH[h][w] != null ? zahl(proH[h][w]) : "–"}</td>`).join("")}</tr>`).join("")}
+    </tbody></table></div></details>`;
+    return `<div class="multiples">${karten}</div><div class="muted small" style="margin-top:8px">Gleiche Skala in allen Kästchen (0–${zahl(yMax)}), Zahl oben rechts = aktuelle Woche.</div>${tabelle}`;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // Tabs
+  // ═══════════════════════════════════════════════════════════════════
+  const TITEL = { angebote: "Angebote der Woche", knaller: "Knaller-Archiv", statistik: "Statistik" };
+  function tabZeigen(tab) {
+    if (!TITEL[tab]) tab = "angebote";
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+    for (const t of Object.keys(TITEL)) document.getElementById(`view-${t}`).hidden = t !== tab;
+    document.getElementById("titel").textContent = TITEL[tab];
+    if (location.hash !== "#" + tab) history.replaceState(null, "", location.pathname + location.search + "#" + tab);
+    tipWeg();
+    if (tab === "knaller") ladeKnaller();
+    if (tab === "statistik") ladeStatistik();
+  }
+  document.querySelectorAll(".tab-btn").forEach(b => b.addEventListener("click", () => tabZeigen(b.dataset.tab)));
+  addEventListener("hashchange", () => tabZeigen(location.hash.slice(1)));
+
+  plzFeldEinrichten(PLZ);
+  ladeAngebote();
+  tabZeigen(location.hash.slice(1) || "angebote");
+  ladeKnaller();   // füllt auch den Zähler am Knaller-Tab
 </script>
 
 </body>
